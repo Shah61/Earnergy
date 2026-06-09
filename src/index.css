@@ -1,0 +1,154 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+  --color-ink: #0c0a09;
+  --color-ink-muted: #1c1917;
+  --color-cream: #faf7f2;
+  --color-cream-muted: #a8a29e;
+  --color-ember: #e85d04;
+  --color-ember-glow: #f48c06;
+  --color-espresso: #3d2314;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply antialiased;
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    scroll-behavior: auto;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: var(--color-ink);
+  }
+
+  #root {
+    isolation: isolate;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-ember) 35%, transparent);
+    color: var(--color-cream);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-anton {
+    font-family: 'Anton', Impact, 'Arial Narrow', system-ui, sans-serif;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Box Bites scroll section — light studio (animation3) */
+:root {
+  --box-center: #fafafa;
+  --box-mid: #dad8d6;
+  --box-edge: #918c8a;
+  --box-yellow: #f6c426;
+  --box-ink: #4a4744;
+}
+
+.box-bites-section {
+  min-height: 100vh;
+  background: #9f9d9b;
+  color: var(--box-ink);
+}
+
+.box-reveal-overlay {
+  will-change: opacity;
+}
+
+.box-reveal-overlay > * {
+  will-change: transform, opacity;
+}
+
+.box-frame {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100vw, 1248px);
+  max-height: 100svh;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.box-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+@keyframes hint-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.hint-arrow::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid var(--box-ink);
+  border-bottom: 1px solid var(--box-ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hint-arrow {
+    animation: hint-bob 1.6s ease-in-out infinite;
+  }
+}
