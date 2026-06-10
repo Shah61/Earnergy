@@ -127,6 +127,91 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+.product-content {
+  will-change: transform;
+}
+
+.product-kofe-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  overflow: hidden;
+  background: #c8a882;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.product-kofe-scroll {
+  position: relative;
+  width: 100%;
+}
+
+.product-kofe-layer--active {
+  pointer-events: auto;
+}
+
+.kofe-hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  background-color: #c8a882;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #3d2a1a;
+}
+
+.kofe-hello-section {
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  justify-content: center;
+  background: #c8a882;
+  color: #3d2a1a;
+}
+
+.kofe-hello-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.kofe-third-section {
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  justify-content: center;
+  background-color: #c8a882;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #3d2a1a;
+}
+
+.kofe-third-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.kofe-hero-video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100vw, 1920px);
+  max-height: 100svh;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .box-bites-section {
   min-height: 100vh;
   background-color: var(--box-mid);

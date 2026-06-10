@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import type { ActiveProduct } from '@/stores/useAppStore'
 
 const LOGO = '/photos/logo2.png'
 
@@ -71,6 +72,16 @@ const css = `
 .bbh-logo:hover img{animation:bbh-wobble .7s ease}
 @keyframes bbh-wobble{0%{transform:rotate(0)}25%{transform:rotate(-6deg) scale(1.04)}
   55%{transform:rotate(5deg)}80%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
+
+.bbh-products{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.bbh-product{border:0;background:transparent;cursor:pointer;padding:8px 12px;border-radius:999px;
+  font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(246,242,231,.72);text-shadow:0 2px 10px rgba(8,20,10,.35);
+  transition:color .25s ease, background .25s ease, transform .25s ease}
+.bbh-product:hover{color:var(--bbh-cream);transform:translateY(-1px)}
+.bbh-product--active{color:var(--bbh-ink);background:var(--bbh-yellow);
+  box-shadow:0 8px 20px rgba(8,20,10,.28)}
+.bbh-header--scrolled .bbh-product--active{box-shadow:0 6px 16px rgba(8,20,10,.32)}
 
 .bbh-links{display:flex;align-items:center;gap:clamp(10px,2vw,26px);list-style:none;margin-left:auto}
 .bbh-links li{opacity:0;transform:translateY(-12px);
@@ -142,10 +153,16 @@ const css = `
 .bbh-menu--open .bbh-mfoot{opacity:1}
 
 @media (max-width:860px){
+  .bbh-products{display:none}
   .bbh-links{display:none}
   .bbh-cta--bar{display:none}
   .bbh-burger{display:block;margin-left:auto}
 }
+.bbh-mproducts{display:flex;gap:10px;margin-bottom:22px}
+.bbh-mproduct{flex:1;border:0;border-radius:999px;padding:12px 16px;cursor:pointer;
+  font-family:"Anton",sans-serif;font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bbh-cream);background:rgba(16,40,20,.22)}
+.bbh-mproduct--active{background:var(--bbh-yellow);color:var(--bbh-ink)}
 @media (prefers-reduced-motion:reduce){
   .bbh-ticker-track{animation:none}
   .bbh-cta .bbh-dot{animation:none}
@@ -159,15 +176,19 @@ const css = `
 export function BoxBitesHeader({
   visible = true,
   links = DEFAULT_LINKS,
+  activeProduct = 'box-bites',
   ctaLabel = 'Get 2-Pack · RM30',
   ctaHref = '#buy',
   onNavigate,
+  onProductChange,
 }: {
   visible?: boolean
   links?: HeaderLink[]
+  activeProduct?: ActiveProduct
   ctaLabel?: string
   ctaHref?: string
   onNavigate?: (href: string) => void
+  onProductChange?: (product: ActiveProduct) => void
 }) {
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -257,6 +278,11 @@ export function BoxBitesHeader({
     else window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const pickProduct = (product: ActiveProduct) => {
+    setOpen(false)
+    onProductChange?.(product)
+  }
+
   const tickerOff = scrolled || hidden || !mounted
 
   if (!visible) return null
@@ -279,6 +305,27 @@ export function BoxBitesHeader({
           <a className="bbh-logo" href="#top" onClick={toTop} aria-label="Earnergy — back to top">
             <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
           </a>
+
+          <div className="bbh-products" role="tablist" aria-label="Products">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeProduct === 'box-bites'}
+              className={`bbh-product${activeProduct === 'box-bites' ? ' bbh-product--active' : ''}`}
+              onClick={() => activeProduct !== 'box-bites' && pickProduct('box-bites')}
+            >
+              Box Bites
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeProduct === 'kofe'}
+              className={`bbh-product${activeProduct === 'kofe' ? ' bbh-product--active' : ''}`}
+              onClick={() => activeProduct !== 'kofe' && pickProduct('kofe')}
+            >
+              KOFÈ
+            </button>
+          </div>
 
           <ul className="bbh-links">
             {links.map((l, i) => (
@@ -320,6 +367,26 @@ export function BoxBitesHeader({
         aria-modal="true"
         aria-label="Menu"
       >
+        <div className="bbh-mproducts" role="tablist" aria-label="Products">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeProduct === 'box-bites'}
+            className={`bbh-mproduct${activeProduct === 'box-bites' ? ' bbh-mproduct--active' : ''}`}
+            onClick={() => activeProduct !== 'box-bites' && pickProduct('box-bites')}
+          >
+            Box Bites
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeProduct === 'kofe'}
+            className={`bbh-mproduct${activeProduct === 'kofe' ? ' bbh-mproduct--active' : ''}`}
+            onClick={() => activeProduct !== 'kofe' && pickProduct('kofe')}
+          >
+            KOFÈ
+          </button>
+        </div>
         {links.map((l) => (
           <a key={l.href} className="bbh-mlink" href={l.href} onClick={(e) => nav(e, l.href)}>
             {l.label}

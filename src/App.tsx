@@ -1,5 +1,6 @@
 import { LoadingScreen } from '@/components/loading/LoadingScreen'
 import { BoxBitesHeader } from '@/components/layout/BoxBitesHeader'
+import { ProductViewport } from '@/components/layout/ProductViewport'
 import { SmoothScroll } from '@/components/layout/SmoothScroll'
 import { getLenis } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
@@ -24,18 +25,24 @@ function handleNavigate(href: string) {
 
 export default function App() {
   const isLoading = useAppStore((s) => s.isLoading)
+  const activeProduct = useAppStore((s) => s.activeProduct)
+  const setActiveProduct = useAppStore((s) => s.setActiveProduct)
 
   return (
     <>
       <LoadingScreen />
       <BoxBitesHeader
         visible={!isLoading}
-        links={HEADER_LINKS}
+        links={activeProduct === 'box-bites' ? HEADER_LINKS : []}
+        activeProduct={activeProduct}
+        onProductChange={setActiveProduct}
         onNavigate={handleNavigate}
       />
       <SmoothScroll>
-        <BoxBitesScroll />
-        <BoxBitesHello />
+        <ProductViewport>
+          <BoxBitesScroll />
+          <BoxBitesHello />
+        </ProductViewport>
       </SmoothScroll>
     </>
   )

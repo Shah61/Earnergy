@@ -18,6 +18,7 @@ type Phase = 'idle' | 'playing' | 'frozen'
 
 export function BoxBitesScroll() {
   const isLoading = useAppStore((s) => s.isLoading)
+  const activeProduct = useAppStore((s) => s.activeProduct)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [phase, setPhase] = useState<Phase>('idle')
   const [stillReady, setStillReady] = useState(false)
@@ -36,7 +37,7 @@ export function BoxBitesScroll() {
   }, [isLoading])
 
   useEffect(() => {
-    if (isLoading || !videoRef.current) return
+    if (isLoading || activeProduct !== 'box-bites' || !videoRef.current) return
 
     const video = videoRef.current
     let started = false
@@ -90,7 +91,7 @@ export function BoxBitesScroll() {
       if (started && !ended) getLenis()?.start()
       video.pause()
     }
-  }, [isLoading])
+  }, [isLoading, activeProduct])
 
   const showStill = phase === 'frozen' && stillReady
 
