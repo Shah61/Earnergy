@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { useLenis } from '@/hooks/useLenis'
+import { useEffect, type ReactNode } from 'react'
+import { scrollToTop, useLenis } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
 
 interface SmoothScrollProps {
@@ -9,5 +9,14 @@ interface SmoothScrollProps {
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const isLoading = useAppStore((s) => s.isLoading)
   useLenis(!isLoading)
+
+  useEffect(() => {
+    scrollToTop()
+  }, [])
+
+  useEffect(() => {
+    if (!isLoading) scrollToTop()
+  }, [isLoading])
+
   return <>{children}</>
 }

@@ -1,14 +1,20 @@
-export const VIDEO_SRC = '/boxbites_scrub.mp4'
+export const VIDEO_SRC = '/animation7.mp4'
+export const BACKGROUND_SRC = '/background2.png'
+export const BGMID_SRC = '/Image.png'
+export const TRANSITION_SRC = '/transition.mp4'
 
 export const VIDEO_WIDTH = 1920
 export const VIDEO_HEIGHT = 1080
-export const VIDEO_FPS = 24
+export const VIDEO_PLAYBACK_RATE = 1.2
 
-/** Video scrub runway — taller = slower scrub */
-export const SCROLL_TRACK_VH = 500
+/** Last-frame still — same dimensions as the video */
+export const BGMID_WIDTH = VIDEO_WIDTH
+export const BGMID_HEIGHT = VIDEO_HEIGHT
 
-/** Post-video overlay reveal runway */
-export const REVEAL_TRACK_VH = 140
-
-/** Eased scrub follow — lower = smoother lag */
-export const SCROLL_EASE = 0.12
+export const ASSETS = {
+  nodeProduct: '/box-bites/nodeProduct.webp',
+  nodeOat: '/box-bites/nodeOat.webp',
+  nodeChoc: '/box-bites/nodeChoc.webp',
+  nodeHoodia: '/box-bites/nodeHoodia.webp',
+  pouch: '/box-bites/pouchImg.webp',
+} as const
