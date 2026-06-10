@@ -12,12 +12,7 @@ const LOGO = '/photos/logo2.png'
 
 export type HeaderLink = { label: string; href: string }
 
-const DEFAULT_LINKS: HeaderLink[] = [
-  { label: 'Story', href: '#story' },
-  { label: 'Ingredients', href: '#ingredients' },
-  { label: 'Nutrition', href: '#nutrition' },
-  { label: 'Why Hoodia', href: '#hoodia' },
-]
+const DEFAULT_LINKS: HeaderLink[] = []
 
 const TICKER =
   'Goodbye Sugar ✦ Hello Energy ✦ Healthy Cookies That Box Your Cravings ✦ Smart Products · Smarter Business ✦ '
