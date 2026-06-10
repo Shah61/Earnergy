@@ -104,7 +104,7 @@ export function KofeHero() {
           <video
             ref={setVideoRef}
             src={KOFE_VIDEO}
-            className={`kofe-hero-video box-video ${phase === 'idle' ? 'invisible opacity-0' : ''}`}
+            className={`kofe-hero-video ${phase === 'idle' ? 'invisible opacity-0' : ''}`}
             muted
             playsInline
             preload="metadata"
