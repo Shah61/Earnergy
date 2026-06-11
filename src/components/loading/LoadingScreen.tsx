@@ -7,6 +7,12 @@ const VIDEO_SRC = '/photos/loadingScreen.mp4'
 const MIN_DISPLAY_MS = 2800
 const POST_VIDEO_DELAY_MS = 400
 const WHITE_HOLD_MS = 450
+/** Mobile Safari often skips canplaythrough — kick playback after this. */
+const PLAYBACK_KICK_MS = 600
+/** After min display, don't wait forever for ended. */
+const FORCE_EXIT_GRACE_MS = 4500
+/** Hard ceiling so the app never stays on the loader. */
+const MAX_LOADER_MS = 11000
 
 /**
  * Bite-reveal exit: the white cover gets "bitten" away.
@@ -116,38 +122,79 @@ export function LoadingScreen() {
 
     let videoEnded = false
     let minElapsed = false
+    let playbackStarted = false
+    let exitScheduled = false
 
-    const tryExit = () => {
-      if (videoEnded && minElapsed) {
+    const scheduleExit = () => {
+      if (exitScheduled || hasExitedRef.current || !minElapsed || !videoEnded) return
+      exitScheduled = true
+      window.setTimeout(exitLoader, POST_VIDEO_DELAY_MS)
+    }
+
+    const markVideoEnded = () => {
+      if (videoEnded) return
+      videoEnded = true
+      video.pause()
+      scheduleExit()
+    }
+
+    const forceExit = () => {
+      minElapsed = true
+      markVideoEnded()
+      if (!exitScheduled && !hasExitedRef.current) {
+        exitScheduled = true
         window.setTimeout(exitLoader, POST_VIDEO_DELAY_MS)
       }
     }
 
+    const startPlayback = () => {
+      setIsReady(true)
+      if (playbackStarted) return
+      playbackStarted = true
+      video.playbackRate = 1
+      void video.play().catch(() => markVideoEnded())
+    }
+
     const minTimer = window.setTimeout(() => {
       minElapsed = true
-      tryExit()
+      scheduleExit()
     }, MIN_DISPLAY_MS)
 
-    const onCanPlay = () => {
+    const kickTimer = window.setTimeout(() => startPlayback(), PLAYBACK_KICK_MS)
+
+    const graceTimer = window.setTimeout(forceExit, MIN_DISPLAY_MS + FORCE_EXIT_GRACE_MS)
+
+    const maxTimer = window.setTimeout(() => {
+      if (!hasExitedRef.current) exitLoader()
+    }, MAX_LOADER_MS)
+
+    video.playsInline = true
+    video.muted = true
+    video.setAttribute('webkit-playsinline', 'true')
+    video.load()
+
+    const onPlayable = () => startPlayback()
+    const onError = () => {
       setIsReady(true)
-      video.play().catch(() => {
-        videoEnded = true
-        tryExit()
-      })
+      markVideoEnded()
     }
 
-    const onEnded = () => {
-      videoEnded = true
-      tryExit()
-    }
-
-    video.addEventListener('canplaythrough', onCanPlay)
-    video.addEventListener('ended', onEnded)
+    video.addEventListener('canplay', onPlayable)
+    video.addEventListener('canplaythrough', onPlayable)
+    video.addEventListener('loadeddata', onPlayable)
+    video.addEventListener('ended', markVideoEnded)
+    video.addEventListener('error', onError)
 
     return () => {
       window.clearTimeout(minTimer)
-      video.removeEventListener('canplaythrough', onCanPlay)
-      video.removeEventListener('ended', onEnded)
+      window.clearTimeout(kickTimer)
+      window.clearTimeout(graceTimer)
+      window.clearTimeout(maxTimer)
+      video.removeEventListener('canplay', onPlayable)
+      video.removeEventListener('canplaythrough', onPlayable)
+      video.removeEventListener('loadeddata', onPlayable)
+      video.removeEventListener('ended', markVideoEnded)
+      video.removeEventListener('error', onError)
     }
   }, [exitLoader])
 
@@ -247,6 +294,7 @@ export function LoadingScreen() {
           src={VIDEO_SRC}
           muted
           playsInline
+          autoPlay
           preload="auto"
         />
       </div>

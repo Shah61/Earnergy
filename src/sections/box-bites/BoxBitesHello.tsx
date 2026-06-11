@@ -10,11 +10,22 @@
  * Don't put overflow-x:hidden on a wrapper around this component — it breaks
  * position:sticky. Keep it on html/body instead.
  *
- * Acts: 1) ingredient constellation camera  2) 3D nutrition table + falling
- * biscuit + crumbs  3) DIVE: camera rises ABOVE the pouch, the pouch lies back,
- * mouth opens, we plunge straight down — inside is a free-fall shaft with speed
- * lines rushing up the left/right edges and benefit words flying past — then a
- * clean fade back out to the pouch and the RM30 stamp.
+ * RESPONSIVENESS NOTES (this revision):
+ *  - Three device tiers, each with its own Act-1 camera path:
+ *      phone  (<760px)        — tighter zoom, focused node parked in the upper
+ *                               40% so the bottom caption never covers it,
+ *                               shorter scroll runways
+ *      tablet (760–1099px)    — desktop layout, slightly reduced zoom + side
+ *                               offsets so captions don't collide with art
+ *      desktop (>=1100px)     — original cinematic path
+ *  - Extra CSS breakpoints: <=1100 (iPad), <=760 (phone), <=430 (small phone),
+ *    plus a short-landscape query (max-height:520px) for rotated phones.
+ *  - Safe-area insets (notch / home-indicator) on every pinned UI element.
+ *  - Viewport-resize guard: iOS/Android URL-bar height wobble no longer
+ *    re-fits the scenes mid-scroll (only real width/orientation changes do).
+ *  - Layout re-measured after web fonts load (Act 2 row positions depend on
+ *    Anton/Manrope metrics).
+ *  - Fewer Act-3 particles on phones for smoother scrolling.
  */
 
 import { useEffect } from 'react'
@@ -33,6 +44,10 @@ const css = `
   --green:#74c157; --green-lt:#84d067; --green-dk:#579f3d;
   --forest:#0e2e16; --forest-2:#10421e;
   --cream:#f6f2e7; --white:#ffffff;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
   font-family:"Manrope",system-ui,sans-serif;color:var(--forest);
   line-height:1.5;-webkit-font-smoothing:antialiased;
   --bb-page-bg:url('${BB_BG}');
@@ -40,10 +55,11 @@ const css = `
 }
 .bb-story *{box-sizing:border-box;margin:0;padding:0}
 .bb-story img{max-width:none}
+.bb-story h1,.bb-story h2{text-wrap:balance}
 
 /* ================= ACT 1: constellation ================= */
 .bb-story .experience{position:relative;height:840vh}
-.bb-story .stage{position:sticky;top:0;height:100svh;width:100%;overflow:hidden;
+.bb-story .stage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;
   background:var(--bb-page-bg) center/cover no-repeat}
 .bb-story .stage-inner{position:absolute;inset:0;animation:bb-enter 1.05s ease both}
 @keyframes bb-enter{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
@@ -63,19 +79,21 @@ const css = `
 .bb-story .tag-prod{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);font-family:"Anton",sans-serif;letter-spacing:.18em;text-transform:uppercase;font-size:24px;color:var(--white);white-space:nowrap;text-shadow:0 3px 14px rgba(22,50,16,.5)}
 .bb-story .badge{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);font-family:"Anton",sans-serif;letter-spacing:.16em;text-transform:uppercase;font-size:16px;color:var(--white);white-space:nowrap;text-shadow:0 2px 10px rgba(22,50,16,.5)}
 
-.bb-story .intro{position:absolute;z-index:7;top:0;left:0;right:0;padding:clamp(26px,6vh,60px) 24px 96px;text-align:center;pointer-events:none;will-change:opacity,transform;
+.bb-story .intro{position:absolute;z-index:7;top:0;left:0;right:0;
+  padding:calc(clamp(22px,5vh,60px) + var(--safe-t)) clamp(16px,4vw,24px) clamp(64px,11vh,96px);
+  text-align:center;pointer-events:none;will-change:opacity,transform;
   background:linear-gradient(to bottom, rgba(74,140,48,.94) 0%, rgba(116,193,87,.55) 52%, rgba(116,193,87,0) 100%)}
-.bb-story .intro .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(26px,4.4vw,44px);color:var(--white);line-height:.88;margin-bottom:10px;opacity:.96}
-.bb-story .intro .pill{display:inline-block;font-family:"Anton",sans-serif;letter-spacing:.2em;text-transform:uppercase;font-size:12px;color:var(--white);background:var(--forest-2);padding:8px 15px;border-radius:999px;margin-bottom:14px}
-.bb-story .intro h1{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(32px,6.2vw,66px);line-height:.96;color:var(--white);text-shadow:0 4px 24px rgba(20,45,18,.4)}
-.bb-story .intro p{max-width:48ch;margin:16px auto 0;font-size:clamp(14px,1.7vw,17px);color:rgba(255,255,255,.94)}
+.bb-story .intro .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(22px,4.4vw,44px);color:var(--white);line-height:.88;margin-bottom:10px;opacity:.96}
+.bb-story .intro .pill{display:inline-block;font-family:"Anton",sans-serif;letter-spacing:.2em;text-transform:uppercase;font-size:clamp(10px,1.4vw,12px);color:var(--white);background:var(--forest-2);padding:7px 14px;border-radius:999px;margin-bottom:12px}
+.bb-story .intro h1{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(30px,6.2vw,66px);line-height:.98;color:var(--white);text-shadow:0 4px 24px rgba(20,45,18,.4)}
+.bb-story .intro p{max-width:48ch;margin:14px auto 0;font-size:clamp(13px,1.7vw,17px);color:rgba(255,255,255,.94)}
 
 .bb-story .cap{position:absolute;z-index:7;width:min(390px,84vw);opacity:0;pointer-events:none;transition:opacity .45s ease;will-change:opacity,transform}
 .bb-story .cap .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2);margin-bottom:12px;display:inline-flex;align-items:center;gap:10px}
 .bb-story .cap .kicker::before{content:"";width:26px;height:2px;background:var(--forest-2)}
-.bb-story .cap h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(30px,4.8vw,50px);line-height:1.0;color:var(--white);margin-bottom:16px;text-shadow:0 3px 20px rgba(22,50,16,.34);opacity:0;transform:translateY(10px);transition:opacity .5s ease .12s, transform .5s ease .12s}
+.bb-story .cap h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(26px,4.8vw,50px);line-height:1.0;color:var(--white);margin-bottom:14px;text-shadow:0 3px 20px rgba(22,50,16,.34);opacity:0;transform:translateY(10px);transition:opacity .5s ease .12s, transform .5s ease .12s}
 .bb-story .cap.show h2{opacity:1;transform:none}
-.bb-story .cap .type{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:clamp(14px,1.6vw,16px);line-height:1.65;color:var(--forest);max-width:36ch;min-height:5.2em;font-weight:500}
+.bb-story .cap .type{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:clamp(13px,1.6vw,16px);line-height:1.65;color:var(--forest);max-width:36ch;min-height:5.2em;font-weight:500}
 .bb-story .cap .type .cur{display:inline-block;width:.6ch;background:var(--forest-2);color:transparent;animation:bb-blink .9s steps(1) infinite;margin-left:1px}
 @keyframes bb-blink{50%{opacity:0}}
 .bb-story .cap.show{opacity:1}
@@ -87,54 +105,54 @@ const css = `
 .bb-story .cap.center .kicker{justify-content:center}
 .bb-story .cap.center .type{margin-left:auto;margin-right:auto}
 
-.bb-story .rail{position:absolute;z-index:8;left:clamp(18px,3vw,34px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px}
+.bb-story .rail{position:absolute;z-index:8;left:calc(clamp(18px,3vw,34px) + var(--safe-l));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px}
 .bb-story .rail .seg{width:2px;height:34px;background:rgba(16,40,20,.3);border-radius:2px;overflow:hidden;position:relative}
 .bb-story .rail .seg i{position:absolute;inset:0;background:var(--white);transform:scaleY(0);transform-origin:top;transition:transform .35s ease;border-radius:2px}
 .bb-story .rail .seg.on i{transform:scaleY(1)}
-.bb-story .keepscroll{position:absolute;z-index:8;bottom:clamp(18px,4vh,34px);right:clamp(20px,5vw,46px);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:rgba(16,40,20,.74);opacity:0;transition:opacity .5s ease}
+.bb-story .keepscroll{position:absolute;z-index:8;bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));right:calc(clamp(16px,5vw,46px) + var(--safe-r));font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:rgba(16,40,20,.74);opacity:0;transition:opacity .5s ease}
 
 /* ================= ACT 2: 3D nutrition table ================= */
 .bb-story .tablezone{position:relative;height:720vh}
-.bb-story .tstage{position:sticky;top:0;height:100svh;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;
+.bb-story .tstage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;
   background:var(--bb-page-bg) center/cover no-repeat}
-.bb-story .thead-overlay{position:absolute;z-index:8;top:clamp(22px,5vh,52px);left:0;right:0;text-align:center;pointer-events:none;will-change:opacity,transform}
+.bb-story .thead-overlay{position:absolute;z-index:8;top:calc(clamp(20px,5vh,52px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity,transform;padding:0 16px}
 .bb-story .thead-overlay .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
-.bb-story .thead-overlay h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(30px,5.4vw,54px);color:var(--white);line-height:1;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
+.bb-story .thead-overlay h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(26px,5.4vw,54px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
 .bb-story .persp{perspective:1300px;perspective-origin:50% 38%;width:min(620px,92vw)}
 .bb-story .card3d{position:relative;transform-style:preserve-3d;will-change:transform;background:var(--white);border-radius:22px;padding:10px 0 4px;
   box-shadow:0 60px 110px rgba(20,46,16,.45), 0 18px 40px rgba(20,46,16,.3)}
-.bb-story .card3d .chead{display:flex;justify-content:space-between;align-items:baseline;padding:16px 26px 14px;border-bottom:3px solid var(--forest-2)}
-.bb-story .card3d .chead .t{font-weight:800;font-size:clamp(18px,2.6vw,24px);color:var(--forest-2)}
-.bb-story .card3d .chead .u{font-weight:800;font-size:clamp(13px,1.8vw,16px);color:var(--forest-2)}
-.bb-story .row{display:flex;justify-content:space-between;align-items:center;padding:clamp(13px,2.1vh,19px) 26px;border-bottom:1.5px solid rgba(16,66,30,.18);transition:background .35s ease}
+.bb-story .card3d .chead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:clamp(12px,1.8vh,16px) clamp(16px,3.4vw,26px) clamp(10px,1.6vh,14px);border-bottom:3px solid var(--forest-2)}
+.bb-story .card3d .chead .t{font-weight:800;font-size:clamp(16px,2.6vw,24px);color:var(--forest-2)}
+.bb-story .card3d .chead .u{font-weight:800;font-size:clamp(12px,1.8vw,16px);color:var(--forest-2);white-space:nowrap}
+.bb-story .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:clamp(11px,2.1vh,19px) clamp(16px,3.4vw,26px);border-bottom:1.5px solid rgba(16,66,30,.18);transition:background .35s ease}
 .bb-story .row:last-child{border-bottom:none;border-radius:0 0 22px 22px}
-.bb-story .row .lab{font-weight:600;font-size:clamp(15px,2vw,19px);color:var(--forest-2)}
-.bb-story .row .val{font-weight:700;font-size:clamp(15px,2vw,19px);color:var(--forest-2);font-variant-numeric:tabular-nums}
+.bb-story .row .lab{font-weight:600;font-size:clamp(14px,2vw,19px);color:var(--forest-2)}
+.bb-story .row .val{font-weight:700;font-size:clamp(14px,2vw,19px);color:var(--forest-2);font-variant-numeric:tabular-nums;white-space:nowrap}
 .bb-story .row.on{background:rgba(116,193,87,.18)}
 .bb-story .row.on .lab{font-weight:800}
 .bb-story .row.done .val{color:var(--forest)}
-.bb-story .faller{position:absolute;left:50%;top:0;width:clamp(56px,9vw,74px);z-index:4;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 14px 14px rgba(20,46,16,.38))}
-.bb-story .fshadow{position:absolute;left:50%;width:clamp(48px,8vw,64px);height:12px;border-radius:50%;background:rgba(16,50,18,.3);z-index:3;pointer-events:none;will-change:transform,opacity;filter:blur(3px)}
+.bb-story .faller{position:absolute;left:50%;top:0;width:clamp(48px,9vw,74px);z-index:4;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 14px 14px rgba(20,46,16,.38))}
+.bb-story .fshadow{position:absolute;left:50%;width:clamp(42px,8vw,64px);height:12px;border-radius:50%;background:rgba(16,50,18,.3);z-index:3;pointer-events:none;will-change:transform,opacity;filter:blur(3px)}
 .bb-story .card3d.jolt{animation:bb-jolt .42s cubic-bezier(.3,.7,.3,1)}
 @keyframes bb-jolt{0%{margin-top:0}30%{margin-top:7px}65%{margin-top:-3px}100%{margin-top:0}}
 .bb-story .crumb{position:absolute;z-index:5;pointer-events:none;border-radius:46% 54% 58% 42%/50% 44% 56% 50%;will-change:transform,opacity;box-shadow:0 1px 2px rgba(20,46,16,.3)}
 
 /* ================= ACT 3: dive into the pouch ================= */
 .bb-story .smartzone{position:relative;height:920vh}
-.bb-story .sstage{position:sticky;top:0;height:100svh;width:100%;overflow:hidden;
+.bb-story .sstage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;
   background:var(--bb-page-bg) center/cover no-repeat}
 
-.bb-story .shead{position:absolute;z-index:8;top:clamp(20px,4.5vh,48px);left:0;right:0;text-align:center;pointer-events:none;will-change:opacity}
+.bb-story .shead{position:absolute;z-index:8;top:calc(clamp(18px,4.5vh,48px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity;padding:0 16px}
 .bb-story .shead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
-.bb-story .shead h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(26px,4.6vw,48px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
-.bb-story .shead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(20px,3vw,30px);color:var(--forest-2);margin-top:6px}
+.bb-story .shead h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(24px,4.6vw,48px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
+.bb-story .shead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,3vw,30px);color:var(--forest-2);margin-top:6px}
 
 /* camera sits ABOVE the pouch: perspective-origin is pushed to the very top so
    when the pouch lies back (negative rotateX) we look DOWN into the opening */
 .bb-story .divewrap{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
   perspective:1150px;perspective-origin:50% 6%;will-change:opacity}
 .bb-story .pouch3d{position:relative;transform-style:preserve-3d;transform-origin:50% 9%;will-change:transform}
-.bb-story .pouch3d>img{display:block;height:min(58vh,560px);width:auto;filter:drop-shadow(0 30px 34px rgba(20,46,16,.42))}
+.bb-story .pouch3d>img{display:block;height:min(58vh,560px);max-width:84vw;width:auto;object-fit:contain;filter:drop-shadow(0 30px 34px rgba(20,46,16,.42))}
 .bb-story .mouth{position:absolute;left:50%;top:6%;width:74%;aspect-ratio:2.5/1;transform:translate(-50%,-50%) scale(.6);
   border-radius:50%;opacity:0;will-change:opacity,transform;
   background:radial-gradient(62% 105% at 50% 40%, #3d2715 0%, #221307 55%, #100902 100%);
@@ -151,27 +169,27 @@ const css = `
 .bb-story .streak{position:absolute;left:0;top:0;border-radius:3px;will-change:transform,opacity;
   background:linear-gradient(to bottom, rgba(255,243,210,0) 0%, rgba(255,243,210,.85) 45%, rgba(255,243,210,.85) 55%, rgba(255,243,210,0) 100%)}
 
-.bb-story .insidehead{position:absolute;z-index:7;top:clamp(18px,4vh,42px);left:0;right:0;text-align:center;opacity:0;will-change:opacity;pointer-events:none}
+.bb-story .insidehead{position:absolute;z-index:7;top:calc(clamp(16px,4vh,42px) + var(--safe-t));left:0;right:0;text-align:center;opacity:0;will-change:opacity;pointer-events:none;padding:0 16px}
 .bb-story .insidehead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#f5c518}
-.bb-story .insidehead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(20px,3vw,30px);color:var(--cream);margin-top:4px}
+.bb-story .insidehead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,3vw,30px);color:var(--cream);margin-top:4px}
 
 /* free-fall benefit words flying past while you drop */
-.bb-story .drop{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,90vw);text-align:center;
+.bb-story .drop{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,calc(100vw - 32px));text-align:center;
   opacity:0;pointer-events:none;transition:opacity .4s ease;will-change:opacity}
 .bb-story .drop.show{opacity:1}
 .bb-story .drop .idx{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.24em;color:#f5c518;margin-bottom:10px}
-.bb-story .drop .t{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(34px,7vw,72px);line-height:1.04;color:var(--white);
+.bb-story .drop .t{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(32px,7vw,72px);line-height:1.06;color:var(--white);
   text-shadow:0 5px 30px rgba(0,0,0,.55);transform:translateY(26px);transition:transform .45s cubic-bezier(.2,.9,.3,1.15)}
 .bb-story .drop.show .t{transform:none}
-.bb-story .drop .t.small{font-size:clamp(24px,4.4vw,46px);color:var(--cream)}
-.bb-story .drop .sub{margin-top:12px;font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.8vw,28px);color:#f5c518;
+.bb-story .drop .t.small{font-size:clamp(22px,4.4vw,46px);color:var(--cream)}
+.bb-story .drop .sub{margin-top:12px;font-family:"Caveat",cursive;font-weight:700;font-size:clamp(17px,2.8vw,28px);color:#f5c518;
   opacity:0;transition:opacity .45s ease .15s}
 .bb-story .drop.show .sub{opacity:1}
 
 /* exit: gentle fade back out — pouch returns front-on, centered */
 .bb-story .exitwrap{position:absolute;inset:0;z-index:6;opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center;will-change:opacity}
 .bb-story .pouchmini{will-change:transform}
-.bb-story .pouchmini img{display:block;height:min(48vh,440px);width:auto;filter:drop-shadow(0 26px 30px rgba(20,46,16,.42))}
+.bb-story .pouchmini img{display:block;height:min(48vh,440px);max-width:78vw;width:auto;object-fit:contain;filter:drop-shadow(0 26px 30px rgba(20,46,16,.42))}
 .bb-story .pouchmini img.pulse{animation:bb-ppulse .6s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes bb-ppulse{0%{transform:scale(1)}40%{transform:scale(1.05)}70%{transform:scale(.985)}100%{transform:scale(1)}}
 
@@ -185,9 +203,9 @@ const css = `
 .bb-story .stamp .s2{font-family:"Anton",sans-serif;font-size:46px;line-height:1;margin:3px 0}
 .bb-story .stamp .s3{font-family:"Caveat",cursive;font-weight:700;font-size:20px;color:#f5c518}
 
-.bb-story .benefits{position:absolute;z-index:8;left:0;right:0;bottom:clamp(16px,4vh,40px);text-align:center;pointer-events:none}
-.bb-story .benefits .powered{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.6vw,26px);color:var(--white);text-shadow:0 2px 12px rgba(22,50,16,.4);
-  opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.bb-story .benefits{position:absolute;z-index:8;left:0;right:0;bottom:calc(clamp(14px,4vh,40px) + var(--safe-b));text-align:center;pointer-events:none}
+.bb-story .benefits .powered{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(16px,2.6vw,26px);color:var(--white);text-shadow:0 2px 12px rgba(22,50,16,.4);
+  opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;padding:0 18px}
 .bb-story .benefits .rowc{margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 16px}
 .bb-story .bchip{font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);
   border:1.5px solid rgba(255,255,255,.7);border-radius:999px;padding:8px 14px;background:rgba(16,66,30,.25);
@@ -200,33 +218,137 @@ const css = `
 .bb-story .benefits.show .bchip:nth-child(4){transition-delay:.35s}
 
 /* ================= footer ================= */
-.bb-story .outro{position:relative;min-height:88svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 24px;
+.bb-story .outro{position:relative;min-height:88svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:70px clamp(18px,5vw,24px) calc(70px + var(--safe-b));
   background:var(--bb-page-bg) center/cover no-repeat}
-.bb-story .outro .script{font-family:"Caveat",cursive;font-size:clamp(46px,9vw,96px);color:var(--white);line-height:.9;text-shadow:0 4px 26px rgba(22,50,16,.32)}
+.bb-story .outro .script{font-family:"Caveat",cursive;font-size:clamp(40px,9vw,96px);color:var(--white);line-height:.9;text-shadow:0 4px 26px rgba(22,50,16,.32)}
 .bb-story .outro .script .w{color:var(--forest-2);display:block}
 .bb-story .outro .made{margin-top:26px;max-width:46ch;font-size:14px;color:rgba(255,255,255,.94)}
-.bb-story .outro .foot{margin-top:22px;font-size:12.5px;color:rgba(16,40,20,.78);line-height:1.7}
+.bb-story .outro .foot{margin-top:22px;font-size:12.5px;color:rgba(16,40,20,.78);line-height:1.7;overflow-wrap:anywhere}
 .bb-story .outro .price{margin-top:12px;display:inline-flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:13px;color:rgba(16,40,20,.9)}
 .bb-story .outro .price b{color:var(--white);font-weight:800}
-.bb-story .outro .badges{margin-top:22px;font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(16,40,20,.7)}
+.bb-story .outro .badges{margin-top:22px;font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(16,40,20,.7);line-height:2}
 
+/* ============ TABLET (iPad portrait & smaller laptops) ============ */
+@media (max-width:1100px){
+  .bb-story .cap{width:min(330px,38vw)}
+  .bb-story .cap.left{left:clamp(20px,3.5vw,44px)}
+  .bb-story .cap.right{right:clamp(20px,3.5vw,44px)}
+  .bb-story .cap .type{max-width:32ch}
+  .bb-story .persp{width:min(560px,90vw);perspective:1150px}
+  .bb-story .stamp{width:148px;height:148px;left:auto;right:clamp(24px,6vw,64px);top:18%}
+  .bb-story .stamp .s2{font-size:40px}
+}
+
+/* ============ PHONE ============ */
 @media (max-width:760px){
-  .bb-story .cap{width:auto;left:18px!important;right:18px!important;text-align:left!important;top:auto!important;bottom:max(30px,9vh);transform:none!important}
+  .bb-story .experience{height:620vh}
+  .bb-story .tablezone{height:520vh}
+  .bb-story .smartzone{height:680vh}
+
+  .bb-story .intro{padding-bottom:clamp(48px,9vh,72px)}
+  .bb-story .intro p{max-width:38ch}
+
+  .bb-story .cap{width:auto;left:max(16px,var(--safe-l))!important;right:max(16px,var(--safe-r))!important;text-align:left!important;top:auto!important;
+    bottom:calc(max(24px,7vh) + var(--safe-b));transform:none!important}
   .bb-story .cap.right .kicker{flex-direction:row}
   .bb-story .cap.right .type{margin-left:0}
-  .bb-story .cap .type{min-height:6.5em}
+  .bb-story .cap h2{font-size:clamp(24px,7vw,32px);margin-bottom:10px}
+  .bb-story .cap .kicker{margin-bottom:8px;font-size:11px}
+  .bb-story .cap .type{min-height:6.8em;font-size:13px;line-height:1.6;max-width:none}
   .bb-story .rail{display:none}
-  .bb-story .persp{perspective:1000px}
+  .bb-story .keepscroll{font-size:9px;letter-spacing:.22em}
+
+  .bb-story .persp{perspective:980px;perspective-origin:50% 34%;width:min(440px,94vw)}
+  .bb-story .card3d{border-radius:18px}
+  .bb-story .row:last-child{border-radius:0 0 18px 18px}
+  .bb-story .thead-overlay h2{font-size:clamp(24px,6.4vw,34px)}
+
   .bb-story .pouch3d>img{height:min(46vh,420px)}
-  .bb-story .drop .t{font-size:clamp(30px,9vw,46px)}
-  .bb-story .stamp{width:120px;height:120px;left:auto;right:12px;top:14%}
-  .bb-story .stamp .s2{font-size:32px}
-  .bb-story .stamp .s1{font-size:11px}
-  .bb-story .stamp .s3{font-size:15px}
+  .bb-story .drop .t{font-size:clamp(30px,9.4vw,46px)}
+  .bb-story .drop .t.small{font-size:clamp(20px,6vw,30px)}
+  .bb-story .stamp{width:118px;height:118px;left:auto;right:max(12px,var(--safe-r));top:max(13%,calc(64px + var(--safe-t)))}
+  .bb-story .stamp .s2{font-size:30px}
+  .bb-story .stamp .s1{font-size:10px}
+  .bb-story .stamp .s3{font-size:14px}
   .bb-story .shead .script{display:none}
-  .bb-story .benefits .powered{font-size:15px;padding:0 18px}
-  .bb-story .bchip{font-size:9.5px;padding:6px 10px}
+  .bb-story .pouchmini img{height:min(42vh,380px)}
+  .bb-story .benefits .powered{font-size:15px}
+  .bb-story .bchip{font-size:9.5px;padding:6px 10px;letter-spacing:.12em}
+  .bb-story .benefits .rowc{gap:7px}
 }
+
+/* ============ SMALL PHONE (iPhone SE / Mini, <=430px) ============ */
+@media (max-width:430px){
+  .bb-story .intro .script{font-size:20px;margin-bottom:8px}
+  .bb-story .intro .pill{font-size:9px;padding:6px 11px;margin-bottom:10px}
+  .bb-story .intro h1{font-size:clamp(26px,8.4vw,32px)}
+  .bb-story .intro p{font-size:12.5px;max-width:34ch;margin-top:10px}
+
+  .bb-story .cap h2{font-size:22px}
+  .bb-story .cap .type{font-size:12px;min-height:7.4em}
+
+  .bb-story .thead-overlay .kicker,.bb-story .shead .kicker{font-size:10px;letter-spacing:.22em}
+  .bb-story .card3d .chead .t{font-size:15px}
+  .bb-story .card3d .chead .u{font-size:11px}
+  .bb-story .row{padding:10px 14px}
+  .bb-story .row .lab,.bb-story .row .val{font-size:13.5px}
+  .bb-story .faller{width:44px}
+
+  .bb-story .drop .idx{font-size:10px;margin-bottom:8px}
+  .bb-story .stamp{width:100px;height:100px}
+  .bb-story .stamp .s2{font-size:26px}
+  .bb-story .stamp .s1{font-size:9px;letter-spacing:.14em}
+  .bb-story .stamp .s3{font-size:13px}
+  .bb-story .bchip{font-size:8.5px;padding:5px 9px}
+
+  .bb-story .outro .made{font-size:13px}
+  .bb-story .outro .foot{font-size:11.5px}
+}
+
+/* ============ SHORT LANDSCAPE (rotated phones) ============ */
+@media (max-height:520px) and (orientation:landscape){
+  .bb-story .intro{padding-top:calc(12px + var(--safe-t));padding-bottom:40px}
+  .bb-story .intro p{display:none}
+  .bb-story .intro h1{font-size:clamp(24px,4.6vw,34px)}
+  .bb-story .intro .script{font-size:18px;margin-bottom:6px}
+  .bb-story .intro .pill{display:none}
+
+  .bb-story .cap{bottom:calc(14px + var(--safe-b))!important;top:auto!important;transform:none!important;
+    left:max(18px,var(--safe-l))!important;right:auto!important;width:min(420px,55vw);text-align:left!important}
+  .bb-story .cap h2{font-size:20px;margin-bottom:6px}
+  .bb-story .cap .type{font-size:11.5px;min-height:3.4em;line-height:1.5}
+  .bb-story .cap .kicker{margin-bottom:6px;font-size:10px}
+
+  .bb-story .thead-overlay{top:calc(8px + var(--safe-t))}
+  .bb-story .thead-overlay h2{font-size:22px;margin-top:4px}
+  .bb-story .persp{width:min(460px,72vw);perspective:1000px}
+  .bb-story .row{padding:7px 18px}
+  .bb-story .row .lab,.bb-story .row .val{font-size:13px}
+  .bb-story .card3d .chead{padding:9px 18px 8px}
+  .bb-story .faller{width:40px}
+
+  .bb-story .shead{top:calc(8px + var(--safe-t))}
+  .bb-story .shead h2{font-size:20px;margin-top:4px}
+  .bb-story .shead .script{display:none}
+  .bb-story .pouch3d>img{height:min(62vh,300px)}
+  .bb-story .pouchmini img{height:min(56vh,260px)}
+  .bb-story .insidehead{top:calc(8px + var(--safe-t))}
+  .bb-story .insidehead .script{font-size:16px}
+  .bb-story .drop .t{font-size:clamp(24px,5vw,34px)}
+  .bb-story .drop .t.small{font-size:clamp(17px,3.4vw,24px)}
+  .bb-story .drop .idx{margin-bottom:6px;font-size:10px}
+  .bb-story .stamp{width:92px;height:92px;top:max(10%,calc(10px + var(--safe-t)));right:max(14px,var(--safe-r));left:auto}
+  .bb-story .stamp .s2{font-size:24px}
+  .bb-story .stamp .s1{font-size:8.5px}
+  .bb-story .stamp .s3{font-size:12px}
+  .bb-story .benefits{bottom:calc(8px + var(--safe-b))}
+  .bb-story .benefits .powered{font-size:13px}
+  .bb-story .bchip{font-size:8.5px;padding:5px 9px}
+
+  .bb-story .outro{min-height:100svh;padding-top:40px}
+}
+
 @media (prefers-reduced-motion:reduce){
   .bb-story .floatwrap,.bb-story .links path,.bb-story .stage-inner{animation:none}
   .bb-story .card3d.jolt{animation:none}
@@ -254,6 +376,33 @@ export default function BoxBitesHello() {
     const cleanup: Array<() => void> = []
     const $ = (id: string) => document.getElementById(id)
 
+    /* Re-fit only on REAL viewport changes. Mobile browsers fire resize
+       constantly while the URL bar collapses/expands; re-measuring then makes
+       the scene jump mid-scroll. We ignore height wobble under 140px unless
+       the width (or orientation) also changed. */
+    const makeViewportWatcher = (refit: () => void) => {
+      let lastW = window.innerWidth
+      let lastH = window.innerHeight
+      const onResize = () => {
+        const w = window.innerWidth, h = window.innerHeight
+        const wChanged = Math.abs(w - lastW) > 1
+        const hChanged = Math.abs(h - lastH) > 140
+        if (!wChanged && !hChanged) return
+        lastW = w; lastH = h
+        refit()
+      }
+      const onOrient = () => {
+        // orientation always forces a refit (after the browser settles)
+        window.setTimeout(() => { lastW = window.innerWidth; lastH = window.innerHeight; refit() }, 120)
+      }
+      window.addEventListener('resize', onResize)
+      window.addEventListener('orientationchange', onOrient)
+      cleanup.push(() => {
+        window.removeEventListener('resize', onResize)
+        window.removeEventListener('orientationchange', onOrient)
+      })
+    }
+
     /* ================= ACT 1: constellation ================= */
     ;(() => {
       const exp = $('bb-exp'); if (!exp) return
@@ -275,7 +424,13 @@ export default function BoxBitesHello() {
         'Rich dark chocolate makes every bite feel like a treat — the flavour you crave, minus the sugar guilt.',
         'A touch of Hoodia quietens the cravings between meals, so one small bite is genuinely enough.',
       ]
-      const KEYS = [
+
+      /* one camera path per device tier — the phone path zooms harder (the
+         1600×1000 world otherwise renders microscopically on narrow screens)
+         and parks each focused node ABOVE center so the bottom-anchored
+         caption never sits on top of the artwork (oy is in viewport-height
+         units, negative = lift the subject up) */
+      const KEYS_DESKTOP = [
         { p: 0.0, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
         { p: 0.12, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
         { p: 0.27, fx: 0.5, fy: 0.5, s: 1.95, ox: 0, oy: -0.07 },
@@ -284,11 +439,34 @@ export default function BoxBitesHello() {
         { p: 0.84, fx: 0.772, fy: 0.715, s: 2.55, ox: 0.17, oy: -0.02 },
         { p: 1.0, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
       ]
+      const KEYS_TABLET = [
+        { p: 0.0, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
+        { p: 0.12, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
+        { p: 0.27, fx: 0.5, fy: 0.5, s: 2.0, ox: 0, oy: -0.07 },
+        { p: 0.46, fx: 0.772, fy: 0.3, s: 2.4, ox: 0.1, oy: 0.02 },
+        { p: 0.65, fx: 0.225, fy: 0.51, s: 2.4, ox: -0.1, oy: 0 },
+        { p: 0.84, fx: 0.772, fy: 0.715, s: 2.4, ox: 0.1, oy: -0.02 },
+        { p: 1.0, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
+      ]
+      const KEYS_MOBILE = [
+        { p: 0.0, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
+        { p: 0.12, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
+        { p: 0.27, fx: 0.5, fy: 0.5, s: 2.55, ox: 0, oy: -0.1 },
+        { p: 0.46, fx: 0.772, fy: 0.3, s: 3.3, ox: 0, oy: -0.1 },
+        { p: 0.65, fx: 0.225, fy: 0.51, s: 3.3, ox: 0, oy: -0.1 },
+        { p: 0.84, fx: 0.772, fy: 0.715, s: 3.3, ox: 0, oy: -0.11 },
+        { p: 1.0, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
+      ]
       const BEAT = [[0.21, 0.35], [0.4, 0.54], [0.59, 0.73], [0.78, 0.92]]
 
-      let vw = 0, vh = 0, kFit = 1, mobile = false, targetP = 0, active = -2, raf = 0
+      let vw = 0, vh = 0, kFit = 1, targetP = 0, active = -2, raf = 0
+      let KEYS = KEYS_DESKTOP
       const cur = { fx: 0.5, fy: 0.5, s: 1, ox: 0, oy: 0 }
-      const fit = () => { vw = stage.clientWidth; vh = stage.clientHeight; mobile = vw < 760; kFit = Math.min(vw / NW, vh / NH) }
+      const fit = () => {
+        vw = stage.clientWidth; vh = stage.clientHeight
+        KEYS = vw < 760 ? KEYS_MOBILE : vw < 1100 ? KEYS_TABLET : KEYS_DESKTOP
+        kFit = Math.min(vw / NW, vh / NH)
+      }
       const prog = () => { const r = exp.getBoundingClientRect(); const d = exp.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
       const beatFor = (p: number) => { for (let i = 0; i < BEAT.length; i++) if (p >= BEAT[i][0] && p <= BEAT[i][1]) return i; return -1 }
 
@@ -320,23 +498,19 @@ export default function BoxBitesHello() {
         const k = reduced ? 1 : 0.085
         cur.fx += (tgt.fx - cur.fx) * k; cur.fy += (tgt.fy - cur.fy) * k; cur.s += (tgt.s - cur.s) * k
         cur.ox += (tgt.ox - cur.ox) * k; cur.oy += (tgt.oy - cur.oy) * k
-        const S = kFit * cur.s, ox = mobile ? 0 : cur.ox, oy = mobile ? 0 : cur.oy
-        world.style.transform = `translate(${vw / 2 + ox * vw - cur.fx * NW * S}px, ${vh / 2 + oy * vh - cur.fy * NH * S}px) scale(${S})`
+        const S = kFit * cur.s
+        world.style.transform = `translate(${vw / 2 + cur.ox * vw - cur.fx * NW * S}px, ${vh / 2 + cur.oy * vh - cur.fy * NH * S}px) scale(${S})`
         if (intro) { intro.style.opacity = `${clamp(1 - targetP / 0.13, 0, 1)}`; intro.style.transform = `translateY(${-targetP * 44}px)` }
         if (keep) keep.style.opacity = targetP > 0.03 && targetP < 0.93 ? '0.9' : '0'
         raf = requestAnimationFrame(render)
       }
       const onScroll = () => { targetP = prog(); setBeat(beatFor(targetP)) }
-      const onResize = () => { fit(); onScroll() }
       fit(); onScroll(); render()
       window.addEventListener('scroll', onScroll, { passive: true })
-      window.addEventListener('resize', onResize)
-      window.addEventListener('orientationchange', onResize)
+      makeViewportWatcher(() => { fit(); onScroll() })
       cleanup.push(() => {
         cancelAnimationFrame(raf)
         window.removeEventListener('scroll', onScroll)
-        window.removeEventListener('resize', onResize)
-        window.removeEventListener('orientationchange', onResize)
       })
     })()
 
@@ -366,10 +540,12 @@ export default function BoxBitesHello() {
       ]
       const DROPS = [0.18, 0.32, 0.46, 0.6, 0.74, 0.88]
 
-      let vw = 0, vh = 0, mobile = false, rowY: number[] = [], cardH = 1, targetP = 0, landed = -1, raf = 0
+      let vw = 0, vh = 0, mobile = false, short = false, rowY: number[] = [], cardH = 1, targetP = 0, landed = -1, raf = 0
       const cur = { idx: -1.6, rx: 52, s: 0.8 }
       const measure = () => {
-        vw = tstage.clientWidth; vh = tstage.clientHeight; mobile = vw < 760
+        vw = tstage.clientWidth; vh = tstage.clientHeight
+        mobile = vw < 760
+        short = vh < 560
         cardH = card.offsetHeight
         rowY = rows.map((r) => r.offsetTop + r.offsetHeight / 2)
       }
@@ -417,7 +593,7 @@ export default function BoxBitesHello() {
       }
       const burst = (x: number, y: number) => {
         if (reduced) return
-        const n = 10 + Math.floor(Math.random() * 5)
+        const n = (mobile ? 7 : 10) + Math.floor(Math.random() * (mobile ? 3 : 5))
         for (let i = 0; i < n; i++) {
           const el = document.createElement('span')
           el.className = 'crumb'
@@ -455,7 +631,9 @@ export default function BoxBitesHello() {
         const c = lerpKeys(CAM, targetP, ['rx', 's'])
         const k = reduced ? 1 : 0.1
         cur.idx += (f.idx - cur.idx) * k; cur.rx += (c.rx - cur.rx) * k; cur.s += (c.s - cur.s) * k
-        const s = mobile ? Math.min(cur.s, 1.04) : cur.s
+        /* phones / short landscape: cap the zoom so the card always fits */
+        const sCap = mobile ? 1.04 : short ? 1.0 : Infinity
+        const s = Math.min(cur.s, sCap)
         const rx = mobile ? cur.rx * 0.8 : cur.rx
         const follow = clamp(idxToY(Math.max(cur.idx, 0)) - (rowY[0] || 0), 0, cardH) * 0.62 * (s > 1.1 ? 1 : 0.4)
         card.style.transform = `translateY(${-follow}px) rotateX(${rx}deg) scale(${s})`
@@ -467,7 +645,7 @@ export default function BoxBitesHello() {
         faller.style.transform = `translate(-50%,-50%) translateZ(46px) rotate(${Math.sin(cur.idx * 2.2) * 6}deg) scale(${2 - squash},${squash})`
         if (fshadow) {
           const h = clamp(falling, 0, 1)
-          fshadow.style.top = `${y + (mobile ? 26 : 34)}px`
+          fshadow.style.top = `${y + (mobile ? 24 : 34)}px`
           fshadow.style.transform = `translateX(-50%) scale(${1 + h * 0.7})`
           fshadow.style.opacity = `${clamp((targetP - 0.08) / 0.05, 0, 1) * (0.85 - h * 0.45)}`
         }
@@ -479,16 +657,17 @@ export default function BoxBitesHello() {
         raf = requestAnimationFrame(render)
       }
       const onScroll = () => { targetP = prog(); setLanded(landedFor(targetP)) }
-      const onResize = () => { measure(); onScroll() }
       measure(); onScroll(); render()
+      /* row positions depend on the loaded web fonts — re-measure once they
+         arrive, otherwise the biscuit lands between rows on first paint */
+      if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+        ;(document as any).fonts.ready.then(() => { measure(); onScroll() }).catch(() => {})
+      }
       window.addEventListener('scroll', onScroll, { passive: true })
-      window.addEventListener('resize', onResize)
-      window.addEventListener('orientationchange', onResize)
+      makeViewportWatcher(() => { measure(); onScroll() })
       cleanup.push(() => {
         cancelAnimationFrame(raf)
         window.removeEventListener('scroll', onScroll)
-        window.removeEventListener('resize', onResize)
-        window.removeEventListener('orientationchange', onResize)
       })
     })()
 
@@ -532,11 +711,12 @@ export default function BoxBitesHello() {
 
       /* free-fall shaft particles: vertical speed-lines hugging the LEFT and
          RIGHT edges (rushing up past you as you drop), plus a few faint motes
-         in the middle for depth. No product images repeat here. */
+         in the middle for depth. Particle count scales down on phones. */
       type Star = { el: HTMLElement; fx: number; fy: number; depth: number; tw: number; ph: number; streak: boolean }
       const stars: Star[] = []
-      const N_LINES = reduced ? 10 : 34
-      const N_DOTS = reduced ? 4 : 14
+      const isSmall = window.innerWidth < 760
+      const N_LINES = reduced ? 10 : isSmall ? 20 : 34
+      const N_DOTS = reduced ? 4 : isSmall ? 8 : 14
       for (let i = 0; i < N_LINES + N_DOTS; i++) {
         const streak = i < N_LINES
         const el = document.createElement('div')
@@ -591,8 +771,11 @@ export default function BoxBitesHello() {
         cur.rx += (d.rx - cur.rx) * k; cur.s += (d.s - cur.s) * k; cur.ty += (d.ty - cur.ty) * k
         cur.mo += (mo.o - cur.mo) * k; cur.ms += (ms.m - cur.ms) * k
 
+        /* the dive ty keys were tuned for tall viewports — scale them so the
+           plunge depth tracks the actual stage height on phones/landscape */
+        const tyScale = clamp(vh / 800, 0.6, 1)
         const bob = reduced || p > 0.1 ? 0 : Math.sin(Date.now() / 1400) * 6
-        pouch3d.style.transform = `translateY(${cur.ty + bob}px) rotateX(${reduced ? 0 : cur.rx}deg) scale(${reduced ? 1 : cur.s})`
+        pouch3d.style.transform = `translateY(${cur.ty * tyScale + bob}px) rotateX(${reduced ? 0 : cur.rx}deg) scale(${reduced ? 1 : cur.s})`
         if (mouth) {
           mouth.style.opacity = `${cur.mo}`
           mouth.style.transform = `translate(-50%,-50%) scale(${cur.ms})`
@@ -638,16 +821,12 @@ export default function BoxBitesHello() {
         raf = requestAnimationFrame(render)
       }
       const onScroll = () => { targetP = prog(); update(targetP) }
-      const onResize = () => { fit(); onScroll() }
       fit(); onScroll(); render()
       window.addEventListener('scroll', onScroll, { passive: true })
-      window.addEventListener('resize', onResize)
-      window.addEventListener('orientationchange', onResize)
+      makeViewportWatcher(() => { fit(); onScroll() })
       cleanup.push(() => {
         cancelAnimationFrame(raf)
         window.removeEventListener('scroll', onScroll)
-        window.removeEventListener('resize', onResize)
-        window.removeEventListener('orientationchange', onResize)
       })
     })()
 
