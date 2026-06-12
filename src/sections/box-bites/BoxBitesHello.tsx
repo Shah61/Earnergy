@@ -34,7 +34,6 @@ const BITE = '/boxbite.png'
 const OAT = '/oat.png'
 const CHOC = '/chocolate.png'
 const HOODIA = '/hoodia.png'
-const POUCH = '/box-bites-pouch.png'
 const BB_BG = '/background2.png'
 
 const css = `
@@ -147,27 +146,16 @@ const css = `
 .bb-story .shead h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(24px,4.6vw,48px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
 .bb-story .shead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,3vw,30px);color:var(--forest-2);margin-top:6px}
 
-/* camera sits ABOVE the pouch: perspective-origin is pushed to the very top so
-   when the pouch lies back (negative rotateX) we look DOWN into the opening */
-.bb-story .divewrap{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
-  perspective:1150px;perspective-origin:50% 6%;will-change:opacity}
-.bb-story .pouch3d{position:relative;transform-style:preserve-3d;transform-origin:50% 9%;will-change:transform}
-.bb-story .pouch3d>img{display:block;height:min(58vh,560px);max-width:84vw;width:auto;object-fit:contain;filter:drop-shadow(0 30px 34px rgba(20,46,16,.42))}
-.bb-story .mouth{position:absolute;left:50%;top:6%;width:74%;aspect-ratio:2.5/1;transform:translate(-50%,-50%) scale(.6);
-  border-radius:50%;opacity:0;will-change:opacity,transform;
-  background:radial-gradient(62% 105% at 50% 40%, #3d2715 0%, #221307 55%, #100902 100%);
-  box-shadow:inset 0 8px 16px rgba(0,0,0,.6), 0 0 0 4px rgba(255,255,255,.2), 0 -4px 12px rgba(255,255,255,.16)}
-
-.bb-story .inside{position:absolute;inset:0;z-index:5;opacity:0;pointer-events:none;will-change:opacity,transform;
-  background:radial-gradient(95% 85% at 50% 44%, #36220f 0%, #251407 48%, #110a04 100%)}
-.bb-story .inside::before{content:"";position:absolute;inset:0;background:radial-gradient(46% 38% at 50% 42%, rgba(245,197,24,.10), transparent 70%)}
-.bb-story .inside::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%)}
-.bb-story .tunnel{position:absolute;inset:0;overflow:hidden}
-.bb-story .star{position:absolute;left:0;top:0;border-radius:50%;will-change:transform,opacity;
-  background:radial-gradient(circle at 38% 32%, #fff7df 0%, #f5c518 55%, rgba(245,197,24,0) 100%)}
-.bb-story .star.warm{background:radial-gradient(circle at 38% 32%, #ffe9c9 0%, #c9a25e 55%, rgba(201,162,94,0) 100%)}
-.bb-story .streak{position:absolute;left:0;top:0;border-radius:3px;will-change:transform,opacity;
-  background:linear-gradient(to bottom, rgba(255,243,210,0) 0%, rgba(255,243,210,.85) 45%, rgba(255,243,210,.85) 55%, rgba(255,243,210,0) 100%)}
+/* cinematic frame-scrub canvas — an AI-rendered dive into the pouch, scrubbed
+   by scroll. The canvas fills the stage; frames are drawn cover-fit. */
+.bb-story .scrubwrap{position:absolute;inset:0;z-index:3;will-change:opacity;background:#0d2a12}
+.bb-story .scrubwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bb-story .scrubvignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 95% at 50% 45%, transparent 58%, rgba(8,20,8,.55) 100%)}
+.bb-story .scrubload{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);transition:opacity .4s ease}
+.bb-story .scrubload.off{opacity:0}
 
 .bb-story .insidehead{position:absolute;z-index:7;top:calc(clamp(16px,4vh,42px) + var(--safe-t));left:0;right:0;text-align:center;opacity:0;will-change:opacity;pointer-events:none;padding:0 16px}
 .bb-story .insidehead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#f5c518}
@@ -185,13 +173,6 @@ const css = `
 .bb-story .drop .sub{margin-top:12px;font-family:"Caveat",cursive;font-weight:700;font-size:clamp(17px,2.8vw,28px);color:#f5c518;
   opacity:0;transition:opacity .45s ease .15s}
 .bb-story .drop.show .sub{opacity:1}
-
-/* exit: gentle fade back out — pouch returns front-on, centered */
-.bb-story .exitwrap{position:absolute;inset:0;z-index:6;opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center;will-change:opacity}
-.bb-story .pouchmini{will-change:transform}
-.bb-story .pouchmini img{display:block;height:min(48vh,440px);max-width:78vw;width:auto;object-fit:contain;filter:drop-shadow(0 26px 30px rgba(20,46,16,.42))}
-.bb-story .pouchmini img.pulse{animation:bb-ppulse .6s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes bb-ppulse{0%{transform:scale(1)}40%{transform:scale(1.05)}70%{transform:scale(.985)}100%{transform:scale(1)}}
 
 .bb-story .stamp{position:absolute;z-index:8;left:calc(50% + clamp(80px,12vw,170px));top:21%;width:168px;height:168px;border-radius:50%;
   background:var(--forest-2);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
@@ -264,7 +245,6 @@ const css = `
   .bb-story .row:last-child{border-radius:0 0 18px 18px}
   .bb-story .thead-overlay h2{font-size:clamp(24px,6.4vw,34px)}
 
-  .bb-story .pouch3d>img{height:min(46vh,420px)}
   .bb-story .drop .t{font-size:clamp(30px,9.4vw,46px)}
   .bb-story .drop .t.small{font-size:clamp(20px,6vw,30px)}
   .bb-story .stamp{width:118px;height:118px;left:auto;right:max(12px,var(--safe-r));top:max(13%,calc(64px + var(--safe-t)))}
@@ -272,7 +252,6 @@ const css = `
   .bb-story .stamp .s1{font-size:10px}
   .bb-story .stamp .s3{font-size:14px}
   .bb-story .shead .script{display:none}
-  .bb-story .pouchmini img{height:min(42vh,380px)}
   .bb-story .benefits .powered{font-size:15px}
   .bb-story .bchip{font-size:9.5px;padding:6px 10px;letter-spacing:.12em}
   .bb-story .benefits .rowc{gap:7px}
@@ -331,8 +310,6 @@ const css = `
   .bb-story .shead{top:calc(8px + var(--safe-t))}
   .bb-story .shead h2{font-size:20px;margin-top:4px}
   .bb-story .shead .script{display:none}
-  .bb-story .pouch3d>img{height:min(62vh,300px)}
-  .bb-story .pouchmini img{height:min(56vh,260px)}
   .bb-story .insidehead{top:calc(8px + var(--safe-t))}
   .bb-story .insidehead .script{font-size:16px}
   .bb-story .drop .t{font-size:clamp(24px,5vw,34px)}
@@ -671,80 +648,83 @@ export default function BoxBitesHello() {
       })
     })()
 
-    /* ================= ACT 3: dive into the pouch ================= */
+    /* ================= ACT 3: dive into the pouch (frame-scrub) ================= */
     ;(() => {
       const sz = $('bb-sz'); if (!sz) return
       const sstage = sz.querySelector('.sstage') as HTMLElement
       const shead = $('bb-shead') as HTMLElement
-      const divewrap = $('bb-divewrap') as HTMLElement
-      const pouch3d = $('bb-pouch3d') as HTMLElement
-      const mouth = $('bb-mouth') as HTMLElement
-      const inside = $('bb-inside') as HTMLElement
-      const tunnel = $('bb-tunnel') as HTMLElement
+      const canvas = $('bb-scrub') as HTMLCanvasElement
+      const loadEl = $('bb-scrubload') as HTMLElement
       const insidehead = $('bb-insidehead') as HTMLElement
       const drops = [1, 2, 3, 4, 5, 6, 7].map((i) => $(`bb-drop${i}`)).filter(Boolean) as HTMLElement[]
-      const exitwrap = $('bb-exitwrap') as HTMLElement
-      const pouchMini = exitwrap?.querySelector('.pouchmini') as HTMLElement
-      const pouchMiniImg = pouchMini?.querySelector('img') as HTMLImageElement
       const stamp = $('bb-stamp') as HTMLElement
       const benefits = $('bb-benefits') as HTMLElement
-      if (!sstage || !divewrap || !pouch3d || !inside || !tunnel) return
+      if (!sstage || !canvas) return
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
 
-      /* dive camera: the perspective-origin sits at the very TOP of the stage,
-         so the eye is ABOVE the pouch. Negative rotateX lays the pouch onto its
-         back (body recedes away/down) and we look DOWN into the opening, then
-         plunge through it. */
-      const DIVE = [
-        { p: 0.0, rx: 0, s: 1.0, ty: 0 },
-        { p: 0.1, rx: -10, s: 1.06, ty: 10 },
-        { p: 0.2, rx: -52, s: 2.2, ty: 56 },
-        { p: 0.3, rx: -76, s: 4.8, ty: 130 },
+      /* two AI-rendered clips, played back-to-back by scroll progress:
+         dive  — camera plunges down into the open pouch
+         reveal — cookies and ingredients float up out of the pouch */
+      const SEQS = [
+        { dir: 'dive', count: 181, from: 0.0, to: 0.62 },
+        { dir: 'reveal', count: 181, from: 0.62, to: 1.0 },
       ]
-      const MOUTH_O = [{ p: 0.1, o: 0 }, { p: 0.17, o: 1 }]
-      const MOUTH_S = [{ p: 0.1, m: 0.55 }, { p: 0.3, m: 2.3 }]
-      /* seven free-fall text beats inside the shaft */
-      const FEATW = Array.from({ length: 7 }, (_, i) => {
-        const s = 0.335 + i * 0.069
-        return [s, s + 0.057] as [number, number]
-      })
-      const STAMP_P = 0.9, BENE_P = 0.93
-
-      /* free-fall shaft particles: vertical speed-lines hugging the LEFT and
-         RIGHT edges (rushing up past you as you drop), plus a few faint motes
-         in the middle for depth. Particle count scales down on phones. */
-      type Star = { el: HTMLElement; fx: number; fy: number; depth: number; tw: number; ph: number; streak: boolean }
-      const stars: Star[] = []
-      const isSmall = window.innerWidth < 760
-      const N_LINES = reduced ? 10 : isSmall ? 20 : 34
-      const N_DOTS = reduced ? 4 : isSmall ? 8 : 14
-      for (let i = 0; i < N_LINES + N_DOTS; i++) {
-        const streak = i < N_LINES
-        const el = document.createElement('div')
-        const depth = 0.4 + Math.random() * 0.6
-        let fx: number
-        if (streak) {
-          el.className = 'streak'
-          el.style.height = `${90 + Math.random() * 170}px`
-          el.style.width = `${1.5 + depth * 2.2}px`
-          /* hug the sides: 0–22% or 78–100% of the width */
-          fx = Math.random() < 0.5 ? Math.random() * 0.22 : 0.78 + Math.random() * 0.22
-        } else {
-          el.className = Math.random() < 0.5 ? 'star warm' : 'star'
-          const szp = (1.4 + Math.random() * 3) * depth
-          el.style.width = `${szp}px`
-          el.style.height = `${szp}px`
-          fx = 0.25 + Math.random() * 0.5
+      const frames: HTMLImageElement[][] = SEQS.map(() => [])
+      let loaded = 0
+      const total = SEQS.reduce((a, s) => a + s.count, 0)
+      let firstPainted = false
+      SEQS.forEach((s, si) => {
+        for (let i = 0; i < s.count; i++) {
+          const im = new Image()
+          im.src = `/frames/${s.dir}/frame_${String(i + 1).padStart(4, '0')}.jpg`
+          im.onload = () => {
+            loaded++
+            if (loadEl) {
+              loadEl.textContent = `Loading ${Math.round((loaded / total) * 100)}%`
+              if (loaded >= total) loadEl.classList.add('off')
+            }
+            if (!firstPainted && si === 0 && i === 0) { firstPainted = true; draw(0, 0) }
+          }
+          frames[si][i] = im
         }
-        el.style.opacity = '0'
-        tunnel.appendChild(el)
-        stars.push({ el, fx, fy: Math.random(), depth, tw: 2 + Math.random() * 4, ph: Math.random() * Math.PI * 2, streak })
-      }
-      cleanup.push(() => { stars.forEach((s) => s.el.remove()) })
+      })
 
-      let vw = 0, vh = 0, targetP = 0, raf = 0, activeDrop = -1, exited = false
-      const cur = { rx: 0, s: 1, ty: 0, mo: 0, ms: 0.55 }
-      const fit = () => { vw = sstage.clientWidth; vh = sstage.clientHeight }
+      let vw = 0, vh = 0, dpr = 1, targetP = 0, raf = 0, activeDrop = -1
+      let lastSeq = -1, lastFrame = -1
+      const fit = () => {
+        vw = sstage.clientWidth; vh = sstage.clientHeight
+        dpr = Math.min(window.devicePixelRatio || 1, 2)
+        canvas.width = Math.round(vw * dpr)
+        canvas.height = Math.round(vh * dpr)
+        lastSeq = -1; lastFrame = -1
+      }
       const prog = () => { const r = sz.getBoundingClientRect(); const d = sz.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
+
+      const draw = (si: number, fi: number) => {
+        const im = frames[si]?.[fi]
+        if (!im || !im.complete || !im.naturalWidth) return
+        const cw = canvas.width, ch = canvas.height
+        const s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight)
+        const dw = im.naturalWidth * s, dh = im.naturalHeight * s
+        ctx.drawImage(im, (cw - dw) / 2, (ch - dh) / 2, dw, dh)
+        lastSeq = si; lastFrame = fi
+      }
+      const paint = (p: number) => {
+        let si = 0
+        for (let i = 0; i < SEQS.length; i++) if (p >= SEQS[i].from) si = i
+        const s = SEQS[si]
+        const local = clamp((p - s.from) / (s.to - s.from || 1), 0, 1)
+        const fi = Math.min(s.count - 1, Math.floor(local * s.count))
+        if (si !== lastSeq || fi !== lastFrame) draw(si, fi)
+      }
+
+      /* overlay copy beats — seven benefit drops while diving, offer at the end */
+      const FEATW = Array.from({ length: 7 }, (_, i) => {
+        const st = 0.14 + i * 0.066
+        return [st, st + 0.054] as [number, number]
+      })
+      const STAMP_P = 0.88, BENE_P = 0.92
       const dropFor = (p: number) => { for (let i = 0; i < FEATW.length; i++) if (p >= FEATW[i][0] && p <= FEATW[i][1]) return i; return -1 }
 
       const update = (p: number) => {
@@ -755,71 +735,15 @@ export default function BoxBitesHello() {
         }
         stamp?.classList.toggle('show', p >= STAMP_P)
         benefits?.classList.toggle('show', p >= BENE_P)
-        if (p >= 0.86 && !exited) {
-          exited = true
-          if (pouchMiniImg && !reduced) { pouchMiniImg.classList.remove('pulse'); void pouchMiniImg.offsetWidth; pouchMiniImg.classList.add('pulse') }
-        }
-        if (p < 0.84) exited = false
+        if (shead) shead.style.opacity = `${clamp(1 - p / 0.08, 0, 1)}`
+        if (insidehead) insidehead.style.opacity = `${clamp((p - 0.3) / 0.04, 0, 1) * clamp(1 - (p - 0.56) / 0.05, 0, 1)}`
       }
 
       const render = () => {
-        const p = targetP
-        const k = reduced ? 1 : 0.09
-        const d = lerpKeys(DIVE, p, ['rx', 's', 'ty'])
-        const mo = lerpKeys(MOUTH_O, p, ['o'])
-        const ms = lerpKeys(MOUTH_S, p, ['m'])
-        cur.rx += (d.rx - cur.rx) * k; cur.s += (d.s - cur.s) * k; cur.ty += (d.ty - cur.ty) * k
-        cur.mo += (mo.o - cur.mo) * k; cur.ms += (ms.m - cur.ms) * k
-
-        /* the dive ty keys were tuned for tall viewports — scale them so the
-           plunge depth tracks the actual stage height on phones/landscape */
-        const tyScale = clamp(vh / 800, 0.6, 1)
-        const bob = reduced || p > 0.1 ? 0 : Math.sin(Date.now() / 1400) * 6
-        pouch3d.style.transform = `translateY(${cur.ty * tyScale + bob}px) rotateX(${reduced ? 0 : cur.rx}deg) scale(${reduced ? 1 : cur.s})`
-        if (mouth) {
-          mouth.style.opacity = `${cur.mo}`
-          mouth.style.transform = `translate(-50%,-50%) scale(${cur.ms})`
-        }
-
-        /* layer crossfades */
-        const diveO = clamp(1 - (p - 0.27) / 0.06, 0, 1)
-        divewrap.style.opacity = `${diveO}`
-        const inO = clamp((p - 0.27) / 0.06, 0, 1) * clamp(1 - (p - 0.83) / 0.045, 0, 1)
-        inside.style.opacity = `${inO}`
-        inside.style.transform = `scale(${1.16 - clamp((p - 0.27) / 0.08, 0, 1) * 0.16})`
-        if (insidehead) insidehead.style.opacity = `${clamp((p - 0.33) / 0.04, 0, 1) * clamp(1 - (p - 0.78) / 0.05, 0, 1)}`
-        if (shead) shead.style.opacity = `${clamp(p / 0.03, 0, 1) * clamp(1 - (p - 0.09) / 0.07, 0, 1)}`
-
-        /* exit: simple, clean — fade the pouch back in with a soft settle */
-        if (exitwrap) {
-          const eo = clamp((p - 0.845) / 0.045, 0, 1)
-          exitwrap.style.opacity = `${eo}`
-          if (pouchMini && !reduced) pouchMini.style.transform = `translateY(${(1 - eo) * 18}px) scale(${0.94 + eo * 0.06})`
-        }
-
-        /* free-fall shaft — you're dropping fast, so the side lines stream UP
-           past the camera. Scroll drives descent; a time drift keeps motion
-           alive between scrolls. */
-        if (inO > 0.02) {
-          const H = vh + 220
-          const drift = reduced ? 0 : Date.now() * 0.11
-          const fall = p * 2600 + drift
-          for (const s of stars) {
-            const speed = s.streak ? 0.9 + s.depth * 1.7 : s.depth * 0.8
-            let y = (s.fy * H - fall * speed) % H
-            if (y < 0) y += H
-            y -= 110
-            const tw = s.streak ? 1 : 0.7 + 0.3 * Math.sin(drift * 0.02 * s.tw + s.ph)
-            const x = s.fx * vw
-            s.el.style.transform = `translate(${x}px, ${y}px)`
-            s.el.style.opacity = `${inO * (s.streak ? 0.35 + 0.55 * s.depth : 0.25 + 0.5 * s.depth) * tw}`
-          }
-        } else {
-          for (const s of stars) s.el.style.opacity = '0'
-        }
-
+        paint(targetP)
         raf = requestAnimationFrame(render)
       }
+
       const onScroll = () => { targetP = prog(); update(targetP) }
       fit(); onScroll(); render()
       window.addEventListener('scroll', onScroll, { passive: true })
@@ -938,17 +862,11 @@ export default function BoxBitesHello() {
             <div className="script">scroll to open it up</div>
           </div>
 
-          {/* phase A: camera rises above, pouch lies back, opens, we plunge in */}
-          <div className="divewrap" id="bb-divewrap">
-            <div className="pouch3d" id="bb-pouch3d">
-              <img src={POUCH} alt="Box Bites pouch by Earnergy" />
-              <div className="mouth" id="bb-mouth" aria-hidden="true"></div>
-            </div>
-          </div>
-
-          {/* phase B: free-falling down the shaft */}
-          <div className="inside" id="bb-inside" aria-hidden="true">
-            <div className="tunnel" id="bb-tunnel"></div>
+          {/* cinematic AI frame-scrub: dive into the pouch, then the reveal */}
+          <div className="scrubwrap">
+            <canvas id="bb-scrub" aria-label="Camera diving inside the Box Bites pouch" />
+            <div className="scrubvignette" aria-hidden="true"></div>
+            <div className="scrubload" id="bb-scrubload">Loading</div>
           </div>
 
           <div className="insidehead" id="bb-insidehead">
@@ -967,10 +885,6 @@ export default function BoxBitesHello() {
             <div className="sub">almost at the bottom…</div>
           </div>
 
-          {/* phase C: clean exit — pouch fades back in, then the offer */}
-          <div className="exitwrap" id="bb-exitwrap">
-            <div className="pouchmini"><img src={POUCH} alt="" /></div>
-          </div>
           <div className="stamp" id="bb-stamp">
             <span className="s1">2 PACK</span>
             <span className="s2">RM&nbsp;30</span>
