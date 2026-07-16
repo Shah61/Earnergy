@@ -27,7 +27,7 @@ const css = `
 }
 .ks-root *{box-sizing:border-box;margin:0;padding:0}
 
-.ks-zone{position:relative;height:900vh}
+.ks-zone{position:relative;height:1200vh}
 .ks-stage{position:relative;height:100svh;width:100%;overflow:hidden;background:var(--cream);cursor:pointer}
 .ks-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:60;
   background:radial-gradient(80% 72% at 50% 50%, transparent 60%, rgba(20,10,4,.26) 100%)}
@@ -170,7 +170,9 @@ export default function KofeHello() {
         targetP = progress()
       }
       /* lower smoothing = slower, calmer glide between stories */
-      const p = targetP, k = reduced ? 1 : 0.055
+      // Tune these two values to make the story feel slower/more readable.
+      const STORY_MOTION_K = reduced ? 1 : 0.03
+      const p = targetP, k = STORY_MOTION_K
       const t = reduced ? 0 : Date.now()
 
       /* phase 1: pan cup from start of K through to é */
@@ -237,10 +239,10 @@ export default function KofeHello() {
       const next = snaps.find((s) => s > p + 0.012)
       const lenis = getLenis()
       if (next !== undefined) {
-        lenis?.scrollTo(zoneStart + next * scrollRange(), { duration: 1.6 })
+        lenis?.scrollTo(zoneStart + next * scrollRange(), { duration: 2.4 })
       } else {
         /* past the last story — move on to the next page */
-        lenis?.scrollTo(zoneStart + scrollRange() + vh * 0.9, { duration: 1.4 })
+        lenis?.scrollTo(zoneStart + scrollRange() + vh * 0.9, { duration: 2.0 })
       }
     }
     stage.addEventListener('click', onTap)
