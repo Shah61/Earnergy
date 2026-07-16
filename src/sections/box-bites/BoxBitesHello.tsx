@@ -29,6 +29,7 @@
  */
 
 import { useEffect } from 'react'
+import { getLenis } from '@/hooks/useLenis'
 
 const BITE = '/boxbite.png'
 const OAT = '/oat.png'
@@ -57,7 +58,7 @@ const css = `
 .bb-story h1,.bb-story h2{text-wrap:balance}
 
 /* ================= ACT 1: constellation ================= */
-.bb-story .experience{position:relative;height:840vh}
+.bb-story .experience{position:relative;height:200vh}
 .bb-story .stage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;
   background:var(--bb-page-bg) center/cover no-repeat}
 .bb-story .stage-inner{position:absolute;inset:0;animation:bb-enter 1.05s ease both}
@@ -68,7 +69,16 @@ const css = `
 .bb-story .links path{fill:none;stroke:var(--white);stroke-width:2.6;opacity:.82;stroke-linecap:round;stroke-dasharray:9 11;animation:bb-flow 1.6s linear infinite}
 @keyframes bb-flow{to{stroke-dashoffset:-40}}
 
-.bb-story .node{position:absolute;transform:translate(-50%,-50%)}
+.bb-story .node{position:absolute;transform:translate(-50%,-50%);transition:opacity .45s ease}
+.bb-story .node.disc{cursor:pointer}
+.bb-story .node.disc .floatwrap{transition:filter .3s ease}
+.bb-story .node.disc:hover .floatwrap{filter:brightness(1.08)}
+/* while an ingredient is focused, everything else fades so its caption is
+   never covered by other artwork */
+.bb-story .world .links{transition:opacity .45s ease}
+.bb-story .world.focused .node{opacity:.1}
+.bb-story .world.focused .node.active{opacity:1}
+.bb-story .world.focused .links{opacity:.12}
 .bb-story .floatwrap{animation:bb-floatidle 6s ease-in-out infinite alternate}
 .bb-story .cut{display:block;width:100%;height:auto;transform-origin:center;filter:drop-shadow(0 22px 26px rgba(22,50,16,.4))}
 .bb-story .cut.pop{animation:bb-pop .72s cubic-bezier(.2,.9,.3,1.2)}
@@ -104,16 +114,22 @@ const css = `
 .bb-story .cap.center .kicker{justify-content:center}
 .bb-story .cap.center .type{margin-left:auto;margin-right:auto}
 
-.bb-story .rail{position:absolute;z-index:8;left:calc(clamp(18px,3vw,34px) + var(--safe-l));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px}
-.bb-story .rail .seg{width:2px;height:34px;background:rgba(16,40,20,.3);border-radius:2px;overflow:hidden;position:relative}
-.bb-story .rail .seg i{position:absolute;inset:0;background:var(--white);transform:scaleY(0);transform-origin:top;transition:transform .35s ease;border-radius:2px}
-.bb-story .rail .seg.on i{transform:scaleY(1)}
 .bb-story .keepscroll{position:absolute;z-index:8;bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));right:calc(clamp(16px,5vw,46px) + var(--safe-r));font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:rgba(16,40,20,.74);opacity:0;transition:opacity .5s ease}
+.bb-story .taphint{position:absolute;z-index:8;left:50%;bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));transform:translateX(-50%);
+  font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest-2);
+  background:rgba(255,255,255,.6);backdrop-filter:blur(5px);padding:9px 16px;border-radius:999px;border:1px solid rgba(16,66,30,.16);
+  opacity:0;transition:opacity .5s ease;pointer-events:none;white-space:nowrap}
 
 /* ================= ACT 2: 3D nutrition table ================= */
-.bb-story .tablezone{position:relative;height:720vh}
+.bb-story .tablezone{position:relative;height:100svh}
 .bb-story .tstage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:var(--bb-page-bg) center/cover no-repeat}
+  background:var(--bb-page-bg) center/cover no-repeat;cursor:pointer}
+.bb-story .thint{position:absolute;z-index:9;left:50%;bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));transform:translateX(-50%);
+  font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest-2);
+  background:rgba(255,255,255,.6);backdrop-filter:blur(5px);padding:9px 16px;border-radius:999px;border:1px solid rgba(16,66,30,.16);
+  transition:opacity .4s ease;pointer-events:none;white-space:nowrap;animation:bb-hintpulse 2.2s ease-in-out infinite}
+.bb-story .thint.off{opacity:0;animation:none}
+@keyframes bb-hintpulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.05)}}
 .bb-story .thead-overlay{position:absolute;z-index:8;top:calc(clamp(20px,5vh,52px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity,transform;padding:0 16px}
 .bb-story .thead-overlay .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
 .bb-story .thead-overlay h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(26px,5.4vw,54px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
@@ -123,12 +139,14 @@ const css = `
 .bb-story .card3d .chead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:clamp(12px,1.8vh,16px) clamp(16px,3.4vw,26px) clamp(10px,1.6vh,14px);border-bottom:3px solid var(--forest-2)}
 .bb-story .card3d .chead .t{font-weight:800;font-size:clamp(16px,2.6vw,24px);color:var(--forest-2)}
 .bb-story .card3d .chead .u{font-weight:800;font-size:clamp(12px,1.8vw,16px);color:var(--forest-2);white-space:nowrap}
-.bb-story .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:clamp(11px,2.1vh,19px) clamp(16px,3.4vw,26px);border-bottom:1.5px solid rgba(16,66,30,.18);transition:background .35s ease}
+.bb-story .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:clamp(11px,2.1vh,19px) clamp(16px,3.4vw,26px);border-bottom:1.5px solid rgba(16,66,30,.18);
+  opacity:.28;transition:background .35s ease,opacity .5s ease}
 .bb-story .row:last-child{border-bottom:none;border-radius:0 0 22px 22px}
 .bb-story .row .lab{font-weight:600;font-size:clamp(14px,2vw,19px);color:var(--forest-2)}
 .bb-story .row .val{font-weight:700;font-size:clamp(14px,2vw,19px);color:var(--forest-2);font-variant-numeric:tabular-nums;white-space:nowrap}
 .bb-story .row.on{background:rgba(116,193,87,.18)}
 .bb-story .row.on .lab{font-weight:800}
+.bb-story .row.done{opacity:1}
 .bb-story .row.done .val{color:var(--forest)}
 .bb-story .faller{position:absolute;left:50%;top:0;width:clamp(48px,9vw,74px);z-index:4;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 14px 14px rgba(20,46,16,.38))}
 .bb-story .fshadow{position:absolute;left:50%;width:clamp(42px,8vw,64px);height:12px;border-radius:50%;background:rgba(16,50,18,.3);z-index:3;pointer-events:none;will-change:transform,opacity;filter:blur(3px)}
@@ -137,9 +155,25 @@ const css = `
 .bb-story .crumb{position:absolute;z-index:5;pointer-events:none;border-radius:46% 54% 58% 42%/50% 44% 56% 50%;will-change:transform,opacity;box-shadow:0 1px 2px rgba(20,46,16,.3)}
 
 /* ================= ACT 3: dive into the pouch ================= */
-.bb-story .smartzone{position:relative;height:920vh}
+/* stays a single screen until the user clicks "Dive in" — then the runway
+   expands and scrolling scrubs the frames like before */
+.bb-story .smartzone{position:relative;height:100svh}
+.bb-story .smartzone.diving{height:920vh}
 .bb-story .sstage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;
   background:var(--bb-page-bg) center/cover no-repeat}
+.bb-story .divebtn{position:absolute;z-index:9;left:50%;bottom:calc(clamp(56px,11vh,110px) + var(--safe-b));transform:translateX(-50%);
+  font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--forest-2);
+  background:#f5c518;border:none;border-radius:999px;padding:14px 26px;cursor:pointer;
+  box-shadow:0 16px 34px rgba(16,40,18,.35);transition:opacity .4s ease,transform .2s ease;animation:bb-hintpulse 2.4s ease-in-out infinite}
+.bb-story .divebtn:hover{transform:translateX(-50%) scale(1.05)}
+.bb-story .divebtn.off{opacity:0;pointer-events:none;animation:none}
+/* escape hatch while diving — jumps back out and frees the scroll */
+.bb-story .diveoutbtn{position:fixed;z-index:40;right:calc(clamp(16px,3vw,34px) + var(--safe-r));bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));
+  font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--box-cream,#fff);
+  background:rgba(16,40,20,.55);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:11px 18px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .4s ease}
+.bb-story .diveoutbtn.show{opacity:1;pointer-events:auto}
+.bb-story .diveoutbtn:hover{background:rgba(16,40,20,.75)}
 
 .bb-story .shead{position:absolute;z-index:8;top:calc(clamp(18px,4.5vh,48px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity;padding:0 16px}
 .bb-story .shead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
@@ -223,9 +257,10 @@ const css = `
 
 /* ============ PHONE ============ */
 @media (max-width:760px){
-  .bb-story .experience{height:620vh}
-  .bb-story .tablezone{height:520vh}
-  .bb-story .smartzone{height:680vh}
+  .bb-story .experience{height:200vh}
+  .bb-story .tablezone{height:100svh}
+  .bb-story .smartzone{height:100svh}
+  .bb-story .smartzone.diving{height:680vh}
 
   .bb-story .intro{padding-bottom:clamp(48px,9vh,72px)}
   .bb-story .intro p{max-width:38ch}
@@ -237,8 +272,8 @@ const css = `
   .bb-story .cap h2{font-size:clamp(24px,7vw,32px);margin-bottom:10px}
   .bb-story .cap .kicker{margin-bottom:8px;font-size:11px}
   .bb-story .cap .type{min-height:6.8em;font-size:13px;line-height:1.6;max-width:none}
-  .bb-story .rail{display:none}
   .bb-story .keepscroll{font-size:9px;letter-spacing:.22em}
+  .bb-story .taphint,.bb-story .thint{font-size:10px;padding:7px 12px}
 
   .bb-story .persp{perspective:980px;perspective-origin:50% 34%;width:min(440px,94vw)}
   .bb-story .card3d{border-radius:18px}
@@ -251,7 +286,7 @@ const css = `
   .bb-story .stamp .s2{font-size:30px}
   .bb-story .stamp .s1{font-size:10px}
   .bb-story .stamp .s3{font-size:14px}
-  .bb-story .shead .script{display:none}
+  .bb-story .shead .script{font-size:15px}
   .bb-story .benefits .powered{font-size:15px}
   .bb-story .bchip{font-size:9.5px;padding:6px 10px;letter-spacing:.12em}
   .bb-story .benefits .rowc{gap:7px}
@@ -337,19 +372,6 @@ export default function BoxBitesHello() {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b)
     const smooth = (t: number) => t * t * (3 - 2 * t)
-    const lerpKeys = (keys: any[], p: number, fields: string[]) => {
-      let a = keys[0]
-      let b = keys[keys.length - 1]
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (p >= keys[i].p && p <= keys[i + 1].p) { a = keys[i]; b = keys[i + 1]; break }
-      }
-      if (p <= keys[0].p) { a = keys[0]; b = keys[0] }
-      const span = b.p - a.p || 1
-      const t = smooth(clamp((p - a.p) / span, 0, 1))
-      const out: Record<string, number> = {}
-      fields.forEach((f) => { out[f] = a[f] + (b[f] - a[f]) * t })
-      return out
-    }
     const cleanup: Array<() => void> = []
     const $ = (id: string) => document.getElementById(id)
 
@@ -387,65 +409,64 @@ export default function BoxBitesHello() {
       const world = $('bb-world') as HTMLElement
       const intro = $('bb-intro') as HTMLElement
       const caps = Array.from(exp.querySelectorAll('.cap')) as HTMLElement[]
-      const segs = Array.from(exp.querySelectorAll('.rail .seg')) as HTMLElement[]
       const keep = $('bb-keepscroll') as HTMLElement
+      const taphint = $('bb-taphint') as HTMLElement
       if (!stage || !world) return
 
       const NW = 1600, NH = 1000
-      const imgs = ['bb-nodeProduct', 'bb-nodeOat', 'bb-nodeChoc', 'bb-nodeHoodia']
-        .map((id) => $(id)?.querySelector('.cut'))
+      const nodes = ['bb-nodeOat', 'bb-nodeChoc', 'bb-nodeHoodia']
+        .map((id) => $(id))
         .filter(Boolean) as HTMLElement[]
+      const imgs = nodes.map((n) => n.querySelector('.cut')) as HTMLElement[]
       const DESC = [
-        'Hearty rolled oats, rich dark chocolate, and a touch of Hoodia — pressed into a single bite built to keep you powered, anywhere.',
         'Whole rolled oats release their energy slowly, so you stay powered through the afternoon without the sugar spike-and-crash.',
         'Rich dark chocolate makes every bite feel like a treat — the flavour you crave, minus the sugar guilt.',
         'A touch of Hoodia quietens the cravings between meals, so one small bite is genuinely enough.',
       ]
 
-      /* one camera path per device tier — the phone path zooms harder (the
-         1600×1000 world otherwise renders microscopically on narrow screens)
-         and parks each focused node ABOVE center so the bottom-anchored
-         caption never sits on top of the artwork (oy is in viewport-height
-         units, negative = lift the subject up) */
-      const KEYS_DESKTOP = [
-        { p: 0.0, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
-        { p: 0.12, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
-        { p: 0.27, fx: 0.5, fy: 0.5, s: 1.95, ox: 0, oy: -0.07 },
-        { p: 0.46, fx: 0.772, fy: 0.3, s: 2.55, ox: 0.17, oy: 0.03 },
-        { p: 0.65, fx: 0.225, fy: 0.51, s: 2.55, ox: -0.17, oy: 0 },
-        { p: 0.84, fx: 0.772, fy: 0.715, s: 2.55, ox: 0.17, oy: -0.02 },
-        { p: 1.0, fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
-      ]
-      const KEYS_TABLET = [
-        { p: 0.0, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
-        { p: 0.12, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
-        { p: 0.27, fx: 0.5, fy: 0.5, s: 2.0, ox: 0, oy: -0.07 },
-        { p: 0.46, fx: 0.772, fy: 0.3, s: 2.4, ox: 0.1, oy: 0.02 },
-        { p: 0.65, fx: 0.225, fy: 0.51, s: 2.4, ox: -0.1, oy: 0 },
-        { p: 0.84, fx: 0.772, fy: 0.715, s: 2.4, ox: 0.1, oy: -0.02 },
-        { p: 1.0, fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
-      ]
-      const KEYS_MOBILE = [
-        { p: 0.0, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
-        { p: 0.12, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
-        { p: 0.27, fx: 0.5, fy: 0.5, s: 2.55, ox: 0, oy: -0.1 },
-        { p: 0.46, fx: 0.772, fy: 0.3, s: 3.3, ox: 0, oy: -0.1 },
-        { p: 0.65, fx: 0.225, fy: 0.51, s: 3.3, ox: 0, oy: -0.1 },
-        { p: 0.84, fx: 0.772, fy: 0.715, s: 3.3, ox: 0, oy: -0.11 },
-        { p: 1.0, fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
-      ]
-      const BEAT = [[0.21, 0.35], [0.4, 0.54], [0.59, 0.73], [0.78, 0.92]]
+      /* one scroll motion: wide intro → constellation overview. After that
+         the camera only moves when an ingredient is CLICKED (focus keys per
+         device tier — phones zoom harder and park the subject above the
+         bottom-anchored caption). */
+      const CAMS = {
+        desktop: {
+          wide: { fx: 0.5, fy: 0.5, s: 1.0, ox: 0, oy: 0 },
+          over: { fx: 0.5, fy: 0.5, s: 1.4, ox: 0, oy: -0.04 },
+          focus: [
+            { fx: 0.772, fy: 0.3, s: 2.55, ox: 0.17, oy: 0.03 },
+            { fx: 0.225, fy: 0.51, s: 2.55, ox: -0.17, oy: 0 },
+            { fx: 0.772, fy: 0.715, s: 2.55, ox: 0.17, oy: -0.02 },
+          ],
+        },
+        tablet: {
+          wide: { fx: 0.5, fy: 0.5, s: 1.05, ox: 0, oy: 0 },
+          over: { fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.04 },
+          focus: [
+            { fx: 0.772, fy: 0.3, s: 2.4, ox: 0.1, oy: 0.02 },
+            { fx: 0.225, fy: 0.51, s: 2.4, ox: -0.1, oy: 0 },
+            { fx: 0.772, fy: 0.715, s: 2.4, ox: 0.1, oy: -0.02 },
+          ],
+        },
+        mobile: {
+          wide: { fx: 0.5, fy: 0.5, s: 1.45, ox: 0, oy: -0.02 },
+          over: { fx: 0.5, fy: 0.5, s: 1.8, ox: 0, oy: -0.08 },
+          focus: [
+            { fx: 0.772, fy: 0.3, s: 3.3, ox: 0, oy: -0.1 },
+            { fx: 0.225, fy: 0.51, s: 3.3, ox: 0, oy: -0.1 },
+            { fx: 0.772, fy: 0.715, s: 3.3, ox: 0, oy: -0.11 },
+          ],
+        },
+      }
 
-      let vw = 0, vh = 0, kFit = 1, targetP = 0, active = -2, raf = 0
-      let KEYS = KEYS_DESKTOP
+      let vw = 0, vh = 0, kFit = 1, targetP = 0, focused = -1, raf = 0, io = 1
+      let CAM = CAMS.desktop
       const cur = { fx: 0.5, fy: 0.5, s: 1, ox: 0, oy: 0 }
       const fit = () => {
         vw = stage.clientWidth; vh = stage.clientHeight
-        KEYS = vw < 760 ? KEYS_MOBILE : vw < 1100 ? KEYS_TABLET : KEYS_DESKTOP
+        CAM = vw < 760 ? CAMS.mobile : vw < 1100 ? CAMS.tablet : CAMS.desktop
         kFit = Math.min(vw / NW, vh / NH)
       }
       const prog = () => { const r = exp.getBoundingClientRect(); const d = exp.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
-      const beatFor = (p: number) => { for (let i = 0; i < BEAT.length; i++) if (p >= BEAT[i][0] && p <= BEAT[i][1]) return i; return -1 }
 
       const typeOut = (el: HTMLElement, text: string) => {
         if (reduced) { el.textContent = text; return }
@@ -458,11 +479,12 @@ export default function BoxBitesHello() {
         }, 20)
         cleanup.push(() => window.clearInterval(timer))
       }
-      const setBeat = (i: number) => {
-        if (i === active) return
-        active = i
+      const setFocus = (i: number) => {
+        if (i === focused) i = -1 // clicking the same ingredient again zooms back out
+        focused = i
         caps.forEach((c, idx) => c.classList.toggle('show', idx === i))
-        segs.forEach((s, idx) => s.classList.toggle('on', idx <= i && i >= 0))
+        world.classList.toggle('focused', i >= 0)
+        nodes.forEach((n, idx) => n.classList.toggle('active', idx === i))
         if (i >= 0) {
           const im = imgs[i]
           if (im && !reduced) { im.classList.remove('pop'); void im.offsetWidth; im.classList.add('pop') }
@@ -470,18 +492,42 @@ export default function BoxBitesHello() {
           if (t) typeOut(t, DESC[i])
         }
       }
+
+      nodes.forEach((node, i) => {
+        const onTap = (e: Event) => { e.stopPropagation(); setFocus(i) }
+        node.addEventListener('click', onTap)
+        cleanup.push(() => node.removeEventListener('click', onTap))
+      })
+      /* clicking anywhere else zooms back out to the overview */
+      const onStageTap = () => { if (focused >= 0) setFocus(focused) }
+      stage.addEventListener('click', onStageTap)
+      cleanup.push(() => stage.removeEventListener('click', onStageTap))
+
       const render = () => {
-        const tgt = lerpKeys(KEYS, targetP, ['fx', 'fy', 's', 'ox', 'oy'])
+        const m = smooth(targetP)
+        const w = CAM.wide, o = CAM.over
+        const tgt = focused >= 0
+          ? CAM.focus[focused]
+          : { fx: w.fx + (o.fx - w.fx) * m, fy: w.fy + (o.fy - w.fy) * m, s: w.s + (o.s - w.s) * m, ox: w.ox + (o.ox - w.ox) * m, oy: w.oy + (o.oy - w.oy) * m }
         const k = reduced ? 1 : 0.085
         cur.fx += (tgt.fx - cur.fx) * k; cur.fy += (tgt.fy - cur.fy) * k; cur.s += (tgt.s - cur.s) * k
         cur.ox += (tgt.ox - cur.ox) * k; cur.oy += (tgt.oy - cur.oy) * k
         const S = kFit * cur.s
         world.style.transform = `translate(${vw / 2 + cur.ox * vw - cur.fx * NW * S}px, ${vh / 2 + cur.oy * vh - cur.fy * NH * S}px) scale(${S})`
-        if (intro) { intro.style.opacity = `${clamp(1 - targetP / 0.13, 0, 1)}`; intro.style.transform = `translateY(${-targetP * 44}px)` }
-        if (keep) keep.style.opacity = targetP > 0.03 && targetP < 0.93 ? '0.9' : '0'
+        if (intro) {
+          /* the intro headline fades away the moment an ingredient is focused
+             so it never overlays the caption */
+          io += ((focused >= 0 ? 0 : 1) - io) * (reduced ? 1 : 0.12)
+          const introO = io * clamp(1 - targetP / 0.45, 0, 1)
+          intro.style.opacity = `${introO}`
+          intro.style.transform = `translateY(${-targetP * 60}px)`
+          intro.style.visibility = introO < 0.02 ? 'hidden' : 'visible'
+        }
+        if (keep) keep.style.opacity = targetP > 0.5 ? '0.9' : '0'
+        if (taphint) taphint.style.opacity = targetP > 0.45 && focused < 0 ? '1' : '0'
         raf = requestAnimationFrame(render)
       }
-      const onScroll = () => { targetP = prog(); setBeat(beatFor(targetP)) }
+      const onScroll = () => { targetP = prog() }
       fit(); onScroll(); render()
       window.addEventListener('scroll', onScroll, { passive: true })
       makeViewportWatcher(() => { fit(); onScroll() })
@@ -499,25 +545,13 @@ export default function BoxBitesHello() {
       const faller = $('bb-faller') as HTMLImageElement
       const fshadow = $('bb-fshadow') as HTMLElement
       const overlay = $('bb-theadOverlay') as HTMLElement
+      const thint = $('bb-thint') as HTMLElement
       const rows = Array.from(card?.querySelectorAll('.row') ?? []) as HTMLElement[]
       if (!tstage || !card || !faller) return
 
-      const FALL = [
-        { p: 0.0, idx: -1.6 }, { p: 0.1, idx: -1.6 },
-        { p: 0.18, idx: 0 }, { p: 0.26, idx: 0 },
-        { p: 0.32, idx: 1 }, { p: 0.4, idx: 1 },
-        { p: 0.46, idx: 2 }, { p: 0.54, idx: 2 },
-        { p: 0.6, idx: 3 }, { p: 0.68, idx: 3 },
-        { p: 0.74, idx: 4 }, { p: 0.82, idx: 4 },
-        { p: 0.88, idx: 5 }, { p: 1.0, idx: 5 },
-      ]
-      const CAM = [
-        { p: 0.0, rx: 52, s: 0.8 }, { p: 0.1, rx: 26, s: 1.06 },
-        { p: 0.22, rx: 15, s: 1.3 }, { p: 0.86, rx: 10, s: 1.34 }, { p: 1.0, rx: 7, s: 1.16 },
-      ]
-      const DROPS = [0.18, 0.32, 0.46, 0.6, 0.74, 0.88]
-
-      let vw = 0, vh = 0, mobile = false, short = false, rowY: number[] = [], cardH = 1, targetP = 0, landed = -1, raf = 0
+      /* click-driven: each tap drops the biscuit one row further */
+      let vw = 0, vh = 0, mobile = false, short = false, rowY: number[] = [], cardH = 1, landed = -1, raf = 0
+      let clicks = -1, targetIdx = -1.6
       const cur = { idx: -1.6, rx: 52, s: 0.8 }
       const measure = () => {
         vw = tstage.clientWidth; vh = tstage.clientHeight
@@ -526,7 +560,6 @@ export default function BoxBitesHello() {
         cardH = card.offsetHeight
         rowY = rows.map((r) => r.offsetTop + r.offsetHeight / 2)
       }
-      const prog = () => { const r = tz.getBoundingClientRect(); const d = tz.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
       const idxToY = (idx: number) => {
         if (idx <= 0) {
           const top = -cardH * 0.34, y0 = rowY[0] || 0
@@ -601,50 +634,93 @@ export default function BoxBitesHello() {
           burst(card.offsetWidth / 2, rowY[n])
         }
       }
-      const landedFor = (p: number) => { let n = -1; for (let i = 0; i < DROPS.length; i++) if (p >= DROPS[i] - 0.005) n = i; return n }
+      /* the page holds here: once the table fills the screen, scrolling is
+         locked until every row has been tapped through */
+      let locked = false, released = false
+      const unlock = () => {
+        if (released) return
+        released = true
+        locked = false
+        document.body.style.overflow = ''
+        getLenis()?.start()
+        if (thint) { thint.textContent = 'Nice — keep scrolling'; thint.classList.remove('off') }
+        window.setTimeout(() => thint?.classList.add('off'), 2600)
+      }
+      const watchArrival = () => {
+        if (locked || released) return
+        const r = tz.getBoundingClientRect()
+        if (r.top <= vh * 0.12 && r.bottom >= vh * 0.5) {
+          locked = true
+          getLenis()?.scrollTo(window.scrollY + r.top, { immediate: true })
+          getLenis()?.stop()
+          document.body.style.overflow = 'hidden'
+        }
+      }
+      window.addEventListener('scroll', watchArrival, { passive: true })
+      cleanup.push(() => {
+        window.removeEventListener('scroll', watchArrival)
+        if (locked && !released) {
+          document.body.style.overflow = ''
+          getLenis()?.start()
+        }
+      })
+
+      /* each tap advances the biscuit one row; the camera settles in as it goes */
+      const onTap = () => {
+        if (clicks >= 5) return
+        clicks++
+        targetIdx = clicks
+        if (thint) thint.classList.add('off')
+        /* all six rows tapped — release the scroll after the last count-up */
+        if (clicks === 5) window.setTimeout(unlock, 1400)
+      }
+      tstage.addEventListener('click', onTap)
+      cleanup.push(() => tstage.removeEventListener('click', onTap))
 
       const render = () => {
-        const f = lerpKeys(FALL, targetP, ['idx'])
-        const c = lerpKeys(CAM, targetP, ['rx', 's'])
+        const camTgt = clicks < 0
+          ? { rx: 26, s: 1.06 }
+          : { rx: Math.max(15 - clicks * 1.6, 7), s: 1.32 }
         const k = reduced ? 1 : 0.1
-        cur.idx += (f.idx - cur.idx) * k; cur.rx += (c.rx - cur.rx) * k; cur.s += (c.s - cur.s) * k
-        /* phones / short landscape: cap the zoom so the card always fits */
-        const sCap = mobile ? 1.04 : short ? 1.0 : Infinity
+        cur.idx += (targetIdx - cur.idx) * k; cur.rx += (camTgt.rx - cur.rx) * k; cur.s += (camTgt.s - cur.s) * k
+        /* fire the landing (count-up, jolt, crumbs) once the biscuit arrives */
+        if (clicks >= 0 && landed < clicks && targetIdx - cur.idx < 0.09) setLanded(clicks)
+        /* cap the zoom so the WHOLE card (header to Sodium) always fits on
+           screen — the camera never follows the biscuit out of view */
+        const fitCap = (vh * 0.86) / Math.max(cardH, 1)
+        const sCap = Math.min(mobile ? 1.04 : short ? 1.0 : Infinity, fitCap)
         const s = Math.min(cur.s, sCap)
         const rx = mobile ? cur.rx * 0.8 : cur.rx
-        const follow = clamp(idxToY(Math.max(cur.idx, 0)) - (rowY[0] || 0), 0, cardH) * 0.62 * (s > 1.1 ? 1 : 0.4)
-        card.style.transform = `translateY(${-follow}px) rotateX(${rx}deg) scale(${s})`
+        card.style.transform = `rotateX(${rx}deg) scale(${s})`
         const y = idxToY(cur.idx)
-        const falling = Math.abs(f.idx - cur.idx)
+        const falling = Math.abs(targetIdx - cur.idx)
         const squash = clamp(1 - falling * 0.16, 0.86, 1)
+        const seen = clamp((cur.idx + 1.6) / 0.9, 0, 1)
         faller.style.top = `${y}px`
-        faller.style.opacity = `${clamp((targetP - 0.06) / 0.05, 0, 1)}`
+        faller.style.opacity = `${seen}`
         faller.style.transform = `translate(-50%,-50%) translateZ(46px) rotate(${Math.sin(cur.idx * 2.2) * 6}deg) scale(${2 - squash},${squash})`
         if (fshadow) {
           const h = clamp(falling, 0, 1)
           fshadow.style.top = `${y + (mobile ? 24 : 34)}px`
           fshadow.style.transform = `translateX(-50%) scale(${1 + h * 0.7})`
-          fshadow.style.opacity = `${clamp((targetP - 0.08) / 0.05, 0, 1) * (0.85 - h * 0.45)}`
+          fshadow.style.opacity = `${seen * (0.85 - h * 0.45)}`
         }
         if (overlay) {
-          const o = clamp((targetP - 0.55) / 0.12, 0, 1)
+          const o = clamp((cur.idx - 2.4) / 1.2, 0, 1)
           overlay.style.opacity = `${1 - o}`
           overlay.style.transform = `translateY(${-o * 30}px)`
         }
         raf = requestAnimationFrame(render)
       }
-      const onScroll = () => { targetP = prog(); setLanded(landedFor(targetP)) }
-      measure(); onScroll(); render()
+      measure(); render()
       /* row positions depend on the loaded web fonts — re-measure once they
          arrive, otherwise the biscuit lands between rows on first paint */
       if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
-        ;(document as any).fonts.ready.then(() => { measure(); onScroll() }).catch(() => {})
+        ;(document as any).fonts.ready.then(() => measure()).catch(() => {})
       }
-      window.addEventListener('scroll', onScroll, { passive: true })
-      makeViewportWatcher(() => { measure(); onScroll() })
+      makeViewportWatcher(() => measure())
       cleanup.push(() => {
         cancelAnimationFrame(raf)
-        window.removeEventListener('scroll', onScroll)
       })
     })()
 
@@ -663,12 +739,11 @@ export default function BoxBitesHello() {
       const ctx = canvas.getContext('2d')
       if (!ctx) return
 
-      /* two AI-rendered clips, played back-to-back by scroll progress:
-         dive  — camera plunges down into the open pouch
-         reveal — cookies and ingredients float up out of the pouch */
+      /* single AI-rendered clip scrubbed by scroll progress — the dive into
+         the box (divein.mp4). Frames are motion-interpolated to 120fps
+         (5x the 24fps source) so the scrub stays smooth under fast scrolling. */
       const SEQS = [
-        { dir: 'dive', count: 181, from: 0.0, to: 0.62 },
-        { dir: 'reveal', count: 181, from: 0.62, to: 1.0 },
+        { dir: 'divein', count: 716, from: 0.0, to: 1.0 },
       ]
       const frames: HTMLImageElement[][] = SEQS.map(() => [])
       let loaded = 0
@@ -699,7 +774,6 @@ export default function BoxBitesHello() {
         canvas.height = Math.round(vh * dpr)
         lastSeq = -1; lastFrame = -1
       }
-      const prog = () => { const r = sz.getBoundingClientRect(); const d = sz.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
 
       const draw = (si: number, fi: number) => {
         const im = frames[si]?.[fi]
@@ -724,7 +798,7 @@ export default function BoxBitesHello() {
         const st = 0.14 + i * 0.066
         return [st, st + 0.054] as [number, number]
       })
-      const STAMP_P = 0.88, BENE_P = 0.92
+      const BENE_P = 0.92
       const dropFor = (p: number) => { for (let i = 0; i < FEATW.length; i++) if (p >= FEATW[i][0] && p <= FEATW[i][1]) return i; return -1 }
 
       const update = (p: number) => {
@@ -733,19 +807,63 @@ export default function BoxBitesHello() {
           activeDrop = f
           drops.forEach((el, i) => el.classList.toggle('show', i === f))
         }
-        stamp?.classList.toggle('show', p >= STAMP_P)
+        /* the price stamp is visible from the moment you land on the page */
+        stamp?.classList.add('show')
         benefits?.classList.toggle('show', p >= BENE_P)
         if (shead) shead.style.opacity = `${clamp(1 - p / 0.08, 0, 1)}`
         if (insidehead) insidehead.style.opacity = `${clamp((p - 0.3) / 0.04, 0, 1) * clamp(1 - (p - 0.56) / 0.05, 0, 1)}`
       }
+
+      /* the frame-by-frame scrub only arms itself when the user clicks
+         "Dive in" — the runway expands and scroll drives the frames like
+         before. Without the click the section is one screen tall and
+         scrolling simply continues past it. */
+      let diving = false
+      const prog = () => { const r = sz.getBoundingClientRect(); const d = sz.offsetHeight - vh; return d <= 0 ? 0 : clamp(-r.top / d, 0, 1) }
+      const onScroll = () => {
+        if (!diving) return
+        targetP = prog()
+        update(targetP)
+      }
+      const diveBtn = $('bb-divebtn')
+      const diveOutBtn = $('bb-diveout')
+      const onDive = () => {
+        if (diving) return
+        diving = true
+        sz.classList.add('diving')
+        diveBtn?.classList.add('off')
+        diveOutBtn?.classList.add('show')
+        /* snap the stage flush to the top so the scrub starts from frame one */
+        const r = sz.getBoundingClientRect()
+        getLenis()?.scrollTo(window.scrollY + r.top, { immediate: true })
+        requestAnimationFrame(() => { fit(); onScroll() })
+      }
+      diveBtn?.addEventListener('click', onDive)
+      cleanup.push(() => diveBtn?.removeEventListener('click', onDive))
+
+      /* "Dive out": cancel the dive any time — collapse the runway, rewind
+         to the first frame and hand the scroll back */
+      const onDiveOut = () => {
+        if (!diving) return
+        diving = false
+        sz.classList.remove('diving')
+        diveBtn?.classList.remove('off')
+        diveOutBtn?.classList.remove('show')
+        targetP = 0
+        update(0)
+        const r = sz.getBoundingClientRect()
+        getLenis()?.scrollTo(window.scrollY + r.top, { immediate: true })
+        requestAnimationFrame(() => fit())
+      }
+      diveOutBtn?.addEventListener('click', onDiveOut)
+      cleanup.push(() => diveOutBtn?.removeEventListener('click', onDiveOut))
 
       const render = () => {
         paint(targetP)
         raf = requestAnimationFrame(render)
       }
 
-      const onScroll = () => { targetP = prog(); update(targetP) }
-      fit(); onScroll(); render()
+      fit(); update(0); render()
       window.addEventListener('scroll', onScroll, { passive: true })
       makeViewportWatcher(() => { fit(); onScroll() })
       cleanup.push(() => {
@@ -815,17 +933,11 @@ export default function BoxBitesHello() {
             </p>
           </div>
 
-          <div className="cap center"><span className="kicker">The bite</span><h2>Four things, one bite</h2><p className="type"></p></div>
           <div className="cap left"><span className="kicker">01 — Rolled Oat</span><h2>Oats for steady energy</h2><p className="type"></p></div>
           <div className="cap right"><span className="kicker">02 — Dark Chocolate</span><h2>A tasty mood lift</h2><p className="type"></p></div>
           <div className="cap left"><span className="kicker">03 — Hoodia</span><h2>Keeps hunger in check</h2><p className="type"></p></div>
 
-          <nav className="rail" aria-hidden="true">
-            <span className="seg"><i></i></span>
-            <span className="seg"><i></i></span>
-            <span className="seg"><i></i></span>
-            <span className="seg"><i></i></span>
-          </nav>
+          <div className="taphint" id="bb-taphint">Tap an ingredient</div>
           <div className="keepscroll" id="bb-keepscroll">Keep scrolling</div>
         </div>
       </section>
@@ -850,6 +962,7 @@ export default function BoxBitesHello() {
               <div className="row" data-to="469" data-dec="0" data-unit=" mg"><span className="lab">Sodium</span><span className="val">0 mg</span></div>
             </div>
           </div>
+          <div className="thint" id="bb-thint">Tap to drop the bite</div>
         </div>
       </section>
 
@@ -859,10 +972,10 @@ export default function BoxBitesHello() {
           <div className="shead" id="bb-shead">
             <div className="kicker">Smart Snacking</div>
             <h2>Come inside<br />the pouch</h2>
-            <div className="script">scroll to open it up</div>
+            <div className="script">dive in — or just keep scrolling</div>
           </div>
 
-          {/* cinematic AI frame-scrub: dive into the pouch, then the reveal */}
+          {/* cinematic AI frame-scrub: the pouch bursting open with cookies */}
           <div className="scrubwrap">
             <canvas id="bb-scrub" aria-label="Camera diving inside the Box Bites pouch" />
             <div className="scrubvignette" aria-hidden="true"></div>
@@ -890,6 +1003,9 @@ export default function BoxBitesHello() {
             <span className="s2">RM&nbsp;30</span>
             <span className="s3">only!</span>
           </div>
+          <button className="divebtn" id="bb-divebtn" type="button">Dive into the box ↓</button>
+          <button className="diveoutbtn" id="bb-diveout" type="button">Dive out ↑</button>
+
           <div className="benefits" id="bb-benefits">
             <div className="powered">Enjoy guilt-free snacking that supports your goals</div>
             <div className="rowc">

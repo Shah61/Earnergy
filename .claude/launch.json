@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/mukhtarshah/Desktop/Coding Personal/earnergy-kofe' && exec node node_modules/vite/bin/vite.js --port ${PORT:-5175} --strictPort"
+      ],
+      "port": 5175,
+      "autoPort": true
+    }
+  ]
+}

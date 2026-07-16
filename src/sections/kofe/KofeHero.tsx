@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from '@/lib/gsap'
 import { getLenis } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
@@ -14,6 +14,7 @@ export function KofeHero() {
   const activeProduct = useAppStore((s) => s.activeProduct)
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
+  const sectionRef = useRef<HTMLElement>(null)
 
   const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
     setVideoEl(node)
@@ -76,14 +77,28 @@ export function KofeHero() {
       if (['ArrowDown', 'PageDown', 'Space', 'End'].includes(e.code)) start()
     }
 
+    /* click = skip the video entirely and glide straight to the next page;
+       scrolling still plays it for whoever wants to watch */
+    const skip = () => {
+      if (!ended) finish()
+      window.setTimeout(() => {
+        const next = document.getElementById('ks-zone')
+        if (next) getLenis()?.scrollTo(next, { duration: 1.2 })
+      }, 150)
+    }
+
+    const section = sectionRef.current
+
     video.addEventListener('ended', finish, { once: true })
     window.addEventListener('wheel', start, { passive: true, capture: true })
     window.addEventListener('touchmove', start, { passive: true, capture: true })
     window.addEventListener('keydown', onKeyDown)
+    section?.addEventListener('click', skip)
 
     return () => {
       video.removeEventListener('ended', finish)
       removeScrollTriggers()
+      section?.removeEventListener('click', skip)
       document.body.style.overflow = ''
       if (started && !ended) getLenis()?.start()
       video.pause()
@@ -95,9 +110,10 @@ export function KofeHero() {
   return (
     <section
       id="kofe-top"
+      ref={sectionRef}
       className="kofe-hero-section"
       aria-label="KOFÈ"
-      style={{ backgroundImage: `url(${KOFE_BG})` }}
+      style={{ backgroundImage: `url(${KOFE_BG})`, cursor: 'pointer' }}
     >
       <div className="box-stage sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden">
         <div className="box-media-layer">
@@ -117,7 +133,7 @@ export function KofeHero() {
           hintHidden ? 'pointer-events-none opacity-0' : 'opacity-90'
         }`}
       >
-        <span>Scroll</span>
+        <span>Scroll to watch · Tap to skip</span>
         <span className="hint-arrow relative h-6 w-px bg-[#3d2a1a] opacity-70" />
       </div>
     </section>

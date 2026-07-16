@@ -4,7 +4,7 @@ const IMAGE_BRAND = 'photos/kofeWallpaper.jpeg' // dark brand card (kofé / preb
 const IMAGE_BEANS = '/arabica.png' // coffee beans cutout (parallax drift)
 
 import { useEffect } from 'react'
-import { getScrollRoot, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
+import { getLenis, getScrollRoot, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
 
 const CLAIMS = [
@@ -28,23 +28,23 @@ const css = `
 .ks-root *{box-sizing:border-box;margin:0;padding:0}
 
 .ks-zone{position:relative;height:900vh}
-.ks-stage{position:relative;height:100svh;width:100%;overflow:hidden;background:var(--cream)}
+.ks-stage{position:relative;height:100svh;width:100%;overflow:hidden;background:var(--cream);cursor:pointer}
 .ks-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:60;
   background:radial-gradient(80% 72% at 50% 50%, transparent 60%, rgba(20,10,4,.26) 100%)}
 
 /* ---------- gallery (behind the gate) ---------- */
 .ks-track{position:absolute;top:0;left:0;height:100%;display:flex;align-items:stretch;will-change:transform}
-.ks-panel{position:relative;flex:0 0 auto;width:82vw;height:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;padding:8vh 7vw;gap:14px}
+.ks-panel{position:relative;flex:0 0 auto;width:72vw;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:7vh 6vw;gap:12px}
 .ks-panel.dark{background:var(--esp);color:var(--cream)}
 .ks-panel.cream{background:var(--cream);color:var(--esp)}
 .ks-panel.gold{background:#e9c34a;color:var(--ink)}
 .ks-kick{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.75}
 .ks-num{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.24em;opacity:.65}
-.ks-claim{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(40px,7.4vw,108px);line-height:.98;max-width:11ch}
-.ks-sub{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(20px,3vw,32px);color:inherit;opacity:.85}
-.ks-photo{height:min(62vh,560px);width:auto;filter:drop-shadow(0 28px 36px rgba(20,10,4,.32))}
-.ks-photo.card{height:min(56vh,500px);border-radius:18px;box-shadow:0 34px 60px rgba(20,10,4,.35)}
+.ks-claim{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(34px,5.8vw,84px);line-height:.98;max-width:11ch}
+.ks-sub{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.6vw,28px);color:inherit;opacity:.85}
+.ks-photo{height:min(54vh,480px);width:auto;filter:drop-shadow(0 28px 36px rgba(20,10,4,.32))}
+.ks-photo.card{height:min(48vh,430px);border-radius:18px;box-shadow:0 34px 60px rgba(20,10,4,.35)}
 .ks-prep{font-family:"JetBrains Mono",monospace;font-size:clamp(13px,1.6vw,16px);letter-spacing:.06em;opacity:.85;max-width:42ch}
 .ks-handoff .ks-claim{font-size:clamp(34px,5.6vw,76px)}
 
@@ -76,9 +76,9 @@ const css = `
   opacity:.75;transition:opacity .4s ease}
 
 @media (max-width:780px){
-  .ks-panel{width:94vw;padding:7vh 6vw}
+  .ks-panel{width:88vw;padding:6vh 5vw}
   .ks-word{font-size:34vw}
-  .ks-photo{height:min(46vh,420px)}
+  .ks-photo{height:min(42vh,380px)}
 }
 `
 
@@ -169,7 +169,8 @@ export default function KofeHello() {
         updatePin()
         targetP = progress()
       }
-      const p = targetP, k = reduced ? 1 : 0.09
+      /* lower smoothing = slower, calmer glide between stories */
+      const p = targetP, k = reduced ? 1 : 0.055
       const t = reduced ? 0 : Date.now()
 
       /* phase 1: pan cup from start of K through to é */
@@ -227,6 +228,24 @@ export default function KofeHello() {
       stage.style.transform = ''
     }
 
+    /* tap anywhere: glide to the next story (scrolling still works too) */
+    const panelCount = track.children.length
+    const snaps: number[] = []
+    for (let i = 0; i < panelCount; i++) snaps.push(DOLLY_START + (1 - DOLLY_START) * (i / Math.max(panelCount - 1, 1)))
+    const onTap = () => {
+      const p = progress()
+      const next = snaps.find((s) => s > p + 0.012)
+      const lenis = getLenis()
+      if (next !== undefined) {
+        lenis?.scrollTo(zoneStart + next * scrollRange(), { duration: 1.6 })
+      } else {
+        /* past the last story — move on to the next page */
+        lenis?.scrollTo(zoneStart + scrollRange() + vh * 0.9, { duration: 1.4 })
+      }
+    }
+    stage.addEventListener('click', onTap)
+    cleanup.push(() => stage.removeEventListener('click', onTap))
+
     fit()
     measureZoneStart()
     onScroll()
@@ -264,6 +283,13 @@ export default function KofeHello() {
                 <div className="ks-sub">a Spanish latte that serves a purpose</div>
               </div>
 
+              <div className="ks-panel cream">
+                <div className="ks-kick">Ways to drink</div>
+                <img className="ks-photo" src={IMAGE_PACK} alt="Kofé Spanish Latte pack" />
+                <div className="ks-prep">Mix 1 sachet (25g) with 150ml of hot water.</div>
+                <div className="ks-sub">with prebiotics + probiotics</div>
+              </div>
+
               <div className="ks-panel dark">
                 <img className="ks-photo card" src={IMAGE_BRAND} alt="kofé — goodbye sugar, hello energy" />
               </div>
@@ -276,16 +302,10 @@ export default function KofeHello() {
                 </div>
               ))}
 
-              <div className="ks-panel cream">
-                <img className="ks-photo" src={IMAGE_PACK} alt="Kofé Spanish Latte pack" />
-                <div className="ks-kick">with prebiotics + probiotics</div>
-                <div className="ks-prep">Mix 1 sachet (25g) with 150ml of hot water.</div>
-              </div>
-
               <div className="ks-panel dark ks-handoff">
                 <div className="ks-kick">next</div>
                 <div className="ks-claim">Now — the ten ingredients.</div>
-                <div className="ks-sub">keep scrolling to dive in</div>
+                <div className="ks-sub">tap or keep scrolling to dive in</div>
               </div>
 
             </div>
@@ -306,7 +326,7 @@ export default function KofeHello() {
             <div className="ks-gsub">Spanish Latte · with prebiotics + probiotics</div>
           </div>
 
-          <div className="ks-hint" id="ks-hint">Scroll</div>
+          <div className="ks-hint" id="ks-hint">Scroll · or tap to step through</div>
         </div>
       </section>
     </div>
