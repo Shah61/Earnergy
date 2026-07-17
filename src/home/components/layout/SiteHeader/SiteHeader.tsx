@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
+import { JOIN_US_CTA, NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
 
 type SiteHeaderProps = {
   onMenuToggle: () => void;
@@ -47,6 +47,9 @@ export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
         </nav>
 
         <div className="nav-right">
+          <Link to={JOIN_US_CTA.href} className="pill nav-cta">
+            {JOIN_US_CTA.label}
+          </Link>
           <button
             type="button"
             className="burger"

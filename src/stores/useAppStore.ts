@@ -14,7 +14,7 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  isLoading: true,
+  isLoading: false,
   isSceneReady: false,
   scrollProgress: 0,
   activeProduct: 'box-bites',

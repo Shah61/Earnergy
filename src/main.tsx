@@ -6,6 +6,7 @@ import '@home/styles/globals.css'
 import App from './App.tsx'
 import { HomePage } from '@home/pages/HomePage'
 import { ContactPage } from '@home/pages/ContactPage'
+import { JoinPage } from '@home/pages/JoinPage'
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual'
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
         {/* the full Box Bites / KOFÈ animated experience */}
         <Route path="/products" element={<App />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/join" element={<JoinPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

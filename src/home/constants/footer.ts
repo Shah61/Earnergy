@@ -19,6 +19,7 @@ export const FOOTER_SITEMAP = [
   { label: "About Us", href: "/#about-tag" },
   { label: "Our Products", href: ROUTES.products },
   { label: "Contact Us", href: ROUTES.contact },
+  { label: "Join Us", href: ROUTES.join },
   { label: "Our Services", href: "/#services-tag" },
   { label: "Our Team", href: "/#team-tag" },
 ];

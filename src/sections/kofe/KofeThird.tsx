@@ -62,12 +62,7 @@ const css = `
 .gd-center img{position:relative;height:clamp(240px,44vh,480px);width:auto;max-width:36vw;object-fit:contain;margin-left:auto;margin-right:auto;
   filter:drop-shadow(0 32px 40px rgba(20,10,4,.34));animation:gd-bob 6s ease-in-out infinite alternate}
 @keyframes gd-bob{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
-.gd-center .pill{position:relative;display:inline-block;margin-top:clamp(10px,2vh,20px);font-family:"Anton",sans-serif;font-size:clamp(11px,1.2vw,14px);
-  letter-spacing:.2em;text-transform:uppercase;color:var(--esp);background:var(--yellow);border:none;border-radius:999px;
-  padding:13px 24px;cursor:pointer;box-shadow:0 16px 32px rgba(20,10,4,.24);animation:gd-pulse 2.2s ease-in-out infinite;
-  transition:opacity .45s ease,transform .45s ease;font-family:"Anton",sans-serif}
 @keyframes gd-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.gd-root.on .gd-center .pill{opacity:0;transform:scale(.8);pointer-events:none;animation:none}
 
 /* ingredient cards */
 .gd-card{display:flex;align-items:center;gap:clamp(10px,1.1vw,16px);text-align:left;
@@ -136,7 +131,7 @@ const css = `
 }
 
 @media (prefers-reduced-motion:reduce){
-  .gd-center img,.gd-center .pill,.gd-packs .x2{animation:none}
+  .gd-center img,.gd-packs .x2{animation:none}
 }
 `
 
@@ -144,14 +139,29 @@ export default function KofeBoard() {
   const activeProduct = useAppStore((s) => s.activeProduct)
   useEffect(() => {
     if (activeProduct !== 'kofe') return
-    const cleanup: Array<() => void> = []
     const root = document.getElementById('gd-root')
-    const pill = document.getElementById('gd-see')
-    if (!root || !pill) return
-    const reveal = () => root.classList.add('on')
-    pill.addEventListener('click', reveal)
-    cleanup.push(() => pill.removeEventListener('click', reveal))
-    return () => cleanup.forEach((fn) => fn())
+    const zone = document.getElementById('gd-zone')
+    if (!root || !zone) return
+
+    let revealed = false
+    const reveal = () => {
+      if (revealed) return
+      revealed = true
+      root.classList.add('on')
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) reveal()
+      },
+      { threshold: [0.35, 0.5] },
+    )
+    observer.observe(zone)
+
+    return () => {
+      observer.disconnect()
+      root.classList.remove('on')
+    }
   }, [activeProduct])
 
   return (
@@ -180,8 +190,6 @@ export default function KofeBoard() {
 
             <div className="gd-center">
               <img src={CUP} alt="Kofé Spanish Latte" draggable={false} />
-              <br />
-              <button className="pill" id="gd-see" type="button">See ingredients</button>
             </div>
 
             <div className="gd-col r">

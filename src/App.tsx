@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { LoadingScreen } from '@/components/loading/LoadingScreen'
 import { BoxBitesHeader } from '@/components/layout/BoxBitesHeader'
 import { ProductViewport } from '@/components/layout/ProductViewport'
 import { SmoothScroll } from '@/components/layout/SmoothScroll'
@@ -18,18 +17,21 @@ function handleNavigate(href: string) {
 }
 
 export default function App() {
-  const isLoading = useAppStore((s) => s.isLoading)
   const activeProduct = useAppStore((s) => s.activeProduct)
   const setActiveProduct = useAppStore((s) => s.setActiveProduct)
+  const setLoadingComplete = useAppStore((s) => s.setLoadingComplete)
 
-  /* leaving /products: kill the smooth-scroll hijack and reset the store so
-     the experience (loader included) starts fresh on the next visit */
+  useEffect(() => {
+    setLoadingComplete()
+  }, [setLoadingComplete])
+
+  /* leaving /products: kill the smooth-scroll hijack and reset the store */
   useEffect(() => {
     return () => {
       destroyLenis()
       document.body.style.overflow = ''
       useAppStore.setState({
-        isLoading: true,
+        isLoading: false,
         isSceneReady: false,
         scrollProgress: 0,
         activeProduct: 'box-bites',
@@ -39,9 +41,8 @@ export default function App() {
 
   return (
     <>
-      <LoadingScreen />
       <BoxBitesHeader
-        visible={!isLoading}
+        visible
         links={[]}
         activeProduct={activeProduct}
         onProductChange={setActiveProduct}

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from '@/lib/gsap'
 import { KineticText } from '@/components/ui/kinetic-text'
-import { getLenis } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
 import {
   BACKGROUND_SRC,
@@ -20,7 +19,7 @@ export function BoxBitesScroll() {
   const isLoading = useAppStore((s) => s.isLoading)
   const activeProduct = useAppStore((s) => s.activeProduct)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [phase, setPhase] = useState<Phase>('idle')
+  const [phase, setPhase] = useState<Phase>('playing')
   const [stillReady, setStillReady] = useState(false)
   const [copyVisible, setCopyVisible] = useState(false)
 
@@ -40,10 +39,7 @@ export function BoxBitesScroll() {
     if (isLoading || activeProduct !== 'box-bites' || !videoRef.current) return
 
     const video = videoRef.current
-    let started = false
     let ended = false
-
-    document.body.style.overflow = 'hidden'
 
     const freeze = () => {
       if (ended) return
@@ -56,39 +52,36 @@ export function BoxBitesScroll() {
 
       requestAnimationFrame(() => {
         setPhase('frozen')
-        document.body.style.overflow = ''
-        getLenis()?.start()
         requestAnimationFrame(() => ScrollTrigger.refresh())
       })
     }
 
-    const start = () => {
-      if (started) return
-      started = true
-      getLenis()?.stop()
-      setPhase('playing')
-      video.preload = 'auto'
-      if (video.readyState < 2) video.load()
+    const startPlayback = () => {
       video.playbackRate = VIDEO_PLAYBACK_RATE
-      video.play().catch(() => freeze())
+      // Muted, inline autoplay is allowed; if it's genuinely blocked we retry
+      // rather than freezing, so the animation always plays through.
+      void video.play().catch(() => {
+        window.setTimeout(() => {
+          void video.play().catch(() => undefined)
+        }, 150)
+      })
     }
 
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (['ArrowDown', 'PageDown', 'Space', 'End'].includes(e.code)) start()
+    setPhase('playing')
+    video.preload = 'auto'
+    video.currentTime = 0
+
+    if (video.readyState >= 2) {
+      startPlayback()
+    } else {
+      video.addEventListener('canplay', startPlayback, { once: true })
     }
 
     video.addEventListener('ended', freeze, { once: true })
-    window.addEventListener('wheel', start, { passive: true })
-    window.addEventListener('touchmove', start, { passive: true })
-    window.addEventListener('keydown', onKeyDown)
 
     return () => {
+      video.removeEventListener('canplay', startPlayback)
       video.removeEventListener('ended', freeze)
-      window.removeEventListener('wheel', start)
-      window.removeEventListener('touchmove', start)
-      window.removeEventListener('keydown', onKeyDown)
-      document.body.style.overflow = ''
-      if (started && !ended) getLenis()?.start()
       video.pause()
     }
   }, [isLoading, activeProduct])
@@ -104,8 +97,6 @@ export function BoxBitesScroll() {
     const timer = window.setTimeout(() => setCopyVisible(true), 180)
     return () => window.clearTimeout(timer)
   }, [showStill])
-
-  const hintHidden = phase !== 'idle'
 
   return (
     <section
@@ -126,7 +117,8 @@ export function BoxBitesScroll() {
                 height={VIDEO_HEIGHT}
                 muted
                 playsInline
-                preload="metadata"
+                autoPlay
+                preload="auto"
                 className={`box-video ${
                   phase === 'idle' ? 'invisible opacity-0' : ''
                 }`}
@@ -179,15 +171,6 @@ export function BoxBitesScroll() {
             </div>
           )}
         </div>
-      </div>
-
-      <div
-        className={`absolute bottom-[30px] left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold uppercase tracking-[0.32em] text-[var(--box-cream)] transition-opacity duration-400 ${
-          hintHidden ? 'pointer-events-none opacity-0' : 'opacity-90'
-        }`}
-      >
-        <span>Scroll</span>
-        <span className="hint-arrow relative h-6 w-px bg-[var(--box-cream)] opacity-70" />
       </div>
     </section>
   )

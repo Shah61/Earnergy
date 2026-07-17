@@ -123,36 +123,40 @@ const css = `
 /* ================= ACT 2: 3D nutrition table ================= */
 .bb-story .tablezone{position:relative;height:100svh}
 .bb-story .tstage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:var(--bb-page-bg) center/cover no-repeat;cursor:pointer}
-.bb-story .thint{position:absolute;z-index:9;left:50%;bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));transform:translateX(-50%);
-  font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest-2);
-  background:rgba(255,255,255,.6);backdrop-filter:blur(5px);padding:9px 16px;border-radius:999px;border:1px solid rgba(16,66,30,.16);
-  transition:opacity .4s ease;pointer-events:none;white-space:nowrap;animation:bb-hintpulse 2.2s ease-in-out infinite}
-.bb-story .thint.off{opacity:0;animation:none}
+  background:var(--bb-page-bg) center/cover no-repeat}
+.bb-story .tstage.has-bite-cursor{cursor:none}
+.bb-story .tstage.has-bite-cursor *{cursor:none}
+.bb-bite-cursor{position:fixed;left:0;top:0;width:44px;height:auto;max-width:none;z-index:2147483646;pointer-events:none;
+  opacity:0;visibility:hidden;display:block;will-change:transform;transform:translate3d(-120px,-120px,0) translate(-50%,-50%);
+  filter:drop-shadow(0 10px 14px rgba(20,46,16,.45));transition:opacity .15s ease,visibility .15s ease}
+.bb-bite-cursor.on{opacity:1;visibility:visible}
 @keyframes bb-hintpulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.05)}}
 .bb-story .thead-overlay{position:absolute;z-index:8;top:calc(clamp(20px,5vh,52px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity,transform;padding:0 16px}
 .bb-story .thead-overlay .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
 .bb-story .thead-overlay h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(26px,5.4vw,54px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
 .bb-story .persp{perspective:1300px;perspective-origin:50% 38%;width:min(620px,92vw)}
 .bb-story .card3d{position:relative;transform-style:preserve-3d;will-change:transform;background:var(--white);border-radius:22px;padding:10px 0 4px;
-  box-shadow:0 60px 110px rgba(20,46,16,.45), 0 18px 40px rgba(20,46,16,.3)}
+  box-shadow:0 60px 110px rgba(20,46,16,.45), 0 18px 40px rgba(20,46,16,.3);transform:rotateX(14deg) scale(1.12);
+  transition:box-shadow .45s cubic-bezier(.22,.9,.3,1)}
+.bb-story .card3d.is-flat{box-shadow:0 36px 70px rgba(20,46,16,.38), 0 12px 28px rgba(20,46,16,.22)}
 .bb-story .card3d .chead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:clamp(12px,1.8vh,16px) clamp(16px,3.4vw,26px) clamp(10px,1.6vh,14px);border-bottom:3px solid var(--forest-2)}
 .bb-story .card3d .chead .t{font-weight:800;font-size:clamp(16px,2.6vw,24px);color:var(--forest-2)}
 .bb-story .card3d .chead .u{font-weight:800;font-size:clamp(12px,1.8vw,16px);color:var(--forest-2);white-space:nowrap}
 .bb-story .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:clamp(11px,2.1vh,19px) clamp(16px,3.4vw,26px);border-bottom:1.5px solid rgba(16,66,30,.18);
-  opacity:.28;transition:background .35s ease,opacity .5s ease}
+  position:relative;z-index:1;opacity:1;transform:translate3d(0,0,0) scale(1);transform-style:preserve-3d;
+  transition:background .35s ease,transform .38s cubic-bezier(.22,.9,.3,1),box-shadow .38s cubic-bezier(.22,.9,.3,1)}
 .bb-story .row:last-child{border-bottom:none;border-radius:0 0 22px 22px}
 .bb-story .row .lab{font-weight:600;font-size:clamp(14px,2vw,19px);color:var(--forest-2)}
-.bb-story .row .val{font-weight:700;font-size:clamp(14px,2vw,19px);color:var(--forest-2);font-variant-numeric:tabular-nums;white-space:nowrap}
-.bb-story .row.on{background:rgba(116,193,87,.18)}
-.bb-story .row.on .lab{font-weight:800}
-.bb-story .row.done{opacity:1}
-.bb-story .row.done .val{color:var(--forest)}
-.bb-story .faller{position:absolute;left:50%;top:0;width:clamp(48px,9vw,74px);z-index:4;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 14px 14px rgba(20,46,16,.38))}
-.bb-story .fshadow{position:absolute;left:50%;width:clamp(42px,8vw,64px);height:12px;border-radius:50%;background:rgba(16,50,18,.3);z-index:3;pointer-events:none;will-change:transform,opacity;filter:blur(3px)}
-.bb-story .card3d.jolt{animation:bb-jolt .42s cubic-bezier(.3,.7,.3,1)}
-@keyframes bb-jolt{0%{margin-top:0}30%{margin-top:7px}65%{margin-top:-3px}100%{margin-top:0}}
-.bb-story .crumb{position:absolute;z-index:5;pointer-events:none;border-radius:46% 54% 58% 42%/50% 44% 56% 50%;will-change:transform,opacity;box-shadow:0 1px 2px rgba(20,46,16,.3)}
+.bb-story .row .val{font-weight:700;font-size:clamp(14px,2vw,19px);color:var(--forest);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (hover:hover) and (pointer:fine){
+  .bb-story .row:hover{z-index:3;background:rgba(116,193,87,.22);transform:translate3d(0,-10px,36px) scale(1.035);
+    box-shadow:0 22px 40px rgba(20,46,16,.28),0 4px 10px rgba(20,46,16,.12)}
+  .bb-story .row:hover .lab{font-weight:800}
+}
+@media (prefers-reduced-motion:reduce){
+  .bb-story .row{transition:background .2s ease,box-shadow .2s ease}
+  .bb-story .row:hover{transform:translate3d(0,-4px,12px) scale(1.01)}
+}
 
 /* ================= ACT 3: dive into the pouch ================= */
 /* stays a single screen until the user clicks "Dive in" — then the runway
@@ -275,7 +279,8 @@ const css = `
   .bb-story .cap .kicker{margin-bottom:8px;font-size:11px}
   .bb-story .cap .type{min-height:6.8em;font-size:13px;line-height:1.6;max-width:none}
   .bb-story .keepscroll{font-size:9px;letter-spacing:.22em}
-  .bb-story .taphint,.bb-story .thint{font-size:10px;padding:7px 12px}
+  .bb-story .taphint{font-size:10px;padding:7px 12px}
+  .bb-story .card3d{transform:rotateX(11deg) scale(1.02)}
 
   .bb-story .persp{perspective:980px;perspective-origin:50% 34%;width:min(440px,94vw)}
   .bb-story .card3d{border-radius:18px}
@@ -309,7 +314,6 @@ const css = `
   .bb-story .card3d .chead .u{font-size:11px}
   .bb-story .row{padding:10px 14px}
   .bb-story .row .lab,.bb-story .row .val{font-size:13.5px}
-  .bb-story .faller{width:44px}
 
   .bb-story .drop .idx{font-size:10px;margin-bottom:8px}
   .bb-story .stamp{width:100px;height:100px}
@@ -342,7 +346,7 @@ const css = `
   .bb-story .row{padding:7px 18px}
   .bb-story .row .lab,.bb-story .row .val{font-size:13px}
   .bb-story .card3d .chead{padding:9px 18px 8px}
-  .bb-story .faller{width:40px}
+  .bb-story .card3d{transform:rotateX(10deg) scale(1)}
 
   .bb-story .shead{top:calc(8px + var(--safe-t))}
   .bb-story .shead h2{font-size:20px;margin-top:4px}
@@ -539,190 +543,224 @@ export default function BoxBitesHello() {
       })
     })()
 
-    /* ================= ACT 2: nutrition table + falling biscuit + crumbs ================= */
+    /* ================= ACT 2: nutrition table + branded bite cursor ================= */
     ;(() => {
       const tz = $('bb-tz'); if (!tz) return
       const tstage = tz.querySelector('.tstage') as HTMLElement
       const card = $('bb-card3d') as HTMLElement
-      const faller = $('bb-faller') as HTMLImageElement
-      const fshadow = $('bb-fshadow') as HTMLElement
-      const overlay = $('bb-theadOverlay') as HTMLElement
-      const thint = $('bb-thint') as HTMLElement
-      const rows = Array.from(card?.querySelectorAll('.row') ?? []) as HTMLElement[]
-      if (!tstage || !card || !faller) return
+      if (!tstage || !card) return
+      const rows = Array.from(card.querySelectorAll('.row')) as HTMLElement[]
 
-      /* click-driven: each tap drops the biscuit one row further */
-      let vw = 0, vh = 0, mobile = false, short = false, rowY: number[] = [], cardH = 1, landed = -1, raf = 0
-      let clicks = -1, targetIdx = -1.6
-      const cur = { idx: -1.6, rx: 52, s: 0.8 }
-      const measure = () => {
-        vw = tstage.clientWidth; vh = tstage.clientHeight
+      /* ---- card tilt: default perspective → straight while a row is hovered ---- */
+      let pose = { rx: 14, s: 1.12 }
+      let poseTgt = { rx: 14, s: 1.12 }
+      let flat = false
+      let poseRaf = 0
+      let mobile = false
+
+      const measurePose = () => {
+        const vw = tstage.clientWidth
+        const vh = tstage.clientHeight
         mobile = vw < 760
-        short = vh < 560
-        cardH = card.offsetHeight
-        rowY = rows.map((r) => r.offsetTop + r.offsetHeight / 2)
-      }
-      const idxToY = (idx: number) => {
-        if (idx <= 0) {
-          const top = -cardH * 0.34, y0 = rowY[0] || 0
-          return top + (y0 - top) * clamp((idx + 1.6) / 1.6, 0, 1)
-        }
-        const i = Math.floor(idx), f = idx - i
-        const a = rowY[Math.min(i, 5)] || 0, b = rowY[Math.min(i + 1, 5)] ?? a
-        return a + (b - a) * f
-      }
-      const countUp = (row: HTMLElement) => {
-        const to = Number(row.dataset.to), dec = Number(row.dataset.dec), unit = row.dataset.unit || ''
-        const val = row.querySelector('.val') as HTMLElement
-        if (!val) return
-        if (reduced) { val.textContent = `${to.toFixed(dec)}${unit}`; return }
-        let t0: number | null = null
-        const dur = 900
-        const step = (ts: number) => {
-          if (!t0) t0 = ts
-          const p = Math.min((ts - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3)
-          val.textContent = `${(to * e).toFixed(dec)}${unit}`
-          if (p < 1) requestAnimationFrame(step)
-        }
-        requestAnimationFrame(step)
-      }
-
-      /* crumb particles */
-      type Crumb = { el: HTMLElement; x: number; y: number; vx: number; vy: number; rot: number; vr: number; life: number }
-      let crumbs: Crumb[] = []
-      let crumbRaf: number | null = null
-      const COLORS = ['#5a3a22', '#7a4a26', '#3a2417', '#c9a25e', '#e7d4a6', '#8a5a2e']
-      const stepCrumbs = () => {
-        crumbRaf = null
-        for (let i = crumbs.length - 1; i >= 0; i--) {
-          const c = crumbs[i]
-          c.vy += 0.32; c.x += c.vx; c.y += c.vy; c.rot += c.vr; c.life -= 0.022
-          if (c.life <= 0) { c.el.remove(); crumbs.splice(i, 1); continue }
-          c.el.style.transform = `translate(-50%,-50%) translateZ(48px) translate(${c.x}px,${c.y}px) rotate(${c.rot}deg)`
-          c.el.style.opacity = `${Math.min(1, c.life * 1.6)}`
-        }
-        if (crumbs.length) crumbRaf = requestAnimationFrame(stepCrumbs)
-      }
-      const burst = (x: number, y: number) => {
-        if (reduced) return
-        const n = (mobile ? 7 : 10) + Math.floor(Math.random() * (mobile ? 3 : 5))
-        for (let i = 0; i < n; i++) {
-          const el = document.createElement('span')
-          el.className = 'crumb'
-          const sz = 3 + Math.random() * 5.5
-          el.style.width = `${sz}px`
-          el.style.height = `${sz * (0.7 + Math.random() * 0.5)}px`
-          el.style.background = COLORS[(Math.random() * COLORS.length) | 0]
-          el.style.left = '0px'; el.style.top = '0px'
-          card.appendChild(el)
-          const ang = Math.PI * (1.05 + Math.random() * 0.9)
-          const sp = 2.2 + Math.random() * 3.4
-          crumbs.push({ el, x: x + (Math.random() * 30 - 15), y: y + 8,
-            vx: Math.cos(ang) * sp, vy: -Math.abs(Math.sin(ang)) * sp * 1.25 - 1.2,
-            rot: Math.random() * 360, vr: Math.random() * 14 - 7, life: 1 })
-        }
-        if (!crumbRaf) crumbRaf = requestAnimationFrame(stepCrumbs)
-      }
-      cleanup.push(() => { if (crumbRaf) cancelAnimationFrame(crumbRaf); crumbs.forEach((c) => c.el.remove()); crumbs = [] })
-
-      const setLanded = (n: number) => {
-        if (n === landed) return
-        const prev = landed
-        landed = n
-        rows.forEach((r, i) => { r.classList.toggle('on', i === n); r.classList.toggle('done', i <= n && n >= 0) })
-        if (n > prev) for (let i = Math.max(prev + 1, 0); i <= n; i++) countUp(rows[i])
-        if (n >= 0 && n > prev && !reduced) {
-          card.classList.remove('jolt'); void card.offsetWidth; card.classList.add('jolt')
-          burst(card.offsetWidth / 2, rowY[n])
-        }
-      }
-      /* the page holds here: once the table fills the screen, scrolling is
-         locked until every row has been tapped through */
-      let locked = false, released = false
-      const unlock = () => {
-        if (released) return
-        released = true
-        locked = false
-        document.body.style.overflow = ''
-        getLenis()?.start()
-        if (thint) { thint.textContent = 'Nice — keep scrolling'; thint.classList.remove('off') }
-        window.setTimeout(() => thint?.classList.add('off'), 2600)
-      }
-      const watchArrival = () => {
-        if (locked || released) return
-        const r = tz.getBoundingClientRect()
-        if (r.top <= vh * 0.12 && r.bottom >= vh * 0.5) {
-          locked = true
-          getLenis()?.scrollTo(window.scrollY + r.top, { immediate: true })
-          getLenis()?.stop()
-          document.body.style.overflow = 'hidden'
-        }
-      }
-      window.addEventListener('scroll', watchArrival, { passive: true })
-      cleanup.push(() => {
-        window.removeEventListener('scroll', watchArrival)
-        if (locked && !released) {
-          document.body.style.overflow = ''
-          getLenis()?.start()
-        }
-      })
-
-      /* each tap advances the biscuit one row; the camera settles in as it goes */
-      const onTap = () => {
-        if (clicks >= 5) return
-        clicks++
-        targetIdx = clicks
-        if (thint) thint.classList.add('off')
-        /* all six rows tapped — release the scroll after the last count-up */
-        if (clicks === 5) window.setTimeout(unlock, 1400)
-      }
-      tstage.addEventListener('click', onTap)
-      cleanup.push(() => tstage.removeEventListener('click', onTap))
-
-      const render = () => {
-        const camTgt = clicks < 0
-          ? { rx: 26, s: 1.06 }
-          : { rx: Math.max(15 - clicks * 1.6, 7), s: 1.32 }
-        const k = reduced ? 1 : 0.1
-        cur.idx += (targetIdx - cur.idx) * k; cur.rx += (camTgt.rx - cur.rx) * k; cur.s += (camTgt.s - cur.s) * k
-        /* fire the landing (count-up, jolt, crumbs) once the biscuit arrives */
-        if (clicks >= 0 && landed < clicks && targetIdx - cur.idx < 0.09) setLanded(clicks)
-        /* cap the zoom so the WHOLE card (header to Sodium) always fits on
-           screen — the camera never follows the biscuit out of view */
+        const short = vh < 560
+        const cardH = card.offsetHeight
         const fitCap = (vh * 0.86) / Math.max(cardH, 1)
         const sCap = Math.min(mobile ? 1.04 : short ? 1.0 : Infinity, fitCap)
-        const s = Math.min(cur.s, sCap)
-        const rx = mobile ? cur.rx * 0.8 : cur.rx
-        card.style.transform = `rotateX(${rx}deg) scale(${s})`
-        const y = idxToY(cur.idx)
-        const falling = Math.abs(targetIdx - cur.idx)
-        const squash = clamp(1 - falling * 0.16, 0.86, 1)
-        const seen = clamp((cur.idx + 1.6) / 0.9, 0, 1)
-        faller.style.top = `${y}px`
-        faller.style.opacity = `${seen}`
-        faller.style.transform = `translate(-50%,-50%) translateZ(46px) rotate(${Math.sin(cur.idx * 2.2) * 6}deg) scale(${2 - squash},${squash})`
-        if (fshadow) {
-          const h = clamp(falling, 0, 1)
-          fshadow.style.top = `${y + (mobile ? 24 : 34)}px`
-          fshadow.style.transform = `translateX(-50%) scale(${1 + h * 0.7})`
-          fshadow.style.opacity = `${seen * (0.85 - h * 0.45)}`
+        const tiltedS = Math.min(mobile ? 1.02 : short ? 1.0 : 1.12, sCap)
+        const flatS = Math.min(mobile ? 1.0 : short ? 0.98 : 1.08, sCap)
+        const tiltedRx = mobile ? 11 : short ? 10 : 14
+        poseTgt = flat
+          ? { rx: 0, s: flatS }
+          : { rx: tiltedRx, s: tiltedS }
+        if (reduced) {
+          pose = { ...poseTgt }
+          applyPose()
+        } else if (!poseRaf) {
+          poseRaf = requestAnimationFrame(tickPose)
         }
-        if (overlay) {
-          const o = clamp((cur.idx - 2.4) / 1.2, 0, 1)
-          overlay.style.opacity = `${1 - o}`
-          overlay.style.transform = `translateY(${-o * 30}px)`
+      }
+
+      const applyPose = () => {
+        card.style.transform = `rotateX(${pose.rx}deg) scale(${pose.s})`
+      }
+
+      const tickPose = () => {
+        poseRaf = 0
+        const k = reduced ? 1 : 0.14
+        pose.rx += (poseTgt.rx - pose.rx) * k
+        pose.s += (poseTgt.s - pose.s) * k
+        applyPose()
+        if (Math.abs(poseTgt.rx - pose.rx) > 0.05 || Math.abs(poseTgt.s - pose.s) > 0.001) {
+          poseRaf = requestAnimationFrame(tickPose)
+        } else {
+          pose = { ...poseTgt }
+          applyPose()
         }
-        raf = requestAnimationFrame(render)
       }
-      measure(); render()
-      /* row positions depend on the loaded web fonts — re-measure once they
-         arrive, otherwise the biscuit lands between rows on first paint */
-      if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
-        ;(document as any).fonts.ready.then(() => measure()).catch(() => {})
+
+      const setFlat = (next: boolean) => {
+        if (flat === next) return
+        flat = next
+        card.classList.toggle('is-flat', flat)
+        measurePose()
       }
-      makeViewportWatcher(() => measure())
+
+      measurePose()
+      makeViewportWatcher(measurePose)
+      if (typeof document !== 'undefined' && document.fonts?.ready) {
+        document.fonts.ready.then(() => measurePose()).catch(() => {})
+      }
+
+      /* ---- row hover: lift + straighten table ---- */
+      let hoveredRow: HTMLElement | null = null
+      const onRowEnter = (e: PointerEvent) => {
+        const row = e.currentTarget as HTMLElement
+        if (hoveredRow === row) return
+        hoveredRow = row
+        setFlat(true)
+      }
+      const onRowLeave = (e: PointerEvent) => {
+        const row = e.currentTarget as HTMLElement
+        if (hoveredRow !== row) return
+        hoveredRow = null
+        /* only tilt back if no other row is still hovered */
+        const still = rows.find((r) => r.matches(':hover'))
+        if (still) {
+          hoveredRow = still
+          setFlat(true)
+          return
+        }
+        setFlat(false)
+      }
+      rows.forEach((row) => {
+        row.addEventListener('pointerenter', onRowEnter)
+        row.addEventListener('pointerleave', onRowLeave)
+      })
       cleanup.push(() => {
-        cancelAnimationFrame(raf)
+        rows.forEach((row) => {
+          row.removeEventListener('pointerenter', onRowEnter)
+          row.removeEventListener('pointerleave', onRowLeave)
+        })
+        if (poseRaf) cancelAnimationFrame(poseRaf)
+      })
+
+      /* Custom bite cursor — create outside React so Strict Mode remounts
+         don't orphan/remove the img. Body portal keeps position:fixed working
+         under ProductViewport transforms. */
+      const canUseCursor = () => {
+        if (window.matchMedia('(pointer: coarse)').matches) return false
+        if (window.matchMedia('(max-width: 760px)').matches) return false
+        if (!window.matchMedia('(pointer: fine)').matches) return false
+        if (navigator.maxTouchPoints > 0 && window.matchMedia('(hover: none)').matches) return false
+        return true
+      }
+
+      const cursor = document.createElement('img')
+      cursor.className = 'bb-bite-cursor'
+      cursor.src = BITE
+      cursor.alt = ''
+      cursor.setAttribute('aria-hidden', 'true')
+      cursor.decoding = 'async'
+      document.body.appendChild(cursor)
+
+      let enabled = canUseCursor()
+      let visible = false
+      let grow = false
+      let mx = 0
+      let my = 0
+      let cx = 0
+      let cy = 0
+      let raf = 0
+
+      const applyCursor = () => {
+        const sc = grow ? 1.22 : 1
+        cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%) scale(${sc})`
+      }
+
+      const tick = () => {
+        raf = 0
+        if (!visible || !enabled) return
+        const k = reduced ? 1 : 0.32
+        cx += (mx - cx) * k
+        cy += (my - cy) * k
+        applyCursor()
+        if (!reduced && (Math.abs(mx - cx) > 0.15 || Math.abs(my - cy) > 0.15)) {
+          raf = requestAnimationFrame(tick)
+        }
+      }
+
+      const show = () => {
+        if (!enabled || visible) return
+        visible = true
+        tstage.classList.add('has-bite-cursor')
+        cursor.classList.add('on')
+        cx = mx
+        cy = my
+        applyCursor()
+      }
+
+      const hide = () => {
+        if (!visible) return
+        visible = false
+        grow = false
+        tstage.classList.remove('has-bite-cursor')
+        cursor.classList.remove('on')
+        if (raf) { cancelAnimationFrame(raf); raf = 0 }
+      }
+
+      const onMove = (e: PointerEvent) => {
+        if (!enabled) return
+        mx = e.clientX
+        my = e.clientY
+        if (!visible) show()
+        const target = e.target as Element | null
+        grow = !!target?.closest('a, button, [role="button"], .row')
+        if (reduced) {
+          cx = mx
+          cy = my
+          applyCursor()
+          return
+        }
+        if (!raf) raf = requestAnimationFrame(tick)
+      }
+
+      const onEnter = (e: PointerEvent) => {
+        if (!enabled) return
+        mx = e.clientX
+        my = e.clientY
+        show()
+      }
+
+      const onLeave = () => {
+        hide()
+        hoveredRow = null
+        setFlat(false)
+      }
+
+      const syncEnabled = () => {
+        const next = canUseCursor()
+        if (next === enabled) return
+        enabled = next
+        if (!enabled) hide()
+      }
+
+      tstage.addEventListener('pointerenter', onEnter)
+      tstage.addEventListener('pointerleave', onLeave)
+      tstage.addEventListener('pointermove', onMove)
+      const mqCoarse = window.matchMedia('(pointer: coarse)')
+      const mqNarrow = window.matchMedia('(max-width: 760px)')
+      const onMq = () => syncEnabled()
+      mqCoarse.addEventListener?.('change', onMq)
+      mqNarrow.addEventListener?.('change', onMq)
+      cleanup.push(() => {
+        hide()
+        tstage.removeEventListener('pointerenter', onEnter)
+        tstage.removeEventListener('pointerleave', onLeave)
+        tstage.removeEventListener('pointermove', onMove)
+        mqCoarse.removeEventListener?.('change', onMq)
+        mqNarrow.removeEventListener?.('change', onMq)
+        if (raf) cancelAnimationFrame(raf)
+        cursor.remove()
       })
     })()
 
@@ -1062,18 +1100,15 @@ export default function BoxBitesHello() {
           </div>
           <div className="persp">
             <div className="card3d" id="bb-card3d">
-              <img className="faller" id="bb-faller" src={BITE} alt="" aria-hidden="true" />
-              <div className="fshadow" id="bb-fshadow"></div>
               <div className="chead"><span className="t">Nutrition Facts</span><span className="u">Per 100g</span></div>
-              <div className="row" data-to="507" data-dec="0" data-unit=" kcal"><span className="lab">Energy</span><span className="val">0 kcal</span></div>
-              <div className="row" data-to="57.8" data-dec="1" data-unit=" g"><span className="lab">Carbohydrate</span><span className="val">0 g</span></div>
-              <div className="row" data-to="6.9" data-dec="1" data-unit=" g"><span className="lab">Protein</span><span className="val">0 g</span></div>
-              <div className="row" data-to="26.8" data-dec="1" data-unit=" g"><span className="lab">Fat</span><span className="val">0 g</span></div>
-              <div className="row" data-to="24.6" data-dec="1" data-unit=" g"><span className="lab">Total Sugars</span><span className="val">0 g</span></div>
-              <div className="row" data-to="469" data-dec="0" data-unit=" mg"><span className="lab">Sodium</span><span className="val">0 mg</span></div>
+              <div className="row" data-to="507" data-dec="0" data-unit=" kcal"><span className="lab">Energy</span><span className="val">507 kcal</span></div>
+              <div className="row" data-to="57.8" data-dec="1" data-unit=" g"><span className="lab">Carbohydrate</span><span className="val">57.8 g</span></div>
+              <div className="row" data-to="6.9" data-dec="1" data-unit=" g"><span className="lab">Protein</span><span className="val">6.9 g</span></div>
+              <div className="row" data-to="26.8" data-dec="1" data-unit=" g"><span className="lab">Fat</span><span className="val">26.8 g</span></div>
+              <div className="row" data-to="24.6" data-dec="1" data-unit=" g"><span className="lab">Total Sugars</span><span className="val">24.6 g</span></div>
+              <div className="row" data-to="469" data-dec="0" data-unit=" mg"><span className="lab">Sodium</span><span className="val">469 mg</span></div>
             </div>
           </div>
-          <div className="thint" id="bb-thint">Tap to drop the bite</div>
         </div>
       </section>
 

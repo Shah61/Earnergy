@@ -27,8 +27,8 @@ const css = `
 }
 .ks-root *{box-sizing:border-box;margin:0;padding:0}
 
-.ks-zone{position:relative;height:1200vh}
-.ks-stage{position:relative;height:100svh;width:100%;overflow:hidden;background:var(--cream);cursor:pointer}
+.ks-zone{position:relative;height:160vh}
+.ks-stage{position:relative;height:100svh;width:100%;overflow:hidden;background:var(--cream)}
 .ks-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:60;
   background:radial-gradient(80% 72% at 50% 50%, transparent 60%, rgba(20,10,4,.26) 100%)}
 
@@ -47,6 +47,7 @@ const css = `
 .ks-photo.card{height:min(48vh,430px);border-radius:18px;box-shadow:0 34px 60px rgba(20,10,4,.35)}
 .ks-prep{font-family:"JetBrains Mono",monospace;font-size:clamp(13px,1.6vw,16px);letter-spacing:.06em;opacity:.85;max-width:42ch}
 .ks-handoff .ks-claim{font-size:clamp(34px,5.6vw,76px)}
+.ks-handoff .ks-sub{cursor:pointer}
 
 /* parallax bean layers */
 .ks-par{position:absolute;top:0;left:0;height:100%;width:100%;pointer-events:none;will-change:transform}
@@ -74,6 +75,20 @@ const css = `
 .ks-hint{position:absolute;z-index:55;bottom:clamp(16px,4vh,32px);left:50%;transform:translateX(-50%);
   font-family:"Anton",sans-serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--esp-2);
   opacity:.75;transition:opacity .4s ease}
+
+.ks-nav{position:absolute;z-index:65;bottom:clamp(20px,4vh,36px);left:50%;transform:translateX(-50%);
+  display:flex;gap:18px;align-items:center;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.ks-nav.open{opacity:1;pointer-events:auto}
+.ks-nav-btn{width:52px;height:52px;border-radius:50%;border:2px solid var(--esp);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;background:transparent;color:var(--esp);padding:0;
+  transition:transform .2s ease,opacity .2s ease,background .2s ease}
+.ks-nav-btn:hover:not(:disabled){transform:scale(1.06)}
+.ks-nav-btn:active:not(:disabled){transform:scale(.96)}
+.ks-nav-btn--prev{background:var(--esp);border-color:var(--esp);color:#fff;box-shadow:0 4px 16px rgba(20,10,4,.28)}
+.ks-nav-btn--next{background:var(--cream-lt);border-color:var(--esp);color:var(--esp);box-shadow:0 4px 16px rgba(20,10,4,.18)}
+.ks-nav-btn--next:hover:not(:disabled){background:#fff}
+.ks-nav-btn:disabled{opacity:.32;cursor:not-allowed}
+.ks-nav-btn svg{width:18px;height:18px;display:block}
 
 @media (max-width:780px){
   .ks-panel{width:88vw;padding:6vh 5vw}
@@ -123,14 +138,67 @@ export default function KofeHello() {
     makeBeans(parFront, reduced ? 3 : 7, 1.45, [60, 130])
     cleanup.push(() => beans.forEach((b) => b.el.remove()))
 
-    const CUP_END = 0.30
-    const SPLIT_END = 0.42
-    const DOLLY_START = 0.42
+    const CUP_END = 0.22
+    const SPLIT_END = 0.34
     const BG_START = 2
     const BG_END = 102
 
     let vw = 0, vh = 0, trackW = 0, zoneStart = 0, targetP = 0, raf = 0
+    let panelIndex = 0
+    let targetPanelX = 0
     const cur = { bg: BG_START, sc: 1, door: 0, x: 0 }
+    const panelCount = track.children.length
+
+    const nav = $('ks-nav')
+    const prevBtn = $('ks-prev') as HTMLButtonElement | null
+    const nextBtn = $('ks-next') as HTMLButtonElement | null
+
+    const panelX = (idx: number) => {
+      const maxX = Math.max(trackW - vw, 0)
+      if (panelCount <= 1) return 0
+      return -idx * (maxX / (panelCount - 1))
+    }
+
+    const updateNav = () => {
+      if (!nav || !prevBtn || !nextBtn) return
+      const open = cur.door > 0.85
+      const onHandoff = panelIndex >= panelCount - 1
+      nav.classList.toggle('open', open)
+      prevBtn.disabled = panelIndex <= 0
+      nextBtn.disabled = onHandoff
+      stage.style.cursor = open && onHandoff ? 'pointer' : ''
+    }
+
+    const scrollToIngredients = () => {
+      const ingredients = document.getElementById('gd-zone')
+      if (ingredients) getLenis()?.scrollTo(ingredients, { duration: 0.85 })
+    }
+
+    const onStageClick = (e: MouseEvent) => {
+      if (panelIndex !== panelCount - 1 || cur.door < 0.85) return
+      const target = e.target as Element
+      if (target.closest('.ks-nav')) return
+      scrollToIngredients()
+    }
+
+    const goToPanel = (idx: number) => {
+      panelIndex = clamp(idx, 0, panelCount - 1)
+      targetPanelX = panelX(panelIndex)
+      updateNav()
+    }
+
+    const onPrev = () => goToPanel(panelIndex - 1)
+    const onNext = () => goToPanel(panelIndex + 1)
+
+    prevBtn?.addEventListener('click', onPrev)
+    nextBtn?.addEventListener('click', onNext)
+    stage.addEventListener('click', onStageClick)
+    cleanup.push(() => {
+      prevBtn?.removeEventListener('click', onPrev)
+      nextBtn?.removeEventListener('click', onNext)
+      stage.removeEventListener('click', onStageClick)
+      stage.style.cursor = ''
+    })
     const fit = () => {
       vw = stage.clientWidth; vh = stage.clientHeight
       trackW = track.scrollWidth
@@ -171,7 +239,7 @@ export default function KofeHello() {
       }
       /* lower smoothing = slower, calmer glide between stories */
       // Tune these two values to make the story feel slower/more readable.
-      const STORY_MOTION_K = reduced ? 1 : 0.03
+      const STORY_MOTION_K = reduced ? 1 : 0.06
       const p = targetP, k = STORY_MOTION_K
       const t = reduced ? 0 : Date.now()
 
@@ -181,9 +249,8 @@ export default function KofeHello() {
       const scTgt = 1 + mt * 0.07
       /* phase 2: split gate only after cup reaches é */
       const dt = p < CUP_END ? 0 : smooth(clamp((p - CUP_END) / (SPLIT_END - CUP_END), 0, 1))
-      /* phase 3: dolly after split */
-      const gp = smooth(clamp((p - DOLLY_START) / (1 - DOLLY_START), 0, 1))
-      const xTgt = -gp * Math.max(trackW - vw, 0)
+      /* horizontal gallery is button-controlled only */
+      const xTgt = targetPanelX
 
       cur.bg += (bgTgt - cur.bg) * k
       cur.sc += (scTgt - cur.sc) * k
@@ -214,7 +281,8 @@ export default function KofeHello() {
         b.el.style.rotate = `${rot}deg`
       }
 
-      if (hint) hint.style.opacity = p < 0.05 ? '0.75' : '0'
+      if (hint) hint.style.opacity = p < 0.05 && cur.door < 0.1 ? '0.75' : '0'
+      updateNav()
       raf = requestAnimationFrame(render)
     }
 
@@ -225,32 +293,16 @@ export default function KofeHello() {
       fit()
       measureZoneStart()
       onScroll()
+      targetPanelX = panelX(panelIndex)
     }
     const resetStage = () => {
       stage.style.transform = ''
     }
 
-    /* tap anywhere: glide to the next story (scrolling still works too) */
-    const panelCount = track.children.length
-    const snaps: number[] = []
-    for (let i = 0; i < panelCount; i++) snaps.push(DOLLY_START + (1 - DOLLY_START) * (i / Math.max(panelCount - 1, 1)))
-    const onTap = () => {
-      const p = progress()
-      const next = snaps.find((s) => s > p + 0.012)
-      const lenis = getLenis()
-      if (next !== undefined) {
-        lenis?.scrollTo(zoneStart + next * scrollRange(), { duration: 2.4 })
-      } else {
-        /* past the last story — move on to the next page */
-        lenis?.scrollTo(zoneStart + scrollRange() + vh * 0.9, { duration: 2.0 })
-      }
-    }
-    stage.addEventListener('click', onTap)
-    cleanup.push(() => stage.removeEventListener('click', onTap))
-
     fit()
     measureZoneStart()
     onScroll()
+    goToPanel(0)
     render()
 
     cleanup.push(subscribeToScroll(onScroll))
@@ -307,7 +359,7 @@ export default function KofeHello() {
               <div className="ks-panel dark ks-handoff">
                 <div className="ks-kick">next</div>
                 <div className="ks-claim">Now — the ten ingredients.</div>
-                <div className="ks-sub">tap or keep scrolling to dive in</div>
+                <div className="ks-sub">Click anywhere to see the ingredients</div>
               </div>
 
             </div>
@@ -328,7 +380,20 @@ export default function KofeHello() {
             <div className="ks-gsub">Spanish Latte · with prebiotics + probiotics</div>
           </div>
 
-          <div className="ks-hint" id="ks-hint">Scroll · or tap to step through</div>
+          <div className="ks-hint" id="ks-hint">Scroll to reveal</div>
+
+          <nav className="ks-nav" id="ks-nav" aria-label="Gallery navigation">
+            <button type="button" className="ks-nav-btn ks-nav-btn--prev" id="ks-prev" aria-label="Previous panel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="15 6 9 12 15 18" />
+              </svg>
+            </button>
+            <button type="button" className="ks-nav-btn ks-nav-btn--next" id="ks-next" aria-label="Next panel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="9 6 15 12 9 18" />
+              </svg>
+            </button>
+          </nav>
         </div>
       </section>
     </div>

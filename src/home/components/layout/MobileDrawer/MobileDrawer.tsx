@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { NAV_ITEMS } from "@home/constants/navigation";
-import { ROUTES } from "@home/constants/routes";
+import { JOIN_US_CTA, NAV_ITEMS } from "@home/constants/navigation";
 
 type MobileDrawerProps = {
   onClose: () => void;
@@ -22,8 +21,8 @@ export function MobileDrawer({ onClose }: MobileDrawerProps) {
             </a>
           ),
         )}
-        <Link to={ROUTES.contact} className="pill" onClick={onClose}>
-          Contact Us
+        <Link to={JOIN_US_CTA.href} className="pill" onClick={onClose}>
+          {JOIN_US_CTA.label}
         </Link>
       </aside>
     </>
