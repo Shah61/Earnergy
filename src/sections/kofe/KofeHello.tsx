@@ -4,7 +4,7 @@ const IMAGE_BRAND = 'photos/kofeWallpaper.jpeg' // dark brand card (kofé / preb
 const IMAGE_BEANS = '/arabica.png' // coffee beans cutout (parallax drift)
 
 import { useEffect } from 'react'
-import { getLenis, getScrollRoot, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
+import { getLenis, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
 
 const CLAIMS = [
@@ -203,16 +203,13 @@ export default function KofeHello() {
       vw = stage.clientWidth; vh = stage.clientHeight
       trackW = track.scrollWidth
     }
+    /* Measure against the scroll *content* element, not the active Lenis root:
+       this effect runs before ProductViewport swaps the Lenis root on product
+       switch, and the kofe panel can still hold last visit's scroll offset.
+       A rect difference cancels any scroll/transform, so the result is stable. */
     const measureZoneStart = () => {
-      const root = getScrollRoot()
-      const scrollY = getScrollY()
-      if (root.type === 'element') {
-        const w = root.wrapper.getBoundingClientRect()
-        const z = zone.getBoundingClientRect()
-        zoneStart = scrollY + (z.top - w.top)
-      } else {
-        zoneStart = scrollY + zone.getBoundingClientRect().top
-      }
+      const content = zone.closest<HTMLElement>('.product-kofe-scroll') ?? document.documentElement
+      zoneStart = zone.getBoundingClientRect().top - content.getBoundingClientRect().top
     }
     const scrollRange = () => Math.max(zone.offsetHeight - vh, 1)
     const progress = () => {
