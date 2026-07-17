@@ -182,7 +182,7 @@ export function BoxBitesScroll() {
       </div>
 
       <div
-        className={`fixed bottom-[30px] left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold uppercase tracking-[0.32em] text-[var(--box-cream)] transition-opacity duration-400 ${
+        className={`absolute bottom-[30px] left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold uppercase tracking-[0.32em] text-[var(--box-cream)] transition-opacity duration-400 ${
           hintHidden ? 'pointer-events-none opacity-0' : 'opacity-90'
         }`}
       >

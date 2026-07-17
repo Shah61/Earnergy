@@ -25,6 +25,18 @@
     box-sizing: border-box;
   }
 
+  /* no visible scrollbars anywhere (Windows included) — scrolling still
+     works, the track/thumb just never render, like macOS overlay bars */
+  * {
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* legacy Edge/IE */
+  }
+  *::-webkit-scrollbar {
+    display: none;              /* Chrome / Edge / Safari */
+    width: 0;
+    height: 0;
+  }
+
   html {
     @apply antialiased font-sans;
     background-color: var(--color-ink);

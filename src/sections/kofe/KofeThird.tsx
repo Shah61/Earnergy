@@ -59,7 +59,7 @@ const css = `
 .gd-center{position:relative;text-align:center;flex:0 0 auto}
 .gd-center::before{content:"";position:absolute;left:50%;top:44%;width:130%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
   background:radial-gradient(circle,rgba(201,162,94,.26) 0%,rgba(201,162,94,.1) 45%,transparent 70%);pointer-events:none}
-.gd-center img{position:relative;height:clamp(240px,44vh,480px);width:auto;max-width:36vw;object-fit:contain;
+.gd-center img{position:relative;height:clamp(240px,44vh,480px);width:auto;max-width:36vw;object-fit:contain;margin-left:auto;margin-right:auto;
   filter:drop-shadow(0 32px 40px rgba(20,10,4,.34));animation:gd-bob 6s ease-in-out infinite alternate}
 @keyframes gd-bob{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
 .gd-center .pill{position:relative;display:inline-block;margin-top:clamp(10px,2vh,20px);font-family:"Anton",sans-serif;font-size:clamp(11px,1.2vw,14px);

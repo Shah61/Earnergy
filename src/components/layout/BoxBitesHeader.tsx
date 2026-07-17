@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import { Link } from 'react-router-dom'
 import type { ActiveProduct } from '@/stores/useAppStore'
 
 const LOGO = '/photos/logo2.png'
@@ -64,9 +65,6 @@ const css = `
 @keyframes bbh-logoin{0%{transform:rotate(-160deg) scale(.4);opacity:0}
   70%{transform:rotate(8deg) scale(1.06);opacity:1}100%{transform:rotate(0) scale(1);opacity:1}}
 .bbh-header--scrolled .bbh-logo img{height:32px}
-.bbh-logo:hover img{animation:bbh-wobble .7s ease}
-@keyframes bbh-wobble{0%{transform:rotate(0)}25%{transform:rotate(-6deg) scale(1.04)}
-  55%{transform:rotate(5deg)}80%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
 
 .bbh-products{display:flex;align-items:center;gap:6px;flex:0 0 auto}
 .bbh-product{border:0;background:transparent;cursor:pointer;padding:8px 12px;border-radius:999px;
@@ -161,7 +159,6 @@ const css = `
 @media (prefers-reduced-motion:reduce){
   .bbh-ticker-track{animation:none}
   .bbh-cta .bbh-dot{animation:none}
-  .bbh-logo:hover img{animation:none}
   .bbh-root--in .bbh-logo img{animation:none;transform:none;opacity:1}
   .bbh-root--in .bbh-cta{animation:none;transform:none;opacity:1}
   .bbh-bar,.bbh-links li,.bbh-menu,.bbh-menu a.bbh-mlink{transition-duration:.01s}
@@ -266,13 +263,6 @@ export function BoxBitesHeader({
     }
   }
 
-  const toTop = (e: MouseEvent) => {
-    e.preventDefault()
-    setOpen(false)
-    if (onNavigate) onNavigate('#top')
-    else window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   const pickProduct = (product: ActiveProduct) => {
     setOpen(false)
     onProductChange?.(product)
@@ -297,9 +287,9 @@ export function BoxBitesHeader({
         className={`bbh-header${scrolled || !mounted ? ' bbh-header--scrolled' : ''}${hidden ? ' bbh-header--hidden' : ''}`}
       >
         <nav className="bbh-bar" aria-label="Main">
-          <a className="bbh-logo" href="#top" onClick={toTop} aria-label="Earnergy — back to top">
+          <Link className="bbh-logo" to="/" aria-label="Earnergy — home">
             <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
-          </a>
+          </Link>
 
           <div className="bbh-products" role="tablist" aria-label="Products">
             <button

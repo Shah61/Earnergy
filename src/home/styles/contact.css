@@ -1,0 +1,175 @@
+.contact {
+  --c-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --c-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-x: clip;
+}
+
+/* ── Scroll reveals ── */
+.contact .c-r,
+.contact .c-r-fade,
+.contact .c-r-rise,
+.contact .c-r-slide-l,
+.contact .c-r-slide-r,
+.contact .c-r-scale,
+.contact .c-r-curtain,
+.contact .c-r-curtain-r {
+  opacity: 0;
+  transition:
+    opacity 0.9s var(--c-ease-out),
+    transform 0.9s var(--c-ease-out),
+    filter 0.9s var(--c-ease-out);
+  transition-delay: var(--d, 0s);
+  will-change: opacity, transform, filter;
+}
+
+.contact .c-r,
+.contact .c-r-fade {
+  filter: blur(14px);
+  transform: translateY(32px);
+}
+
+.contact .c-r-rise {
+  transform: translateY(48px);
+}
+
+.contact .c-r-slide-l {
+  transform: translateX(-48px);
+  filter: blur(8px);
+}
+
+.contact .c-r-slide-r {
+  transform: translateX(48px);
+  filter: blur(8px);
+}
+
+.contact .c-r-scale {
+  transform: translateY(28px) scale(0.94);
+  transform-origin: center bottom;
+}
+
+.contact .c-r-curtain,
+.contact .c-r-curtain-r {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  overflow: hidden;
+}
+
+.contact .c-r-curtain img,
+.contact .c-r-curtain-r img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: clip-path 1s var(--c-ease-out), transform 1.2s var(--c-ease-out);
+  transition-delay: var(--d, 0s);
+  transform: scale(1.08);
+}
+
+.contact .c-r-curtain img {
+  clip-path: inset(100% 0 0 0);
+}
+
+.contact .c-r-curtain-r img {
+  clip-path: inset(0 0 0 100%);
+}
+
+.contact .c-r.shown,
+.contact .c-r-fade.shown,
+.contact .c-r-rise.shown,
+.contact .c-r-slide-l.shown,
+.contact .c-r-slide-r.shown,
+.contact .c-r-scale.shown {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.contact .c-r-curtain.shown img,
+.contact .c-r-curtain-r.shown img {
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+}
+
+/* Hero decorative shapes */
+.contact .c-hero-deco {
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 1.1s var(--c-ease-out),
+    transform 1.1s var(--c-ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.contact .c-hero-deco.shown {
+  opacity: 1;
+  transform: scale(1);
+  animation: contactDecoFloat var(--float-dur, 7s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+@keyframes contactDecoFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+
+/* Social buttons pop in */
+.contact .c-social-pop {
+  opacity: 0;
+  transform: translateY(16px) scale(0.85);
+  transition:
+    opacity 0.65s var(--c-ease-out),
+    transform 0.65s var(--c-ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.contact .c-social-pop.shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* CTA arcs draw in */
+.contact .c-cta-arc {
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 1.2s var(--c-ease-out),
+    transform 1.2s var(--c-ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.contact .c-cta-arc.shown {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact .c-r,
+  .contact .c-r-fade,
+  .contact .c-r-rise,
+  .contact .c-r-slide-l,
+  .contact .c-r-slide-r,
+  .contact .c-r-scale,
+  .contact .c-hero-deco,
+  .contact .c-social-pop,
+  .contact .c-cta-arc {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .contact .c-r-curtain img,
+  .contact .c-r-curtain-r img {
+    clip-path: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

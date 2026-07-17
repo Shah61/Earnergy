@@ -1,0 +1,1 @@
+export { DeliveryPartnerHero } from "./DeliveryPartnerHero";

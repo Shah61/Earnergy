@@ -167,8 +167,10 @@ const css = `
   box-shadow:0 16px 34px rgba(16,40,18,.35);transition:opacity .4s ease,transform .2s ease;animation:bb-hintpulse 2.4s ease-in-out infinite}
 .bb-story .divebtn:hover{transform:translateX(-50%) scale(1.05)}
 .bb-story .divebtn.off{opacity:0;pointer-events:none;animation:none}
-/* escape hatch while diving — jumps back out and frees the scroll */
-.bb-story .diveoutbtn{position:fixed;z-index:40;right:calc(clamp(16px,3vw,34px) + var(--safe-r));bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));
+/* escape hatch while diving — jumps back out and frees the scroll.
+   NOTE: absolute (not fixed) — the transformed product-layer ancestor breaks
+   position:fixed; the sticky stage pins anyway, so absolute tracks the screen */
+.bb-story .diveoutbtn{position:absolute;z-index:40;right:calc(clamp(16px,3vw,34px) + var(--safe-r));bottom:calc(clamp(16px,4vh,34px) + var(--safe-b));
   font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--box-cream,#fff);
   background:rgba(16,40,20,.55);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:11px 18px;cursor:pointer;
   opacity:0;pointer-events:none;transition:opacity .4s ease}
