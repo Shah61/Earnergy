@@ -145,6 +145,7 @@ export default function KofeHello() {
 
     let vw = 0, vh = 0, trackW = 0, zoneStart = 0, targetP = 0, raf = 0
     let panelIndex = 0
+    let storyDone = false
     let targetPanelX = 0
     const cur = { bg: BG_START, sc: 1, door: 0, x: 0 }
     const panelCount = track.children.length
@@ -183,6 +184,7 @@ export default function KofeHello() {
 
     const goToPanel = (idx: number) => {
       panelIndex = clamp(idx, 0, panelCount - 1)
+      if (panelIndex >= panelCount - 1) storyDone = true
       targetPanelX = panelX(panelIndex)
       updateNav()
     }
@@ -233,6 +235,13 @@ export default function KofeHello() {
       if (!reduced) {
         updatePin()
         targetP = progress()
+        /* hold the page at the story zone until the last panel has been visited */
+        if (!storyDone) {
+          const maxScroll = zoneStart + scrollRange()
+          if (getScrollY() > maxScroll) {
+            getLenis()?.scrollTo(maxScroll, { immediate: true, force: true })
+          }
+        }
       }
       /* lower smoothing = slower, calmer glide between stories */
       // Tune these two values to make the story feel slower/more readable.
