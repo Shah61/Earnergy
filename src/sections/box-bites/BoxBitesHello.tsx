@@ -747,24 +747,129 @@ export default function BoxBitesHello() {
       const SEQS = [
         { dir: 'divein', count: 716, from: 0.0, to: 1.0 },
       ]
-      const frames: HTMLImageElement[][] = SEQS.map(() => [])
+      const FRAME_CONCURRENCY = 6
+      const frames: (HTMLImageElement | null)[][] = SEQS.map(() => [])
+      const frameLoaded = SEQS.map(() => [] as boolean[])
       let loaded = 0
       const total = SEQS.reduce((a, s) => a + s.count, 0)
       let firstPainted = false
-      SEQS.forEach((s, si) => {
-        for (let i = 0; i < s.count; i++) {
-          const im = new Image()
-          im.src = `/frames/${s.dir}/frame_${String(i + 1).padStart(4, '0')}.jpg`
-          im.onload = () => {
-            loaded++
-            if (loadEl) {
-              loadEl.textContent = `Loading ${Math.round((loaded / total) * 100)}%`
-              if (loaded >= total) loadEl.classList.add('off')
-            }
-            if (!firstPainted && si === 0 && i === 0) { firstPainted = true; draw(0, 0) }
-          }
+      let loadingStarted = false
+      let loadingAborted = false
+      let inFlight = 0
+      const pending = new Set<string>()
+      const queued = new Set<string>()
+      const queue: Array<{ si: number; i: number; priority: number }> = []
+
+      const frameKey = (si: number, i: number) => `${si}:${i}`
+      const frameSrc = (dir: string, i: number) =>
+        `/frames/${dir}/frame_${String(i + 1).padStart(4, '0')}.jpg`
+
+      const updateLoadUi = () => {
+        if (!loadEl) return
+        loadEl.textContent = `Loading ${Math.round((loaded / total) * 100)}%`
+        if (loaded >= total) loadEl.classList.add('off')
+      }
+
+      const markFrameLoaded = (si: number, i: number) => {
+        if (frameLoaded[si][i]) return
+        frameLoaded[si][i] = true
+        loaded++
+        updateLoadUi()
+        if (!firstPainted && si === 0 && i === 0) {
+          firstPainted = true
+          draw(0, 0)
+        }
+      }
+
+      const loadFrame = (si: number, i: number) => {
+        const key = frameKey(si, i)
+        if (pending.has(key) || frameLoaded[si][i]) return
+        pending.add(key)
+        inFlight++
+
+        const s = SEQS[si]
+        let im = frames[si][i]
+        if (!im) {
+          im = new Image()
           frames[si][i] = im
         }
+
+        const finish = () => {
+          pending.delete(key)
+          queued.delete(key)
+          inFlight--
+          markFrameLoaded(si, i)
+          pumpQueue()
+        }
+
+        if (im.complete && im.naturalWidth) {
+          finish()
+          return
+        }
+
+        im.onload = finish
+        im.onerror = finish
+        im.src = frameSrc(s.dir, i)
+      }
+
+      const pumpQueue = () => {
+        if (loadingAborted) return
+        queue.sort((a, b) => a.priority - b.priority || a.i - b.i)
+        while (inFlight < FRAME_CONCURRENCY && queue.length) {
+          const job = queue.shift()
+          if (!job) break
+          loadFrame(job.si, job.i)
+        }
+      }
+
+      const enqueueFrame = (si: number, i: number, priority = 1) => {
+        const key = frameKey(si, i)
+        if (frameLoaded[si][i] || pending.has(key) || queued.has(key)) return
+        queued.add(key)
+        queue.push({ si, i, priority })
+      }
+
+      const startFrameLoading = (priorityFrame = 0) => {
+        if (loadingStarted || loadingAborted) return
+        loadingStarted = true
+        if (loadEl) loadEl.textContent = 'Loading 0%'
+
+        SEQS.forEach((s, si) => {
+          frameLoaded[si] = new Array(s.count).fill(false)
+          for (let i = 0; i < s.count; i++) {
+            enqueueFrame(si, i, i === priorityFrame ? 0 : 1 + i)
+          }
+        })
+        pumpQueue()
+      }
+
+      const prioritizeFrame = (si: number, fi: number) => {
+        if (!loadingStarted) {
+          startFrameLoading(fi)
+          return
+        }
+        enqueueFrame(si, fi, -2)
+        for (let offset = 1; offset <= 24; offset++) {
+          enqueueFrame(si, fi - offset, -1)
+          enqueueFrame(si, fi + offset, 0)
+        }
+        pumpQueue()
+      }
+
+      /* defer the 716-frame prefetch until the user is near Act 3 */
+      const prefetchObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            startFrameLoading(0)
+            prefetchObserver.disconnect()
+          }
+        },
+        { rootMargin: '120% 0px' },
+      )
+      prefetchObserver.observe(sz)
+      cleanup.push(() => {
+        loadingAborted = true
+        prefetchObserver.disconnect()
       })
 
       let vw = 0, vh = 0, dpr = 1, targetP = 0, raf = 0, activeDrop = -1
@@ -792,6 +897,9 @@ export default function BoxBitesHello() {
         const s = SEQS[si]
         const local = clamp((p - s.from) / (s.to - s.from || 1), 0, 1)
         const fi = Math.min(s.count - 1, Math.floor(local * s.count))
+        if (diving && (!frames[si]?.[fi]?.complete || !frames[si]?.[fi]?.naturalWidth)) {
+          prioritizeFrame(si, fi)
+        }
         if (si !== lastSeq || fi !== lastFrame) draw(si, fi)
       }
 
@@ -831,6 +939,7 @@ export default function BoxBitesHello() {
       const diveOutBtn = $('bb-diveout')
       const onDive = () => {
         if (diving) return
+        startFrameLoading(0)
         diving = true
         sz.classList.add('diving')
         diveBtn?.classList.add('off')
