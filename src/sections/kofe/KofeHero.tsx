@@ -4,7 +4,7 @@ import { getLenis } from '@/hooks/useLenis'
 import { useAppStore } from '@/stores/useAppStore'
 
 const KOFE_VIDEO = '/kofe.mp4'
-const KOFE_BG = '/kofebg.png'
+const KOFE_BG = '/kofebg.webp'
 const VIDEO_PLAYBACK_RATE = 1.2
 
 type Phase = 'idle' | 'playing' | 'done'

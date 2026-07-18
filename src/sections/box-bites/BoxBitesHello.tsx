@@ -4,7 +4,7 @@
  * BoxBitesStory — drop under your hero section:  <BoxBitesStory />
  *
  * Required files in /public:
- *   /boxbite.png  /oat.png  /chocolate.png  /hoodia.png  /box-bites-pouch.png
+ *   /boxbite.webp  /oat.webp  /chocolate.webp  /hoodia.webp  /box-bites-pouch.webp
  *
  * All styles are embedded and scoped under .bb-story (keyframes prefixed bb-).
  * Don't put overflow-x:hidden on a wrapper around this component — it breaks
@@ -31,11 +31,11 @@
 import { useEffect } from 'react'
 import { getLenis } from '@/hooks/useLenis'
 
-const BITE = '/boxbite.png'
-const OAT = '/oat.png'
-const CHOC = '/chocolate.png'
-const HOODIA = '/hoodia.png'
-const BB_BG = '/background2.png'
+const BITE = '/boxbite.webp'
+const OAT = '/oat.webp'
+const CHOC = '/chocolate.webp'
+const HOODIA = '/hoodia.webp'
+const BB_BG = '/background2.webp'
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -800,7 +800,7 @@ export default function BoxBitesHello() {
 
       const frameKey = (si: number, i: number) => `${si}:${i}`
       const frameSrc = (dir: string, i: number) =>
-        `/frames/${dir}/frame_${String(i + 1).padStart(4, '0')}.jpg`
+        `/frames/${dir}/frame_${String(i + 1).padStart(4, '0')}.webp`
 
       const updateLoadUi = () => {
         if (!loadEl) return

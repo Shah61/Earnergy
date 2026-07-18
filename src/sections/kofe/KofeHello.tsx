@@ -1,7 +1,6 @@
-const IMAGE_CUP = 'kofe/cup.png'     // latte cup photo (also used inside the wordmark)
-const IMAGE_PACK = 'kofe/kofebox.png'   // Spanish Latte pack front
-const IMAGE_BRAND = 'photos/kofeWallpaper.jpeg' // dark brand card (kofé / prebiotics+probiotics)
-const IMAGE_BEANS = '/arabica.png' // coffee beans cutout (parallax drift)
+const IMAGE_CUP = 'kofe/cup.webp'     // latte cup photo (also used inside the wordmark)
+const IMAGE_PACK = 'kofe/kofebox.webp'   // Spanish Latte pack front
+const IMAGE_BRAND = 'photos/kofeWallpaper.webp' // dark brand card (kofé / prebiotics+probiotics)
 
 import { useEffect } from 'react'
 import { getLenis, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
@@ -48,13 +47,6 @@ const css = `
 .ks-prep{font-family:"JetBrains Mono",monospace;font-size:clamp(13px,1.6vw,16px);letter-spacing:.06em;opacity:.85;max-width:42ch}
 .ks-handoff .ks-claim{font-size:clamp(34px,5.6vw,76px)}
 .ks-handoff .ks-sub{cursor:pointer}
-
-/* parallax bean layers */
-.ks-par{position:absolute;top:0;left:0;height:100%;width:100%;pointer-events:none;will-change:transform}
-.ks-par.back{z-index:1;opacity:.5}
-.ks-par.front{z-index:30;opacity:.9}
-.ks-bean{position:absolute;will-change:transform;filter:drop-shadow(0 10px 14px rgba(20,10,4,.3))}
-.ks-bean img{display:block;width:100%;height:auto}
 .ks-trackwrap{position:absolute;inset:0;z-index:10}
 
 /* ---------- the gate (masked wordmark, splits open) ---------- */
@@ -113,30 +105,8 @@ export default function KofeHello() {
     const track = $('ks-track')
     const gateL = $('ks-gl'), gateR = $('ks-gr')
     const words = [gateL, gateR].map((g) => g?.querySelector('.ks-word')) as HTMLElement[]
-    const parBack = $('ks-pback'), parFront = $('ks-pfront')
     const hint = $('ks-hint')
     if (!zone || !stage || !track || !gateL || !gateR) return
-
-    /* parallax beans: scatter instances of the beans cutout on two depths */
-    const beans: { el: HTMLElement; fx: number; fy: number; depth: number; ph: number }[] = []
-    const makeBeans = (layer: HTMLElement | null, n: number, depth: number, size: [number, number]) => {
-      if (!layer) return
-      for (let i = 0; i < n; i++) {
-        const el = document.createElement('div')
-        el.className = 'ks-bean'
-        const img = document.createElement('img')
-        img.src = IMAGE_BEANS; img.alt = ''
-        el.appendChild(img)
-        const w = size[0] + Math.random() * (size[1] - size[0])
-        el.style.width = `${w}px`
-        el.style.transform = `rotate(${Math.random() * 360}deg)`
-        layer.appendChild(el)
-        beans.push({ el, fx: Math.random() * 3, fy: 0.08 + Math.random() * 0.84, depth, ph: Math.random() * Math.PI * 2 })
-      }
-    }
-    makeBeans(parBack, reduced ? 4 : 9, 0.5, [40, 90])
-    makeBeans(parFront, reduced ? 3 : 7, 1.45, [60, 130])
-    cleanup.push(() => beans.forEach((b) => b.el.remove()))
 
     const CUP_END = 0.22
     const SPLIT_END = 0.34
@@ -247,7 +217,6 @@ export default function KofeHello() {
       // Tune these two values to make the story feel slower/more readable.
       const STORY_MOTION_K = reduced ? 1 : 0.06
       const p = targetP, k = STORY_MOTION_K
-      const t = reduced ? 0 : Date.now()
 
       /* phase 1: pan cup from start of K through to é */
       const mt = smooth(clamp(p / CUP_END, 0, 1))
@@ -275,17 +244,6 @@ export default function KofeHello() {
       gateR.style.visibility = gateGone ? 'hidden' : 'visible'
 
       track.style.transform = `translateX(${cur.x}px)`
-
-      /* parallax layers ride the same dolly at different speeds */
-      if (parBack) parBack.style.transform = `translateX(${cur.x * 0.5}px)`
-      if (parFront) parFront.style.transform = `translateX(${cur.x * 1.45}px)`
-      for (const b of beans) {
-        const bob = reduced ? 0 : Math.sin(t / 1600 + b.ph) * 8
-        const rot = reduced ? 0 : Math.sin(t / 2400 + b.ph) * 10
-        b.el.style.left = `${b.fx * vw}px`
-        b.el.style.top = `calc(${b.fy * 100}% + ${bob}px)`
-        b.el.style.rotate = `${rot}deg`
-      }
 
       if (hint) hint.style.opacity = p < 0.05 && cur.door < 0.1 ? '0.75' : '0'
       updateNav()
@@ -333,7 +291,6 @@ export default function KofeHello() {
 
           {/* the gallery wall (revealed when the gate splits) */}
           <div className="ks-trackwrap">
-            <div className="ks-par back" id="ks-pback" aria-hidden="true"></div>
             <div className="ks-track" id="ks-track">
 
               <div className="ks-panel cream">
@@ -369,7 +326,6 @@ export default function KofeHello() {
               </div>
 
             </div>
-            <div className="ks-par front" id="ks-pfront" aria-hidden="true"></div>
           </div>
 
           {/* the gate: masked wordmark in two halves that split apart */}

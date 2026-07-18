@@ -11,9 +11,9 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
     intro:
       "Made with rolled oats, rich dark chocolate, and Hoodia extract, Box Bites is created for satisfying cravings, longer fullness, and better everyday snacking.",
     floatImages: [
-      { src: "/oat.png", alt: "Golden rolled oats", position: "left" },
-      { src: "/chocolate.png", alt: "Dark chocolate curl", position: "right" },
-      { src: "/hoodia.png", alt: "Hoodia flower", position: "center" },
+      { src: "/oat.webp", alt: "Golden rolled oats", position: "left" },
+      { src: "/chocolate.webp", alt: "Dark chocolate curl", position: "right" },
+      { src: "/hoodia.webp", alt: "Hoodia flower", position: "center" },
     ],
     ingredientCards: [
       {
@@ -21,7 +21,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Rolled Oats For Lasting Fullness",
         description:
           "A hearty oat base that gives every bite a satisfying texture while helping you feel fuller for longer.",
-        image: "/oat.png",
+        image: "/oat.webp",
         imageAlt: "Golden rolled oats",
       },
       {
@@ -29,7 +29,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Rich Dark Chocolate Taste",
         description:
           "A smooth, satisfying chocolate flavour that makes better snacking feel indulgent, not restrictive.",
-        image: "/chocolate.png",
+        image: "/chocolate.webp",
         imageAlt: "Dark chocolate curl",
       },
       {
@@ -37,7 +37,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Powered With Hoodia Extract",
         description:
           "A functional botanical ingredient traditionally known for supporting craving control and mindful snacking.",
-        image: "/hoodia.png",
+        image: "/hoodia.webp",
         imageAlt: "Hoodia flower",
       },
     ],
@@ -77,9 +77,9 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
     intro:
       "A functional Spanish latte crafted with Arabica coffee, coconut milk, prebiotics, probiotics, MCT oil, and natural sweeteners — made for smooth energy, gut support, and everyday focus.",
     floatImages: [
-      { src: "/kofe/arabica.png", alt: "Arabica coffee beans", position: "left" },
-      { src: "/kofe/cup.png", alt: "Iced Spanish latte", position: "right" },
-      { src: "/kofe/coconut.png", alt: "Coconut milk", position: "center" },
+      { src: "/kofe/arabica.webp", alt: "Arabica coffee beans", position: "left" },
+      { src: "/kofe/cup.webp", alt: "Iced Spanish latte", position: "right" },
+      { src: "/kofe/coconut.webp", alt: "Coconut milk", position: "center" },
     ],
     ingredientCards: [
       {
@@ -87,7 +87,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Arabica Coffee",
         description:
           "Premium coffee base with natural caffeine to support focus, alertness, and everyday energy.",
-        image: "/kofe/arabica.png",
+        image: "/kofe/arabica.webp",
         imageAlt: "Arabica coffee beans",
       },
       {
@@ -95,7 +95,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Coconut Milk Powder",
         description:
           "Adds a smooth, creamy body for a rich café-style Spanish latte experience without dairy.",
-        image: "/kofe/coconut.png",
+        image: "/kofe/coconut.webp",
         imageAlt: "Coconut milk powder",
       },
       {
@@ -103,7 +103,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Prebiotics + Probiotics",
         description:
           "A gut-friendly combination made to support digestive wellness as part of your daily coffee ritual.",
-        image: "/kofe/probiotic.png",
+        image: "/kofe/probiotic.webp",
         imageAlt: "Probiotic ingredient",
       },
       {
@@ -111,7 +111,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Non-Dairy Creamer",
         description:
           "Creates a fuller, smoother mouthfeel while keeping the blend creamy and convenient.",
-        image: "/kofe/nondairy.png",
+        image: "/kofe/nondairy.webp",
         imageAlt: "Non-dairy creamer",
       },
       {
@@ -119,7 +119,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Chicory Root Inulin",
         description:
           "A prebiotic fiber that helps support gut-friendly daily routines.",
-        image: "/kofe/chicory.png",
+        image: "/kofe/chicory.webp",
         imageAlt: "Chicory root inulin",
       },
       {
@@ -127,7 +127,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Latte Flavour",
         description:
           "Gives Kofé its smooth, familiar latte profile with a balanced café-style finish.",
-        image: "/kofe/cup.png",
+        image: "/kofe/cup.webp",
         imageAlt: "Latte flavour",
       },
       {
@@ -135,7 +135,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Vanilla Bean Flavour",
         description:
           "Adds a soft aromatic sweetness that rounds out the coffee and creamy notes.",
-        image: "/kofe/vanilla.png",
+        image: "/kofe/vanilla.webp",
         imageAlt: "Vanilla bean flavour",
       },
       {
@@ -143,7 +143,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Tricalcium Phosphate",
         description:
           "Included as part of the formulation to support product stability and consistency.",
-        image: "/kofe/tricalcium.png",
+        image: "/kofe/tricalcium.webp",
         imageAlt: "Tricalcium phosphate",
       },
       {
@@ -151,7 +151,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "MCT Oil",
         description:
           "A functional fat source often used in energy-focused routines and active lifestyles.",
-        image: "/kofe/mct.png",
+        image: "/kofe/mct.webp",
         imageAlt: "MCT oil",
       },
       {
@@ -159,7 +159,7 @@ export const PRODUCT_HIGHLIGHTS: Record<ProductId, ProductHighlightsConfig> = {
         title: "Natural Sweetener Blend",
         description:
           "Sweetened with monk fruit and stevia for a smoother choice without added white sugar.",
-        image: "/kofe/monkfruit.png",
+        image: "/kofe/monkfruit.webp",
         imageAlt: "Monk fruit and stevia",
       },
     ],

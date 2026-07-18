@@ -49,7 +49,7 @@ export function TeamSection() {
             >
               <div className="member-photo">
                 {member.image ? (
-                  <img src={member.image} alt={member.name} />
+                  <img src={member.image} alt={member.name} loading="lazy" decoding="async" />
                 ) : (
                   <MemberPhotoPlaceholder />
                 )}

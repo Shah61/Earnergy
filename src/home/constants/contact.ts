@@ -19,7 +19,7 @@ export const CONTACT_INFO = [
 export const CONTACT_PARTNERSHIPS_EMAIL = "collabs@earnergy.online";
 
 export const CONTACT_FORM_IMAGE = {
-  src: "/photos/kofe.jpeg",
+  src: "/photos/kofe.webp",
   alt: "Earnergy Box Bites and KOFÉ products",
 };
 

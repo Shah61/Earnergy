@@ -2,14 +2,14 @@
  * BoxBitesHeader — animated, interactive site header.
  *
  * Render once at page/layout level, above your sections.
- * Needs /photos/logo2.png in /public. Styles are scoped under .bbh-root.
+ * Needs /photos/logo2.webp in /public. Styles are scoped under .bbh-root.
  */
 
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { ActiveProduct } from '@/stores/useAppStore'
 
-const LOGO = '/photos/logo2.png'
+const LOGO = '/photos/logo2.webp'
 
 export type HeaderLink = { label: string; href: string }
 

@@ -1,6 +1,6 @@
 export const VIDEO_SRC = '/animation7.mp4'
-export const BACKGROUND_SRC = '/background2.png'
-export const BGMID_SRC = '/Image.png'
+export const BACKGROUND_SRC = '/background2.webp'
+export const BGMID_SRC = '/Image.webp'
 export const TRANSITION_SRC = '/transition.mp4'
 
 export const VIDEO_WIDTH = 1920

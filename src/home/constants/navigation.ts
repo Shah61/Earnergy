@@ -17,4 +17,4 @@ export const JOIN_US_CTA = {
 } as const;
 
 export const SITE_NAME = "Earnergy";
-export const SITE_LOGO = "/photos/logo2.png";
+export const SITE_LOGO = "/photos/logo2.webp";

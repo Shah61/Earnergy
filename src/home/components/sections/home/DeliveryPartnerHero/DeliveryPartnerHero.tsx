@@ -11,7 +11,6 @@ export function DeliveryPartnerHero() {
           muted
           loop
           playsInline
-          poster="/images/delivery-placeholder.jpg"
         >
           <source src="kofe2.mp4" type="video/mp4" />
         </video>

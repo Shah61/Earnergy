@@ -40,11 +40,11 @@ export function ProductsAbout({ product, productId }: ProductsAboutProps) {
 
             <div className="about-imgs">
               <div className="afloat big r-curtain" style={{ "--d": "0.12s" } as CSSProperties}>
-                <img src={product.aboutImages.big} alt={product.wordmark} />
+                <img src={product.aboutImages.big} alt={product.wordmark} loading="lazy" decoding="async" />
                 <ProductsMark className="pmk" />
               </div>
               <div className="afloat small r-curtain-r" style={{ "--d": "0.24s" } as CSSProperties}>
-                <img src={product.aboutImages.small} alt="" />
+                <img src={product.aboutImages.small} alt="" loading="lazy" decoding="async" />
                 <ProductsMark className="pmk" />
               </div>
             </div>

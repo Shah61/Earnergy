@@ -14,13 +14,13 @@ function VideoBanner() {
           muted
           loop
           playsInline
-          poster="/animation5-poster.jpg"
+          poster="/animation5-poster.webp"
         >
           <source src="/animation6.mp4" type="video/mp4" />
         </video>
         <div className="video-curtain" aria-hidden="true" />
         <img
-          src="/logo.png"
+          src="/logo.webp"
           alt=""
           className="video-watermark"
           aria-hidden="true"

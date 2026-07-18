@@ -51,7 +51,7 @@ export function ServicesSection() {
               aria-hidden="true"
             >
               {display?.image ? (
-                <img src={display.image} alt={display.title} />
+                <img src={display.image} alt={display.title} loading="lazy" decoding="async" />
               ) : (
                 <span className="ph">
                   <BrandMark />

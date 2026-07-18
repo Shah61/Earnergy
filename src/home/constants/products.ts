@@ -78,12 +78,12 @@ export const PRODUCTS: Record<ProductId, ProductData> = {
       "Choose Box Bites for a satisfying snack made with purposeful ingredients and everyday convenience.",
     heroImages: [
       "/photos/bb-prod.jpeg",
-      "/photos/bb-detail.jpeg",
-      "/photos/box-bites.jpeg",
+      "/photos/bb-detail.webp",
+      "/photos/box-bites.webp",
     ],
     aboutImages: {
-      big: "/photos/bb-wallpaper.jpeg",
-      small: "/photos/bb-detail.jpeg",
+      big: "/photos/bb-wallpaper.webp",
+      small: "/photos/bb-detail.webp",
     },
   },
   kofe: {
@@ -162,13 +162,13 @@ export const PRODUCTS: Record<ProductId, ProductData> = {
     ctaPara:
       "Enjoy the smooth taste of Spanish latte with functional ingredients made for modern daily routines.",
     heroImages: [
-      "/photos/kofe.jpeg",
-      "/photos/kofeWallpaper.jpeg",
-      "/photos/kofeIngredient.jpeg",
+      "/photos/kofe.webp",
+      "/photos/kofeWallpaper.webp",
+      "/photos/kofeIngredient.webp",
     ],
     aboutImages: {
-      big: "/photos/kofeWallpaper.jpeg",
-      small: "/photos/kofe.jpeg",
+      big: "/photos/kofeWallpaper.webp",
+      small: "/photos/kofe.webp",
     },
   },
 };
