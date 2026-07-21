@@ -1,16 +1,55 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@home/constants/routes";
 
 export function DeliveryPartnerHero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* This section is below the fold. Instead of autoplaying (which forces the
+     browser to download kofe2.mp4 on first paint), we hold off until the
+     section is about to enter view, then load and play it. Purely a
+     load-timing change — nothing about the visuals changes. */
+  useEffect(() => {
+    const section = sectionRef.current;
+    const video = videoRef.current;
+    if (!section || !video) return;
+
+    const start = () => {
+      if (video.dataset.started) return;
+      video.dataset.started = "true";
+      video.load();
+      void video.play().catch(() => undefined);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          start();
+          io.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px" },
+    );
+    io.observe(section);
+
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section className="flex min-h-screen w-full items-center justify-center bg-[#f5f5f5] px-4 py-16">
+    <section
+      ref={sectionRef}
+      className="flex min-h-screen w-full items-center justify-center bg-[#f5f5f5] px-4 py-16"
+    >
       <div className="relative aspect-video w-full max-w-6xl overflow-hidden bg-black shadow-sm">
         <video
+          ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
           muted
           loop
           playsInline
+          preload="none"
+          poster="/kofe2-poster.webp"
         >
           <source src="kofe2.mp4" type="video/mp4" />
         </video>
