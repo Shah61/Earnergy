@@ -29,6 +29,7 @@
  */
 
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { getLenis } from '@/hooks/useLenis'
 
 const BITE = '/boxbite.webp'
@@ -193,10 +194,6 @@ const css = `
 .bb-story .scrubvignette{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom, rgba(8,20,8,.6) 0%, rgba(8,20,8,.26) 15%, transparent 30%),
     radial-gradient(120% 95% at 50% 45%, transparent 58%, rgba(8,20,8,.55) 100%)}
-.bb-story .scrubload{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;
-  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(255,255,255,.75);transition:opacity .4s ease}
-.bb-story .scrubload.off{opacity:0}
 
 .bb-story .insidehead{position:absolute;z-index:7;top:calc(clamp(16px,4vh,42px) + var(--safe-t));left:0;right:0;text-align:center;opacity:0;will-change:opacity;pointer-events:none;padding:0 16px}
 .bb-story .insidehead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#f5c518}
@@ -298,6 +295,11 @@ const css = `
   .bb-story .benefits .powered{font-size:15px}
   .bb-story .bchip{font-size:9.5px;padding:6px 10px;letter-spacing:.12em}
   .bb-story .benefits .rowc{gap:7px}
+
+  .bb-story .outro .ofloat{display:none}
+  .bb-story .outro .ocols{grid-template-columns:1fr 1fr}
+  .bb-story .outro .obar-in{justify-content:center;text-align:center}
+  .bb-story .outro .otop{margin-left:0}
 }
 
 /* ============ SMALL PHONE (iPhone SE / Mini, <=430px) ============ */
@@ -323,8 +325,10 @@ const css = `
   .bb-story .stamp .s3{font-size:13px}
   .bb-story .bchip{font-size:8.5px;padding:5px 9px}
 
-  .bb-story .outro .made{font-size:13px}
-  .bb-story .outro .foot{font-size:11.5px}
+  .bb-story .outro .ocols{grid-template-columns:1fr;text-align:center}
+  .bb-story .outro .ocol a,.bb-story .outro .oing{margin:0 auto;width:fit-content}
+  .bb-story .outro .olead{font-size:13.5px}
+  .bb-story .outro .ofine{font-size:10.5px}
 }
 
 /* ============ SHORT LANDSCAPE (rotated phones) ============ */
@@ -365,12 +369,13 @@ const css = `
   .bb-story .benefits .powered{font-size:13px}
   .bb-story .bchip{font-size:8.5px;padding:5px 9px}
 
-  .bb-story .outro{min-height:100svh;padding-top:40px}
+  .bb-story .outro .ofloat{display:none}
 }
 
 @media (prefers-reduced-motion:reduce){
   .bb-story .floatwrap,.bb-story .links path,.bb-story .stage-inner{animation:none}
   .bb-story .card3d.jolt{animation:none}
+  .bb-story .outro .otrack,.bb-story .outro .ofloat{animation:none}
 }
 `
 
@@ -778,7 +783,6 @@ export default function BoxBitesHello() {
       const sstage = sz.querySelector('.sstage') as HTMLElement
       const shead = $('bb-shead') as HTMLElement
       const canvas = $('bb-scrub') as HTMLCanvasElement
-      const loadEl = $('bb-scrubload') as HTMLElement
       const insidehead = $('bb-insidehead') as HTMLElement
       const drops = [1, 2, 3, 4, 5, 6, 7].map((i) => $(`bb-drop${i}`)).filter(Boolean) as HTMLElement[]
       const stamp = $('bb-stamp') as HTMLElement
@@ -788,16 +792,14 @@ export default function BoxBitesHello() {
       if (!ctx) return
 
       /* single AI-rendered clip scrubbed by scroll progress — the dive into
-         the box (divein.mp4). Frames are motion-interpolated to 120fps
+         the box (final.mp4). Frames are motion-interpolated to 120fps
          (5x the 24fps source) so the scrub stays smooth under fast scrolling. */
       const SEQS = [
-        { dir: 'divein', count: 716, from: 0.0, to: 1.0 },
+        { dir: 'final', count: 716, from: 0.0, to: 1.0 },
       ]
       const FRAME_CONCURRENCY = 6
       const frames: (HTMLImageElement | null)[][] = SEQS.map(() => [])
       const frameLoaded = SEQS.map(() => [] as boolean[])
-      let loaded = 0
-      const total = SEQS.reduce((a, s) => a + s.count, 0)
       let firstPainted = false
       let loadingStarted = false
       let loadingAborted = false
@@ -810,17 +812,9 @@ export default function BoxBitesHello() {
       const frameSrc = (dir: string, i: number) =>
         `/frames/${dir}/frame_${String(i + 1).padStart(4, '0')}.webp`
 
-      const updateLoadUi = () => {
-        if (!loadEl) return
-        loadEl.textContent = `Loading ${Math.round((loaded / total) * 100)}%`
-        if (loaded >= total) loadEl.classList.add('off')
-      }
-
       const markFrameLoaded = (si: number, i: number) => {
         if (frameLoaded[si][i]) return
         frameLoaded[si][i] = true
-        loaded++
-        updateLoadUi()
         if (!firstPainted && si === 0 && i === 0) {
           firstPainted = true
           draw(0, 0)
@@ -878,7 +872,6 @@ export default function BoxBitesHello() {
       const startFrameLoading = (priorityFrame = 0) => {
         if (loadingStarted || loadingAborted) return
         loadingStarted = true
-        if (loadEl) loadEl.textContent = 'Loading 0%'
 
         SEQS.forEach((s, si) => {
           frameLoaded[si] = new Array(s.count).fill(false)
@@ -951,8 +944,8 @@ export default function BoxBitesHello() {
 
       /* overlay copy beats — seven benefit drops while diving, offer at the end */
       const FEATW = Array.from({ length: 7 }, (_, i) => {
-        const st = 0.14 + i * 0.066
-        return [st, st + 0.054] as [number, number]
+        const st = 0.3 + i * 0.085
+        return [st, st + 0.073] as [number, number]
       })
       const BENE_P = 0.92
       const dropFor = (p: number) => { for (let i = 0; i < FEATW.length; i++) if (p >= FEATW[i][0] && p <= FEATW[i][1]) return i; return -1 }
@@ -1126,14 +1119,12 @@ export default function BoxBitesHello() {
           <div className="shead" id="bb-shead">
             <div className="kicker">Smart Snacking</div>
             <h2>Come inside the pouch</h2>
-            <div className="script">dive in — or just keep scrolling</div>
           </div>
 
           {/* cinematic AI frame-scrub: the pouch bursting open with cookies */}
           <div className="scrubwrap">
             <canvas id="bb-scrub" aria-label="Camera diving inside the Box Bites pouch" />
             <div className="scrubvignette" aria-hidden="true"></div>
-            <div className="scrubload" id="bb-scrubload">Loading</div>
           </div>
 
           <div className="insidehead" id="bb-insidehead">
@@ -1172,6 +1163,8 @@ export default function BoxBitesHello() {
         </div>
       </section>
 
+      {/* ===== footer ===== */}
+      
       {/* ===== footer ===== */}
       <footer className="outro">
         <div className="script">Goodbye Sugar,<span className="w">Hello Energy</span></div>
