@@ -1,6 +1,5 @@
 const IMAGE_CUP = 'kofe/cup.webp'     // latte cup photo (also used inside the wordmark)
 const IMAGE_PACK = 'kofe/kofebox.webp'   // Spanish Latte pack front
-const IMAGE_BRAND = 'photos/kofeWallpaper.webp' // dark brand card (kofé / prebiotics+probiotics)
 
 import { useEffect } from 'react'
 import { getLenis, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
@@ -43,7 +42,6 @@ const css = `
 .ks-claim{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(34px,5.8vw,84px);line-height:.98;max-width:11ch}
 .ks-sub{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.6vw,28px);color:inherit;opacity:.85}
 .ks-photo{height:min(54vh,480px);width:auto;filter:drop-shadow(0 28px 36px rgba(20,10,4,.32))}
-.ks-photo.card{height:min(48vh,430px);border-radius:18px;box-shadow:0 34px 60px rgba(20,10,4,.35)}
 .ks-prep{font-family:"JetBrains Mono",monospace;font-size:clamp(13px,1.6vw,16px);letter-spacing:.06em;opacity:.85;max-width:42ch}
 .ks-handoff .ks-claim{font-size:clamp(34px,5.6vw,76px)}
 .ks-handoff .ks-sub{cursor:pointer}
@@ -305,10 +303,6 @@ export default function KofeHello() {
                 <img className="ks-photo" src={IMAGE_PACK} alt="Kofé Spanish Latte pack" />
                 <div className="ks-prep">Mix 1 sachet (25g) with 150ml of hot water.</div>
                 <div className="ks-sub">with prebiotics + probiotics</div>
-              </div>
-
-              <div className="ks-panel dark">
-                <img className="ks-photo card" src={IMAGE_BRAND} alt="kofé — goodbye sugar, hello energy" />
               </div>
 
               {CLAIMS.map((c, i) => (

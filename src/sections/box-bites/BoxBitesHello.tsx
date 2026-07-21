@@ -181,17 +181,18 @@ const css = `
 .bb-story .diveoutbtn.show{opacity:1;pointer-events:auto}
 .bb-story .diveoutbtn:hover{background:rgba(16,40,20,.75)}
 
-.bb-story .shead{position:absolute;z-index:8;top:calc(clamp(18px,4.5vh,48px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity;padding:0 16px}
-.bb-story .shead .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
-.bb-story .shead h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(24px,4.6vw,48px);color:var(--white);line-height:1.04;text-shadow:0 3px 20px rgba(22,50,16,.34);margin-top:8px}
-.bb-story .shead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,3vw,30px);color:var(--forest-2);margin-top:6px}
+.bb-story .shead{position:absolute;z-index:8;top:calc(clamp(16px,4vh,40px) + var(--safe-t));left:0;right:0;text-align:center;pointer-events:none;will-change:opacity;padding:0 16px}
+.bb-story .shead .kicker{font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(246,242,231,.78)}
+.bb-story .shead h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(20px,3.4vw,38px);color:var(--cream);line-height:1.05;letter-spacing:.02em;text-shadow:0 2px 14px rgba(8,20,8,.45);margin-top:6px}
+.bb-story .shead .script{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(15px,2.2vw,24px);color:rgba(246,242,231,.82);margin-top:4px}
 
 /* cinematic frame-scrub canvas — an AI-rendered dive into the pouch, scrubbed
    by scroll. The canvas fills the stage; frames are drawn cover-fit. */
 .bb-story .scrubwrap{position:absolute;inset:0;z-index:3;will-change:opacity;background:#0d2a12}
 .bb-story .scrubwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .bb-story .scrubvignette{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(120% 95% at 50% 45%, transparent 58%, rgba(8,20,8,.55) 100%)}
+  background:linear-gradient(to bottom, rgba(8,20,8,.6) 0%, rgba(8,20,8,.26) 15%, transparent 30%),
+    radial-gradient(120% 95% at 50% 45%, transparent 58%, rgba(8,20,8,.55) 100%)}
 .bb-story .scrubload{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;
   font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
   color:rgba(255,255,255,.75);transition:opacity .4s ease}
@@ -564,7 +565,14 @@ export default function BoxBitesHello() {
         mobile = vw < 760
         const short = vh < 560
         const cardH = card.offsetHeight
-        const fitCap = (vh * 0.86) / Math.max(cardH, 1)
+        /* the headline is an absolute overlay — reserve its height so the
+           card always sits BELOW it instead of underneath it on short
+           viewports (small laptops / iPads) */
+        const head = $('bb-theadOverlay')
+        const headSafe = head ? head.offsetTop + head.offsetHeight + 16 : 0
+        tstage.style.paddingTop = `${headSafe}px`
+        const availH = Math.max(vh - headSafe, 220)
+        const fitCap = (availH * 0.92) / Math.max(cardH, 1)
         const sCap = Math.min(mobile ? 1.04 : short ? 1.0 : Infinity, fitCap)
         const tiltedS = Math.min(mobile ? 1.02 : short ? 1.0 : 1.12, sCap)
         const flatS = Math.min(mobile ? 1.0 : short ? 0.98 : 1.08, sCap)
@@ -1117,7 +1125,7 @@ export default function BoxBitesHello() {
         <div className="sstage">
           <div className="shead" id="bb-shead">
             <div className="kicker">Smart Snacking</div>
-            <h2>Come inside<br />the pouch</h2>
+            <h2>Come inside the pouch</h2>
             <div className="script">dive in — or just keep scrolling</div>
           </div>
 

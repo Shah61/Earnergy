@@ -79,6 +79,9 @@ export function createLenis(root: LenisScrollRoot = { type: 'window' }) {
           ...LENIS_OPTIONS,
           wrapper: root.wrapper,
           content: root.content,
+          /* the kofe wrapper is overflow:hidden, so native touch panning does
+             nothing — without this, iPads/phones can't scroll the page at all */
+          syncTouch: true,
         })
 
   attachTicker(lenisInstance)

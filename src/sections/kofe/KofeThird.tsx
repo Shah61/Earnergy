@@ -205,7 +205,6 @@ export default function KofeBoard() {
             </div>
           </div>
 
-          <div className="gd-more">keep scrolling ↓</div>
         </div>
       </section>
 
