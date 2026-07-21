@@ -15,6 +15,13 @@ export type HeaderLink = { label: string; href: string }
 
 const DEFAULT_LINKS: HeaderLink[] = []
 
+/* page routes shown in the mobile burger menu */
+const MENU_LINKS: HeaderLink[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Join Us', href: '/join' },
+  { label: 'Contact', href: '/contact' },
+]
+
 const TICKER =
   'Goodbye Sugar ✦ Hello Energy ✦ Healthy Cookies That Box Your Cravings ✦ Smart Products · Smarter Business ✦ '
 
@@ -120,27 +127,29 @@ const css = `
 .bbh-burger--open span:nth-child(3){top:20px;transform:rotate(-45deg)}
 
 .bbh-menu{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;
-  justify-content:center;padding:90px 30px 40px;
+  padding:104px 28px 30px;
   background:radial-gradient(120% 110% at 50% 20%, #84d067 0%, #74c157 52%, #579f3d 100%);
   clip-path:circle(0px at calc(100% - 38px) 52px);visibility:hidden;
   transition:clip-path .6s cubic-bezier(.4,0,.2,1), visibility 0s linear .6s}
 .bbh-menu--open{clip-path:circle(150% at calc(100% - 38px) 52px);visibility:visible;
   transition:clip-path .65s cubic-bezier(.4,0,.2,1)}
+.bbh-mnav{display:flex;flex-direction:column;align-items:flex-start;margin:auto 0}
 .bbh-menu a.bbh-mlink{display:block;text-decoration:none;font-family:"Anton",sans-serif;
-  font-size:clamp(38px,10vw,64px);line-height:1.18;color:var(--bbh-cream);
+  font-size:clamp(38px,9vw,58px);line-height:1.22;color:var(--bbh-cream);
   text-shadow:0 4px 22px rgba(16,40,20,.35);
   opacity:0;transform:translateY(26px);
   transition:opacity .4s ease, transform .5s cubic-bezier(.2,.9,.3,1.2)}
 .bbh-menu a.bbh-mlink:hover{color:var(--bbh-yellow)}
 .bbh-menu--open a.bbh-mlink{opacity:1;transform:none}
-.bbh-menu--open a.bbh-mlink:nth-child(1){transition-delay:.12s}
-.bbh-menu--open a.bbh-mlink:nth-child(2){transition-delay:.19s}
-.bbh-menu--open a.bbh-mlink:nth-child(3){transition-delay:.26s}
-.bbh-menu--open a.bbh-mlink:nth-child(4){transition-delay:.33s}
-.bbh-menu .bbh-mcta{margin-top:30px;align-self:flex-start;opacity:0;transform:translateY(20px);
-  transition:opacity .4s ease .4s, transform .5s cubic-bezier(.2,.9,.3,1.2) .4s}
+.bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(1){transition-delay:.12s}
+.bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(2){transition-delay:.19s}
+.bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(3){transition-delay:.26s}
+.bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(4){transition-delay:.33s}
+.bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(5){transition-delay:.4s}
+.bbh-menu .bbh-mcta{margin-top:32px;align-self:flex-start;opacity:0;transform:translateY(20px);
+  transition:opacity .4s ease .45s, transform .5s cubic-bezier(.2,.9,.3,1.2) .45s}
 .bbh-menu--open .bbh-mcta{opacity:1;transform:none}
-.bbh-menu .bbh-mfoot{margin-top:auto;font-family:"Anton",sans-serif;font-size:11px;
+.bbh-menu .bbh-mfoot{font-family:"Anton",sans-serif;font-size:11px;
   letter-spacing:.28em;text-transform:uppercase;color:rgba(16,40,20,.7);
   opacity:0;transition:opacity .4s ease .5s}
 .bbh-menu--open .bbh-mfoot{opacity:1}
@@ -151,11 +160,22 @@ const css = `
   .bbh-cta--bar{display:none}
   .bbh-burger{display:block;margin-left:auto}
 }
-.bbh-mproducts{display:flex;gap:10px;margin-bottom:22px}
-.bbh-mproduct{flex:1;border:0;border-radius:999px;padding:12px 16px;cursor:pointer;
-  font-family:"Anton",sans-serif;font-size:14px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--bbh-cream);background:rgba(16,40,20,.22)}
-.bbh-mproduct--active{background:var(--bbh-yellow);color:var(--bbh-ink)}
+
+/* while the menu is open: drop the ticker and let the bar float bare over the overlay */
+.bbh-root--open .bbh-header{top:0}
+.bbh-root--open .bbh-bar{background:transparent;border-color:transparent;box-shadow:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none}
+.bbh-mproducts{display:flex;gap:8px;align-self:flex-start;padding:5px;border-radius:999px;
+  background:rgba(16,40,20,.24);
+  opacity:0;transform:translateY(-14px);
+  transition:opacity .4s ease .1s, transform .5s cubic-bezier(.2,.9,.3,1.2) .1s}
+.bbh-menu--open .bbh-mproducts{opacity:1;transform:none}
+.bbh-mproduct{border:0;border-radius:999px;padding:11px 20px;cursor:pointer;
+  font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bbh-cream);background:transparent;
+  transition:background .25s ease, color .25s ease}
+.bbh-mproduct--active{background:var(--bbh-yellow);color:var(--bbh-ink);
+  box-shadow:0 8px 20px rgba(8,20,10,.25)}
 @media (prefers-reduced-motion:reduce){
   .bbh-ticker-track{animation:none}
   .bbh-cta .bbh-dot{animation:none}
@@ -268,12 +288,12 @@ export function BoxBitesHeader({
     onProductChange?.(product)
   }
 
-  const tickerOff = scrolled || hidden || !mounted
+  const tickerOff = scrolled || hidden || !mounted || open
 
   if (!visible) return null
 
   return (
-    <div className={`bbh-root${mounted ? ' bbh-root--in' : ''}`}>
+    <div className={`bbh-root${mounted ? ' bbh-root--in' : ''}${open ? ' bbh-root--open' : ''}`}>
       <style dangerouslySetInnerHTML={{ __html: css }} />
 
       <div className={`bbh-ticker${tickerOff ? ' bbh-ticker--off' : ''}`} aria-hidden="true">
@@ -372,15 +392,22 @@ export function BoxBitesHeader({
             KOFÈ
           </button>
         </div>
-        {links.map((l) => (
-          <a key={l.href} className="bbh-mlink" href={l.href} onClick={(e) => nav(e, l.href)}>
-            {l.label}
+        <nav className="bbh-mnav" aria-label="Menu links">
+          {links.map((l) => (
+            <a key={l.href} className="bbh-mlink" href={l.href} onClick={(e) => nav(e, l.href)}>
+              {l.label}
+            </a>
+          ))}
+          {MENU_LINKS.map((l) => (
+            <Link key={l.href} className="bbh-mlink" to={l.href} onClick={() => setOpen(false)}>
+              {l.label}
+            </Link>
+          ))}
+          <a className="bbh-cta bbh-mcta" href={ctaHref} onClick={(e) => nav(e, ctaHref)}>
+            <span className="bbh-dot" aria-hidden="true" />
+            {ctaLabel}
           </a>
-        ))}
-        <a className="bbh-cta bbh-mcta" href={ctaHref} onClick={(e) => nav(e, ctaHref)}>
-          <span className="bbh-dot" aria-hidden="true" />
-          {ctaLabel}
-        </a>
+        </nav>
         <div className="bbh-mfoot">Smart Products · Smarter Business</div>
       </div>
     </div>
