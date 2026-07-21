@@ -29,7 +29,6 @@
  */
 
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { getLenis } from '@/hooks/useLenis'
 
 const BITE = '/boxbite.webp'

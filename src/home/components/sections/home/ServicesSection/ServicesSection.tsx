@@ -21,7 +21,7 @@ function ServiceArrowIcon() {
 }
 
 export function ServicesSection() {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const displayIndex = hoveredIndex ?? selectedIndex;
