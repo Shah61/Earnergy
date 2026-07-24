@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import {
   FOOTER_ADDRESS,
+  FOOTER_COMPANY,
+  FOOTER_COMPANY_REG,
   FOOTER_EMAIL,
-  FOOTER_PHONE,
-  FOOTER_SERVICES,
+  FOOTER_PHONES,
   FOOTER_SITEMAP,
   FOOTER_SOCIAL,
 } from "@home/constants/footer";
@@ -48,29 +49,21 @@ export function SiteFooter() {
         <div className="footer-col">
           <div className="footer-block">
             <p className="footer-label">Phone Number</p>
-            <a className="footer-value" href={`tel:${FOOTER_PHONE.replace(/\s/g, "")}`}>
-              {FOOTER_PHONE}
-            </a>
+            {FOOTER_PHONES.map((phone) => (
+              <a key={phone.tel} className="footer-value" href={`tel:${phone.tel}`}>
+                {phone.display}
+              </a>
+            ))}
           </div>
-          <div className="footer-block">
-            <p className="footer-label">Our Services</p>
-            <ul className="footer-links">
-              {FOOTER_SERVICES.map((item) => (
-                <li key={item.label}>
-                  <a href={item.href}>{item.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="footer-col">
           <div className="footer-block">
             <p className="footer-label">Email Us</p>
             <a className="footer-value" href={`mailto:${FOOTER_EMAIL}`}>
               {FOOTER_EMAIL}
             </a>
           </div>
+        </div>
+
+        <div className="footer-col">
           <div className="footer-block">
             <p className="footer-label">Our Site Map</p>
             <ul className="footer-links">
@@ -85,7 +78,10 @@ export function SiteFooter() {
       </div>
 
       <div className="footer-bar">
-        <p>© Copyright {SITE_NAME}, {year}. All rights reserved.</p>
+        <p>
+          © Copyright {FOOTER_COMPANY} {FOOTER_COMPANY_REG}, {year}. All rights
+          reserved.
+        </p>
       </div>
     </footer>
   );

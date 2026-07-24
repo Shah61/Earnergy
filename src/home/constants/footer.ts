@@ -1,17 +1,16 @@
 export const FOOTER_ADDRESS = {
-  line1: "2178 Harborview Industrial Blvd, Suite 402",
-  line2: "Long Beach, CA 90802, United States",
+  line1: "1-148, Plaza Idaman, Jalan 6/21D",
+  line2: "Gombak, 53100 WP Kuala Lumpur",
 };
 
-export const FOOTER_PHONE = "+1 8291029301";
-export const FOOTER_EMAIL = "Help@earnergy.co";
+export const FOOTER_COMPANY = "Earnergy Circle Sdn Bhd";
+export const FOOTER_COMPANY_REG = "201901045779 (1355109-D)";
 
-export const FOOTER_SERVICES = [
-  { label: "Warehouse", href: "#" },
-  { label: "Land Transportation", href: "#" },
-  { label: "Sea Transportation", href: "#" },
-  { label: "Air Transportation", href: "#" },
+export const FOOTER_PHONES = [
+  { display: "016-2220264", tel: "+60162220264" },
+  { display: "011-16890068", tel: "+601116890068" },
 ];
+export const FOOTER_EMAIL = "earnergycircle@gmail.com";
 
 import { ROUTES } from "./routes";
 
@@ -20,12 +19,10 @@ export const FOOTER_SITEMAP = [
   { label: "Our Products", href: ROUTES.products },
   { label: "Contact Us", href: ROUTES.contact },
   { label: "Join Us", href: ROUTES.join },
-  { label: "Our Services", href: "/#services-tag" },
-  { label: "Our Team", href: "/#team-tag" },
 ];
 
 export const FOOTER_SOCIAL = [
-  { label: "Instagram", href: "#" },
-  { label: "Facebook", href: "#" },
-  { label: "X", href: "#" },
+  { label: "Instagram", href: "https://www.instagram.com/earnergycircle" },
+  { label: "Facebook", href: "https://www.facebook.com/EarnergyCircle" },
+  { label: "TikTok", href: "https://www.tiktok.com/@earnergy.official" },
 ];

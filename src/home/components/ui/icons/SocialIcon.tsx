@@ -24,6 +24,14 @@ export function SocialIcon({ name }: SocialIconProps) {
     );
   }
 
+  if (name === "TikTok") {
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M16.6 5.82a4.28 4.28 0 0 1-1.06-2.82h-3.2v12.43a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.7a5.79 5.79 0 0 0-.78-.05A5.79 5.79 0 1 0 15.34 15.4V9.01a7.45 7.45 0 0 0 4.36 1.4V7.21a4.28 4.28 0 0 1-3.1-1.39Z" />
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
