@@ -15,6 +15,12 @@ CREATE TABLE IF NOT EXISTS affiliate_codes (
 CREATE UNIQUE INDEX IF NOT EXISTS affiliate_codes_code_key
   ON affiliate_codes (code);
 
--- Serves the per-IP rate-limit lookup.
 CREATE INDEX IF NOT EXISTS affiliate_codes_ip_created_idx
   ON affiliate_codes (ip_hash, created_at);
+
+-- Fixed-window rate limiting, keyed by "<action>:<hashed ip>".
+CREATE TABLE IF NOT EXISTS rate_limits (
+  bucket TEXT PRIMARY KEY,
+  hits INT NOT NULL DEFAULT 0,
+  expires_at TIMESTAMPTZ NOT NULL
+);

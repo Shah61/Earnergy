@@ -19,6 +19,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 const MAX_CODE_LENGTH = 64;
 const MAX_UA_LENGTH = 256;
 const RATE_LIMIT_PER_HOUR = 30;
+/** Verification runs on every affiliate page view, so it needs more headroom. */
+const VERIFY_RATE_LIMIT_PER_HOUR = 240;
 
 const STATIC_ALLOWED_ORIGINS = new Set([
   "https://earnergy.online",
@@ -94,6 +96,13 @@ function ensureSchema(sql: NeonQueryFunction<false, false>): Promise<void> {
       CREATE INDEX IF NOT EXISTS affiliate_codes_ip_created_idx
         ON affiliate_codes (ip_hash, created_at)
     `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS rate_limits (
+        bucket TEXT PRIMARY KEY,
+        hits INT NOT NULL DEFAULT 0,
+        expires_at TIMESTAMPTZ NOT NULL
+      )
+    `;
   })().catch((error) => {
     schemaReady = null; // allow retry on next request
     throw error;
@@ -101,12 +110,80 @@ function ensureSchema(sql: NeonQueryFunction<false, false>): Promise<void> {
   return schemaReady;
 }
 
+/**
+ * Fixed-window counter, incremented atomically in one statement so concurrent
+ * lambda instances can't race past the limit. Returns true when allowed.
+ */
+async function consumeRateLimit(
+  sql: NeonQueryFunction<false, false>,
+  bucket: string,
+  limit: number,
+  windowSeconds: number,
+): Promise<boolean> {
+  const [{ hits }] = (await sql`
+    INSERT INTO rate_limits (bucket, hits, expires_at)
+    VALUES (${bucket}, 1, now() + make_interval(secs => ${windowSeconds}))
+    ON CONFLICT (bucket) DO UPDATE SET
+      hits = CASE
+        WHEN rate_limits.expires_at < now() THEN 1
+        ELSE rate_limits.hits + 1
+      END,
+      expires_at = CASE
+        WHEN rate_limits.expires_at < now()
+          THEN now() + make_interval(secs => ${windowSeconds})
+        ELSE rate_limits.expires_at
+      END
+    RETURNING hits
+  `) as [{ hits: number }];
+  return hits <= limit;
+}
+
+/** GET /api/affiliate?code=xxx → { ok, valid } — is this a registered code? */
+async function handleVerify(req: VercelRequest, res: VercelResponse) {
+  const code = sanitizeCode(
+    Array.isArray(req.query.code) ? req.query.code[0] : req.query.code,
+  );
+  if (code === null) {
+    return res.status(400).json({ ok: false, error: "Missing code" });
+  }
+
+  try {
+    const sql = getSql();
+    await ensureSchema(sql);
+
+    const ipHash = hashIp(clientIp(req));
+    const allowed = await consumeRateLimit(
+      sql,
+      `verify:${ipHash}`,
+      VERIFY_RATE_LIMIT_PER_HOUR,
+      3600,
+    );
+    if (!allowed) {
+      res.setHeader("Retry-After", "3600");
+      return res.status(429).json({ ok: false, error: "Too many requests" });
+    }
+
+    const rows = (await sql`
+      SELECT 1 FROM affiliate_codes WHERE code = ${code} LIMIT 1
+    `) as unknown[];
+
+    return res.status(200).json({ ok: true, valid: rows.length > 0 });
+  } catch (error) {
+    console.error("affiliate verify error:", error);
+    return res.status(500).json({ ok: false, error: "Something went wrong" });
+  }
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
 
+  if (req.method === "GET") {
+    return handleVerify(req, res);
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "GET, POST");
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
@@ -152,13 +229,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const sql = getSql();
     await ensureSchema(sql);
 
-    const [{ recent }] = (await sql`
-      SELECT count(*)::int AS recent
-      FROM affiliate_codes
-      WHERE ip_hash = ${ipHash}
-        AND created_at > now() - interval '1 hour'
-    `) as [{ recent: number }];
-    if (recent >= RATE_LIMIT_PER_HOUR) {
+    // Counted in rate_limits (not affiliate_codes) so that duplicate
+    // submissions — which insert no row — still consume quota.
+    const allowed = await consumeRateLimit(
+      sql,
+      `submit:${ipHash}`,
+      RATE_LIMIT_PER_HOUR,
+      3600,
+    );
+    if (!allowed) {
       res.setHeader("Retry-After", "3600");
       return res
         .status(429)

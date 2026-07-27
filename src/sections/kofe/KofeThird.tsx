@@ -1,20 +1,18 @@
-const IMAGE1 = 'kofe/nondairy.webp'
-const IMAGE2 = 'kofe/arabica.webp'
-const IMAGE3 = 'kofe/coconut.webp'
-const IMAGE4 = 'kofe/vanilla.webp'
-const IMAGE5 = 'kofe/tricalcium.webp'
-const IMAGE6 = 'kofe/chicory.webp'
-const IMAGE7 = 'kofe/stevia.webp'
-const IMAGE8 = 'kofe/mct.webp'
-const IMAGE9 = 'kofe/probiotic.webp'
-const IMAGE10 = 'kofe/monkfruit.webp'
-const CUP = 'kofe/cup.webp'
-const PACKSHOT = 'kofe/kofebox.webp'
+const IMAGE1 = '/kofe/nondairy.webp'
+const IMAGE2 = '/kofe/arabica.webp'
+const IMAGE3 = '/kofe/coconut.webp'
+const IMAGE4 = '/kofe/vanilla.webp'
+const IMAGE5 = '/kofe/tricalcium.webp'
+const IMAGE6 = '/kofe/chicory.webp'
+const IMAGE7 = '/kofe/stevia.webp'
+const IMAGE8 = '/kofe/mct.webp'
+const IMAGE9 = '/kofe/probiotic.webp'
+const IMAGE10 = '/kofe/monkfruit.webp'
+const CUP = '/kofe/cup.webp'
+const PACKSHOT = '/kofe/kofebox.webp'
 
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/useAppStore'
-import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 type Ing = { src: string; name: string; desc: string }
 const LEFT: Ing[] = [
@@ -102,13 +100,6 @@ const css = `
 .gd-outro .price{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(42px,7vw,76px);color:var(--esp);
   border-bottom:5px solid var(--yellow);display:inline-block;padding:0 .14em .02em}
 .gd-outro .price .per{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.4vw,28px);color:var(--tx-kick);margin-left:10px}
-.gd-outro .gd-buy{margin-top:clamp(18px,3vh,30px);display:inline-flex;align-items:center;gap:10px;
-  font-family:"Anton",sans-serif;font-size:clamp(12px,1.4vw,15px);letter-spacing:.22em;text-transform:uppercase;text-decoration:none;
-  color:var(--cream-lt);background:var(--esp);border-radius:999px;padding:clamp(13px,1.8vh,17px) clamp(24px,3.2vw,36px);
-  box-shadow:0 18px 36px rgba(20,10,4,.28);transition:transform .25s ease,background .25s ease,color .25s ease}
-.gd-outro .gd-buy .arr{transition:transform .25s ease}
-.gd-outro .gd-buy:hover,.gd-outro .gd-buy:focus-visible{background:var(--yellow);color:var(--esp);transform:translateY(-2px)}
-.gd-outro .gd-buy:hover .arr{transform:translate(3px,-3px)}
 .gd-outro .scr{margin-top:14px;font-family:"Caveat",cursive;font-weight:700;font-size:clamp(24px,4vw,44px);color:var(--gold)}
 
 /* ============ TABLET ============ */
@@ -145,7 +136,6 @@ const css = `
 `
 
 export default function KofeBoard() {
-  const { uplinecode } = useParams<{ uplinecode: string }>()
   const activeProduct = useAppStore((s) => s.activeProduct)
   useEffect(() => {
     if (activeProduct !== 'kofe') return
@@ -228,16 +218,6 @@ export default function KofeBoard() {
           <div className="x2">×2</div>
         </div>
         <div className="price">RM 30<span className="per">for 2 boxes</span></div>
-        <div>
-          <a
-            className="gd-buy"
-            href={belibeliProductUrl(BELIBELI_PRODUCTS.kofe, uplinecode)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Buy Now <span className="arr">↗</span>
-          </a>
-        </div>
         <div className="scr">goodbye sugar, hello energy</div>
       </footer>
     </div>

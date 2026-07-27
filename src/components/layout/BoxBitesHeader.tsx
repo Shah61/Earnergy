@@ -8,8 +8,15 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { ActiveProduct } from '@/stores/useAppStore'
+import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 const LOGO = '/photos/logo2.webp'
+
+/* the buy CTA follows whichever product is on screen */
+const BUY_CTA: Record<ActiveProduct, { label: string; product: string }> = {
+  'box-bites': { label: 'Get 2-Pack · RM30', product: BELIBELI_PRODUCTS.boxBites },
+  kofe: { label: 'Get 2-Box · RM30', product: BELIBELI_PRODUCTS.kofe },
+}
 
 export type HeaderLink = { label: string; href: string }
 
@@ -189,19 +196,20 @@ export function BoxBitesHeader({
   visible = true,
   links = DEFAULT_LINKS,
   activeProduct = 'box-bites',
-  ctaLabel = 'Get 2-Pack · RM30',
-  ctaHref = '#buy',
+  uplineCode,
   onNavigate,
   onProductChange,
 }: {
   visible?: boolean
   links?: HeaderLink[]
   activeProduct?: ActiveProduct
-  ctaLabel?: string
-  ctaHref?: string
+  uplineCode?: string
   onNavigate?: (href: string) => void
   onProductChange?: (product: ActiveProduct) => void
 }) {
+  const cta = BUY_CTA[activeProduct]
+  const ctaHref = belibeliProductUrl(cta.product, uplineCode)
+  const ctaLabel = cta.label
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
@@ -346,7 +354,8 @@ export function BoxBitesHeader({
             ref={ctaRef}
             className="bbh-cta bbh-cta--bar"
             href={ctaHref}
-            onClick={(e) => nav(e, ctaHref)}
+            target="_blank"
+            rel="noreferrer"
           >
             <span className="bbh-dot" aria-hidden="true" />
             {ctaLabel}
@@ -403,7 +412,13 @@ export function BoxBitesHeader({
               {l.label}
             </Link>
           ))}
-          <a className="bbh-cta bbh-mcta" href={ctaHref} onClick={(e) => nav(e, ctaHref)}>
+          <a
+            className="bbh-cta bbh-mcta"
+            href={ctaHref}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setOpen(false)}
+          >
             <span className="bbh-dot" aria-hidden="true" />
             {ctaLabel}
           </a>

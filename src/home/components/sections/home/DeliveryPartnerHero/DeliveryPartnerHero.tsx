@@ -51,7 +51,7 @@ export function DeliveryPartnerHero() {
           preload="none"
           poster="/kofe2-poster.webp"
         >
-          <source src="kofe2.mp4" type="video/mp4" />
+          <source src="/kofe2.mp4" type="video/mp4" />
         </video>
 
         <div className="absolute inset-0 bg-black/25" aria-hidden="true" />

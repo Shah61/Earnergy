@@ -1,5 +1,5 @@
-const IMAGE_CUP = 'kofe/cup.webp'     // latte cup photo (also used inside the wordmark)
-const IMAGE_PACK = 'kofe/kofebox.webp'   // Spanish Latte pack front
+const IMAGE_CUP = '/kofe/cup.webp'     // latte cup photo (also used inside the wordmark)
+const IMAGE_PACK = '/kofe/kofebox.webp'   // Spanish Latte pack front
 
 import { useEffect } from 'react'
 import { getLenis, getScrollY, subscribeToScroll } from '@/hooks/useLenis'

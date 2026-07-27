@@ -47,6 +47,14 @@ export function storeAffiliateCode(code: string): void {
   }
 }
 
+export function clearAffiliateCode(): void {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // storage unavailable — nothing to clear
+  }
+}
+
 export function getStoredAffiliateCode(): string | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);

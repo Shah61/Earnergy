@@ -29,9 +29,7 @@
  */
 
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { getLenis } from '@/hooks/useLenis'
-import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 const BITE = '/boxbite.webp'
 const OAT = '/oat.webp'
@@ -222,11 +220,6 @@ const css = `
 .bb-story .stamp .s1{font-family:"Anton",sans-serif;font-size:14px;letter-spacing:.2em}
 .bb-story .stamp .s2{font-family:"Anton",sans-serif;font-size:46px;line-height:1;margin:3px 0}
 .bb-story .stamp .s3{font-family:"Caveat",cursive;font-weight:700;font-size:20px;color:#f5c518}
-.bb-story .stamp .sbuy{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;
-  font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;
-  color:#14351c;background:#f5c518;border-radius:999px;padding:9px 16px;
-  box-shadow:0 14px 28px rgba(16,40,18,.38);transition:transform .25s ease,background .25s ease}
-.bb-story .stamp .sbuy:hover,.bb-story .stamp .sbuy:focus-visible{background:var(--white);transform:translateX(-50%) scale(1.06)}
 
 .bb-story .benefits{position:absolute;z-index:8;left:0;right:0;bottom:calc(clamp(14px,4vh,40px) + var(--safe-b));text-align:center;pointer-events:none}
 .bb-story .benefits .powered{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(16px,2.6vw,26px);color:var(--white);text-shadow:0 2px 12px rgba(22,50,16,.4);
@@ -297,7 +290,6 @@ const css = `
   .bb-story .stamp .s2{font-size:30px}
   .bb-story .stamp .s1{font-size:10px}
   .bb-story .stamp .s3{font-size:14px}
-  .bb-story .stamp .sbuy{font-size:10px;padding:7px 12px;top:calc(100% + 8px)}
   .bb-story .shead .script{font-size:15px}
   .bb-story .benefits .powered{font-size:15px}
   .bb-story .bchip{font-size:9.5px;padding:6px 10px;letter-spacing:.12em}
@@ -330,7 +322,6 @@ const css = `
   .bb-story .stamp .s2{font-size:26px}
   .bb-story .stamp .s1{font-size:9px;letter-spacing:.14em}
   .bb-story .stamp .s3{font-size:13px}
-  .bb-story .stamp .sbuy{font-size:9px;padding:6px 10px}
   .bb-story .bchip{font-size:8.5px;padding:5px 9px}
 
   .bb-story .outro .ocols{grid-template-columns:1fr;text-align:center}
@@ -373,7 +364,6 @@ const css = `
   .bb-story .stamp .s2{font-size:24px}
   .bb-story .stamp .s1{font-size:8.5px}
   .bb-story .stamp .s3{font-size:12px}
-  .bb-story .stamp .sbuy{font-size:8.5px;padding:5px 9px;top:calc(100% + 6px)}
   .bb-story .benefits{bottom:calc(8px + var(--safe-b))}
   .bb-story .benefits .powered{font-size:13px}
   .bb-story .bchip{font-size:8.5px;padding:5px 9px}
@@ -389,8 +379,6 @@ const css = `
 `
 
 export default function BoxBitesHello() {
-  const { uplinecode } = useParams<{ uplinecode: string }>()
-
   useEffect(() => {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b)
@@ -1158,14 +1146,6 @@ export default function BoxBitesHello() {
             <span className="s1">2 PACK</span>
             <span className="s2">RM&nbsp;30</span>
             <span className="s3">only!</span>
-            <a
-              className="sbuy"
-              href={belibeliProductUrl(BELIBELI_PRODUCTS.boxBites, uplinecode)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Buy Now ↗
-            </a>
           </div>
           <button className="divebtn" id="bb-divebtn" type="button">Dive into the box ↓</button>
           <button className="diveoutbtn" id="bb-diveout" type="button">Dive out ↑</button>
