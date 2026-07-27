@@ -37,6 +37,15 @@ export function affiliateShareUrl(origin: string, uplineCode: string): string {
    browsing session after they activate on the Join page. */
 
 const STORAGE_KEY = "earnergy.affiliate-code";
+const CHANGE_EVENT = "earnergy:affiliate-change";
+
+function emitAffiliateChange(): void {
+  try {
+    window.dispatchEvent(new Event(CHANGE_EVENT));
+  } catch {
+    // non-browser environment — nothing listening anyway
+  }
+}
 
 export function storeAffiliateCode(code: string): void {
   try {
@@ -45,6 +54,7 @@ export function storeAffiliateCode(code: string): void {
   } catch {
     // storage unavailable (private mode / blocked) — feature degrades silently
   }
+  emitAffiliateChange();
 }
 
 export function clearAffiliateCode(): void {
@@ -53,6 +63,17 @@ export function clearAffiliateCode(): void {
   } catch {
     // storage unavailable — nothing to clear
   }
+  emitAffiliateChange();
+}
+
+/** Subscribe to activation/clearing so headers can react without a reload. */
+export function subscribeAffiliateCode(onChange: () => void): () => void {
+  window.addEventListener(CHANGE_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(CHANGE_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
 }
 
 export function getStoredAffiliateCode(): string | null {

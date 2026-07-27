@@ -1,5 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { JOIN_US_CTA, NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
+import {
+  AFFILIATE_NAV_ITEMS,
+  JOIN_US_CTA,
+  NAV_ITEMS,
+  SITE_LOGO,
+  SITE_NAME,
+} from "@home/constants/navigation";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 
 type SiteHeaderProps = {
   onMenuToggle: () => void;
@@ -14,23 +21,33 @@ function isNavActive(pathname: string, href: string) {
 
 export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
   const { pathname } = useLocation();
+  const affiliateCode = useAffiliateCode();
+  const navItems = affiliateCode ? AFFILIATE_NAV_ITEMS : NAV_ITEMS;
+
+  const logo = (
+    <img
+      src={SITE_LOGO}
+      alt={SITE_NAME}
+      className="brand-logo"
+      width={2482}
+      height={788}
+      decoding="async"
+    />
+  );
 
   return (
     <header className="site-header" id="header">
       <div className="wrap nav">
-        <Link className="brand" to="/" aria-label={`${SITE_NAME} home`}>
-          <img
-            src={SITE_LOGO}
-            alt={SITE_NAME}
-            className="brand-logo"
-            width={2482}
-            height={788}
-            decoding="async"
-          />
-        </Link>
+        {affiliateCode ? (
+          <span className="brand">{logo}</span>
+        ) : (
+          <Link className="brand" to="/" aria-label={`${SITE_NAME} home`}>
+            {logo}
+          </Link>
+        )}
 
         <nav className="nav-links" aria-label="Primary">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const className = isNavActive(pathname, item.href) ? "active" : undefined;
             const isRoute = item.href.startsWith("/");
 

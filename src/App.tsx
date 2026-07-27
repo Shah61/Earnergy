@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 import { clearAffiliateCode, getStoredAffiliateCode } from '@/lib/belibeli'
 import { BoxBitesHeader } from '@/components/layout/BoxBitesHeader'
+import { InvalidCodeScreen } from '@/components/layout/InvalidCodeScreen'
 import { ProductViewport } from '@/components/layout/ProductViewport'
 import { SmoothScroll } from '@/components/layout/SmoothScroll'
 import { destroyLenis, getLenis } from '@/hooks/useLenis'
@@ -49,14 +50,13 @@ export default function App() {
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { ok?: boolean; valid?: boolean } | null) => {
         if (cancelled) return
-        const valid = !(data?.ok && data.valid === false)
-        // don't let a rejected code sit in the cache and cause a redirect loop
+        const valid = data?.ok === true && data.valid === true
+        // a rejected code must not linger in the cache and redirect people back
         if (!valid && getStoredAffiliateCode() === uplinecode) clearAffiliateCode()
         setVerdict({ code: uplinecode, valid })
       })
       .catch(() => {
-        // endpoint unreachable — fail open rather than break every share link
-        if (!cancelled) setVerdict({ code: uplinecode, valid: true })
+        if (!cancelled) setVerdict({ code: uplinecode, valid: false })
       })
 
     return () => {
@@ -82,9 +82,9 @@ export default function App() {
     }
   }, [])
 
-  /* an unrecognised code drops back to the plain page (house code) */
-  if (codeCheck === 'rejected') {
-    return <Navigate to="/products" replace />
+  /* a code nobody activated: say so plainly instead of quietly redirecting */
+  if (codeCheck === 'rejected' && uplinecode) {
+    return <InvalidCodeScreen code={uplinecode} />
   }
 
   /* visitor activated their own code this session: /products silently
