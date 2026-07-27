@@ -30,7 +30,7 @@ export function JoinProducts() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 md:gap-5">
         {JOIN_PRODUCTS.map((product, index) => (
           <a
             key={product.no}
@@ -47,7 +47,7 @@ export function JoinProducts() {
               {product.no}
             </span>
 
-            <div className="relative flex h-52 items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6 sm:h-56">
+            <div className="relative flex h-56 items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6 sm:h-60">
               <img
                 src={product.image}
                 alt={product.imageAlt}
@@ -67,7 +67,7 @@ export function JoinProducts() {
               </h3>
               <p className="text-sm leading-6 text-neutral-600">{product.tagline}</p>
 
-              <div className="mt-5 flex items-center justify-between gap-3 border-t border-neutral-100 pt-4">
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-neutral-100 pt-4 sm:mt-auto sm:pt-5">
                 <span className="font-display text-xl font-extrabold text-black">
                   {product.price}
                 </span>

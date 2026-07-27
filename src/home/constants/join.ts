@@ -31,9 +31,23 @@ export const JOIN_PRODUCTS_HEAD = {
   text: "Every Earnergy product is available on BeliBeli. Grab yours, experience it, and turn what you spend into your first step as a reseller.",
 };
 
+/* ⚠️ EARNERGYBOX: paste the real BeliBeli product link here (see the bundle
+   entry below) — everything else about the card is already in place. */
+const EARNERGYBOX_HREF = "https://belibeli.online/p/REPLACE_ME";
+
 export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "01",
+    name: "EARNERGYBOX — Business All In A Box",
+    tagline:
+      "For just RM99 you get more than premium, healthy products — you also get the system, the knowledge and the community to start your business smarter.",
+    price: "RM 99",
+    image: "/boxbundle.png",
+    imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
+    href: EARNERGYBOX_HREF,
+  },
+  {
+    no: "02",
     name: "Box Bites Healthy Cookies",
     tagline: "Hoodia extract, no added white sugar — healthy cookies that box your cravings.",
     price: "RM 30",
@@ -42,7 +56,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     href: "https://belibeli.online/p/19069023",
   },
   {
-    no: "02",
+    no: "03",
     name: "KOFÉ Spanish Latte",
     tagline: "Probiotics + prebiotics, no white sugar — goodbye sugar, hello energy.",
     price: "RM 30",
@@ -51,7 +65,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     href: "https://belibeli.online/p/18508099",
   },
   {
-    no: "03",
+    no: "04",
     name: "Buku Berniaga Semudah Berbelanja",
     tagline: "The playbook that turns everyday spending into modal dan pendapatan.",
     price: "RM 30",
@@ -79,7 +93,7 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   {
     no: "01",
     title: "Buy Any Product",
-    text: "Purchase any of the three products below on BeliBeli — Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey.",
+    text: "Purchase any product below on BeliBeli — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey.",
     icon: "buy",
   },
   {
