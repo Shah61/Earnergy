@@ -13,7 +13,7 @@ import {
   JOIN_AFFILIATE_HEAD,
   JOIN_AFFILIATE_STEPS,
 } from "@home/constants/join";
-import { affiliateShareUrl } from "@/lib/belibeli";
+import { affiliateShareUrl, storeAffiliateCode } from "@/lib/belibeli";
 import { revealDelay } from "@home/utils/reveal";
 
 const STEP_ICONS = {
@@ -74,6 +74,7 @@ export function JoinAffiliate() {
         return;
       }
 
+      storeAffiliateCode(trimmed);
       setShareUrl(affiliateShareUrl(window.location.origin, trimmed));
       setStatus("success");
     } catch {

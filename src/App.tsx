@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { Navigate, useParams } from 'react-router-dom'
+import { getStoredAffiliateCode } from '@/lib/belibeli'
 import { BoxBitesHeader } from '@/components/layout/BoxBitesHeader'
 import { ProductViewport } from '@/components/layout/ProductViewport'
 import { SmoothScroll } from '@/components/layout/SmoothScroll'
@@ -17,6 +19,7 @@ function handleNavigate(href: string) {
 }
 
 export default function App() {
+  const { uplinecode } = useParams<{ uplinecode: string }>()
   const activeProduct = useAppStore((s) => s.activeProduct)
   const setActiveProduct = useAppStore((s) => s.setActiveProduct)
   const setLoadingComplete = useAppStore((s) => s.setLoadingComplete)
@@ -38,6 +41,13 @@ export default function App() {
       })
     }
   }, [])
+
+  /* visitor activated their own code this session: /products silently
+     becomes /products/<their code> so the buy buttons credit them */
+  const storedCode = getStoredAffiliateCode()
+  if (!uplinecode && storedCode) {
+    return <Navigate to={`/products/${encodeURIComponent(storedCode)}`} replace />
+  }
 
   return (
     <>

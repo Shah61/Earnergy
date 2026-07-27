@@ -30,3 +30,29 @@ export function belibeliProductUrl(
 export function affiliateShareUrl(origin: string, uplineCode: string): string {
   return `${origin}/products/${encodeURIComponent(normalizeUplineCode(uplineCode))}`;
 }
+
+/* ── short-lived cache of the visitor's own activated code ──────────────
+   sessionStorage: survives page navigation, cleared when the tab closes.
+   Lets /products redirect to /products/<their code> for the rest of the
+   browsing session after they activate on the Join page. */
+
+const STORAGE_KEY = "earnergy.affiliate-code";
+
+export function storeAffiliateCode(code: string): void {
+  try {
+    const cleaned = code.trim().slice(0, MAX_CODE_LENGTH);
+    if (cleaned.length > 0) sessionStorage.setItem(STORAGE_KEY, cleaned);
+  } catch {
+    // storage unavailable (private mode / blocked) — feature degrades silently
+  }
+}
+
+export function getStoredAffiliateCode(): string | null {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const cleaned = raw?.trim().slice(0, MAX_CODE_LENGTH) ?? "";
+    return cleaned.length > 0 ? cleaned : null;
+  } catch {
+    return null;
+  }
+}
