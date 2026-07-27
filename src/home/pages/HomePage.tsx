@@ -5,7 +5,6 @@ import {
   GallerySection,
   HeroSection,
   ServicesSection,
-  TeamSection,
 } from "@home/components/sections/home";
 import { BrandMarkSprite } from "@home/components/ui/icons";
 import {
@@ -31,7 +30,6 @@ export function HomePage() {
       <AboutSection />
       <GallerySection />
       <ServicesSection />
-      <TeamSection />
       <DeliveryPartnerHero />
       <SiteFooter />
     </>

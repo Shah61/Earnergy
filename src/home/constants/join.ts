@@ -14,44 +14,50 @@ export const JOIN_HERO = {
   teaserLabel: "Your Potential Retail Profit",
 };
 
-export type JoinStep = {
+export type JoinProduct = {
   no: string;
-  title: string;
-  text: string;
-  icon: "shop" | "business" | "share" | "growth";
+  name: string;
+  tagline: string;
+  price: string;
+  image: string;
+  imageAlt: string;
+  href: string;
 };
 
-export const JOIN_STEPS_HEAD = {
-  tag: "How It Works",
-  statementInk: "Shop. Do Business. Share.",
-  statementDim: "Grow Your Income.",
-  text: "What you spend can now become a business. Four simple habits power the whole Earnergy opportunity.",
+export const JOIN_PRODUCTS_HEAD = {
+  tag: "Shop The Products",
+  statementInk: "Buy on BeliBeli.",
+  statementDim: "Start Earning Today.",
+  text: "Every Earnergy product is available on BeliBeli. Grab yours, experience it, and turn what you spend into your first step as a reseller.",
 };
 
-export const JOIN_STEPS: JoinStep[] = [
+export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "01",
-    title: "Shop",
-    text: "Start with what you already do — enjoy Box Bites and KOFÉ as part of your everyday routine.",
-    icon: "shop",
+    name: "Box Bites Healthy Cookies",
+    tagline: "Hoodia extract, no added white sugar — healthy cookies that box your cravings.",
+    price: "RM 30",
+    image: "/box-bites-pouch.webp",
+    imageAlt: "Box Bites healthy cookies pouch",
+    href: "https://belibeli.online/p/19069023",
   },
   {
     no: "02",
-    title: "Do Business",
-    text: "Resell Earnergy products and earn RM10 retail profit on every single unit you sell.",
-    icon: "business",
+    name: "KOFÉ Spanish Latte",
+    tagline: "Probiotics + prebiotics, no white sugar — goodbye sugar, hello energy.",
+    price: "RM 30",
+    image: "/kofe/kofebox.webp",
+    imageAlt: "KOFÉ Spanish Latte box",
+    href: "https://belibeli.online/p/18508099",
   },
   {
     no: "03",
-    title: "Share",
-    text: "Introduce the opportunity to your circle and help others start their own reseller journey.",
-    icon: "share",
-  },
-  {
-    no: "04",
-    title: "Grow Your Income",
-    text: "As your circles expand across five levels, your retail profit potential multiplies with them.",
-    icon: "growth",
+    name: "Buku Berniaga Semudah Berbelanja",
+    tagline: "The playbook that turns everyday spending into modal dan pendapatan.",
+    price: "RM 30",
+    image: "/Buku.png",
+    imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
+    href: "https://belibeli.online/p/19133918",
   },
 ];
 

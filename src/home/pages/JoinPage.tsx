@@ -4,7 +4,7 @@ import {
   JoinCircleSystem,
   JoinCta,
   JoinHero,
-  JoinSteps,
+  JoinProducts,
 } from "@home/components/sections/join";
 import { useContactReveal, useMobileMenu, useScrollHeader } from "@home/hooks";
 import "@home/styles/join.css";
@@ -24,7 +24,7 @@ export function JoinPage() {
       <section ref={rootRef} className="join bg-white">
         <main className="mx-auto flex w-[90%] max-w-none flex-col gap-5 pb-10 pt-4">
           <JoinHero />
-          <JoinSteps />
+          <JoinProducts />
           <JoinCircleSystem />
           <JoinCta />
         </main>
