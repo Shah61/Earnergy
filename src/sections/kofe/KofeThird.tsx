@@ -12,7 +12,9 @@ const CUP = 'kofe/cup.webp'
 const PACKSHOT = 'kofe/kofebox.webp'
 
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/useAppStore'
+import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 type Ing = { src: string; name: string; desc: string }
 const LEFT: Ing[] = [
@@ -143,6 +145,7 @@ const css = `
 `
 
 export default function KofeBoard() {
+  const { uplinecode } = useParams<{ uplinecode: string }>()
   const activeProduct = useAppStore((s) => s.activeProduct)
   useEffect(() => {
     if (activeProduct !== 'kofe') return
@@ -228,7 +231,7 @@ export default function KofeBoard() {
         <div>
           <a
             className="gd-buy"
-            href="https://belibeli.online/p/18508099?uplinecode=5141"
+            href={belibeliProductUrl(BELIBELI_PRODUCTS.kofe, uplinecode)}
             target="_blank"
             rel="noreferrer"
           >

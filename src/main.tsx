@@ -44,6 +44,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={<HomePage />} />
           {/* the full Box Bites / KOFÈ animated experience */}
           <Route path="/products" element={<App />} />
+          {/* affiliate share links: buy buttons carry this upline code */}
+          <Route path="/products/:uplinecode" element={<App />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/join" element={<JoinPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

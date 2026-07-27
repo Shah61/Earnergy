@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { MobileDrawer, SiteFooter, SiteHeader } from "@home/components/layout";
 import {
+  JoinAffiliate,
   JoinCircleSystem,
   JoinCta,
   JoinHero,
@@ -24,6 +25,7 @@ export function JoinPage() {
       <section ref={rootRef} className="join bg-white">
         <main className="mx-auto flex w-[90%] max-w-none flex-col gap-5 pb-10 pt-4">
           <JoinHero />
+          <JoinAffiliate />
           <JoinProducts />
           <JoinCircleSystem />
           <JoinCta />

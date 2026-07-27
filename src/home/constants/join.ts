@@ -61,6 +61,54 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
   },
 ];
 
+export type JoinAffiliateStep = {
+  no: string;
+  title: string;
+  text: string;
+  icon: "buy" | "mail" | "paste";
+};
+
+export const JOIN_AFFILIATE_HEAD = {
+  tag: "Become An Affiliate",
+  statementInk: "Three Steps.",
+  statementDim: "Your Own Earning Link.",
+  text: "No sign-ups, no forms, no passwords. Buy once, grab your code from your email, paste it below — and you're an Earnergy affiliate with a link that pays you.",
+};
+
+export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
+  {
+    no: "01",
+    title: "Buy Any Product",
+    text: "Purchase any of the three products below on BeliBeli — Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey.",
+    icon: "buy",
+  },
+  {
+    no: "02",
+    title: "Check Your Email",
+    text: "After your purchase, BeliBeli emails you your personal upline code. That code is your affiliate code — keep it close.",
+    icon: "mail",
+  },
+  {
+    no: "03",
+    title: "Paste Your Code",
+    text: "Drop your code into the field below and you will automatically become an affiliate — with your own shareable earning link.",
+    icon: "paste",
+  },
+];
+
+export const JOIN_AFFILIATE_FORM = {
+  label: "Your upline code",
+  placeholder: "e.g. 5141",
+  button: "Activate My Link",
+  buttonBusy: "Activating…",
+  successTitle: "You're officially an Earnergy affiliate!",
+  successText:
+    "Share this link anywhere — every purchase made through it carries your upline code, so the commissions land with you.",
+  copy: "Copy Link",
+  copied: "Copied!",
+  errorGeneric: "Something went wrong — please try again.",
+};
+
 export type JoinLevel = {
   id: string;
   name: string;

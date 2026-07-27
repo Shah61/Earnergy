@@ -29,7 +29,9 @@
  */
 
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { getLenis } from '@/hooks/useLenis'
+import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 const BITE = '/boxbite.webp'
 const OAT = '/oat.webp'
@@ -387,6 +389,8 @@ const css = `
 `
 
 export default function BoxBitesHello() {
+  const { uplinecode } = useParams<{ uplinecode: string }>()
+
   useEffect(() => {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b)
@@ -1156,7 +1160,7 @@ export default function BoxBitesHello() {
             <span className="s3">only!</span>
             <a
               className="sbuy"
-              href="https://belibeli.online/p/19069023?uplinecode=5141"
+              href={belibeliProductUrl(BELIBELI_PRODUCTS.boxBites, uplinecode)}
               target="_blank"
               rel="noreferrer"
             >
