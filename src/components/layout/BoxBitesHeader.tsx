@@ -9,7 +9,6 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { ActiveProduct } from '@/stores/useAppStore'
 import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
-import { useAffiliateCode } from '@/hooks/useAffiliateCode'
 
 const LOGO = '/photos/logo2.webp'
 
@@ -29,9 +28,6 @@ const MENU_LINKS: HeaderLink[] = [
   { label: 'Join Us', href: '/join' },
   { label: 'Contact', href: '/contact' },
 ]
-
-/* activated affiliates stay inside the funnel: Join Us only */
-const AFFILIATE_MENU_LINKS: HeaderLink[] = [{ label: 'Join Us', href: '/join' }]
 
 const TICKER =
   'Goodbye Sugar ✦ Hello Energy ✦ Healthy Cookies That Box Your Cravings ✦ Smart Products · Smarter Business ✦ '
@@ -211,8 +207,9 @@ export function BoxBitesHeader({
   onNavigate?: (href: string) => void
   onProductChange?: (product: ActiveProduct) => void
 }) {
-  const affiliateCode = useAffiliateCode()
-  const menuLinks = affiliateCode ? AFFILIATE_MENU_LINKS : MENU_LINKS
+  /* on an affiliate link (/products/<code>) the logo stops being a way home,
+     so the visitor stays on the page the code was shared for */
+  const logoLocked = Boolean(uplineCode)
   const cta = BUY_CTA[activeProduct]
   const ctaHref = belibeliProductUrl(cta.product, uplineCode)
   const ctaLabel = cta.label
@@ -321,7 +318,7 @@ export function BoxBitesHeader({
         className={`bbh-header${scrolled || !mounted ? ' bbh-header--scrolled' : ''}${hidden ? ' bbh-header--hidden' : ''}`}
       >
         <nav className="bbh-bar" aria-label="Main">
-          {affiliateCode ? (
+          {logoLocked ? (
             <span className="bbh-logo">
               <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
             </span>
@@ -419,7 +416,7 @@ export function BoxBitesHeader({
               {l.label}
             </a>
           ))}
-          {menuLinks.map((l) => (
+          {MENU_LINKS.map((l) => (
             <Link key={l.href} className="bbh-mlink" to={l.href} onClick={() => setOpen(false)}>
               {l.label}
             </Link>

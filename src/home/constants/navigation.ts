@@ -11,12 +11,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Contact Us", href: ROUTES.contact },
 ];
 
-/** Once a visitor activates an upline code they stay inside the affiliate
- *  funnel: products and the Join page only. */
-export const AFFILIATE_NAV_ITEMS: NavItem[] = [
-  { label: "Our Product", href: ROUTES.products },
-];
-
 export const JOIN_US_CTA = {
   label: "Join Us",
   href: ROUTES.join,

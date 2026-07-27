@@ -1,24 +1,16 @@
 import { Link } from "react-router-dom";
-import {
-  AFFILIATE_NAV_ITEMS,
-  JOIN_US_CTA,
-  NAV_ITEMS,
-} from "@home/constants/navigation";
-import { useAffiliateCode } from "@/hooks/useAffiliateCode";
+import { JOIN_US_CTA, NAV_ITEMS } from "@home/constants/navigation";
 
 type MobileDrawerProps = {
   onClose: () => void;
 };
 
 export function MobileDrawer({ onClose }: MobileDrawerProps) {
-  const affiliateCode = useAffiliateCode();
-  const navItems = affiliateCode ? AFFILIATE_NAV_ITEMS : NAV_ITEMS;
-
   return (
     <>
       <div className="overlay" id="overlay" onClick={onClose} aria-hidden="true" />
       <aside className="mobile-menu" id="drawer" aria-label="Mobile menu">
-        {navItems.map((item) =>
+        {NAV_ITEMS.map((item) =>
           item.href.startsWith("/") ? (
             <Link key={item.label} to={item.href} onClick={onClose}>
               {item.label}
