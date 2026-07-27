@@ -39,7 +39,15 @@ export function ContactInfoCards() {
         const style = revealDelay(index, 0.04, 0.09);
 
         return href ? (
-          <a key={title} href={href} className={className} style={style}>
+          <a
+            key={title}
+            href={href}
+            className={className}
+            style={style}
+            {...(href.startsWith("http")
+              ? { target: "_blank", rel: "noreferrer" }
+              : {})}
+          >
             {content}
           </a>
         ) : (

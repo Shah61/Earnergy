@@ -50,7 +50,13 @@ export function SiteFooter() {
           <div className="footer-block">
             <p className="footer-label">Phone Number</p>
             {FOOTER_PHONES.map((phone) => (
-              <a key={phone.tel} className="footer-value" href={`tel:${phone.tel}`}>
+              <a
+                key={phone.display}
+                className="footer-value"
+                href={phone.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {phone.display}
               </a>
             ))}
