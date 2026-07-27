@@ -1,9 +1,15 @@
 import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { JOIN_PRODUCTS, JOIN_PRODUCTS_HEAD } from "@home/constants/join";
+import { belibeliProductUrl } from "@/lib/belibeli";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 import { revealDelay } from "@home/utils/reveal";
 
 export function JoinProducts() {
+  /* an activated affiliate buys under their own code; everyone else gets
+     Earnergy's house code */
+  const uplineCode = useAffiliateCode();
+
   return (
     <section className="px-1 py-10 md:py-14">
       <div className="mb-10 grid items-start gap-6 md:grid-cols-[minmax(180px,0.9fr)_minmax(0,1.5fr)] md:gap-14">
@@ -34,7 +40,7 @@ export function JoinProducts() {
         {JOIN_PRODUCTS.map((product, index) => (
           <a
             key={product.no}
-            href={product.href}
+            href={belibeliProductUrl(product.productId, uplineCode)}
             target="_blank"
             rel="noreferrer"
             className="c-r-rise group relative flex flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-[0_6px_22px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-[#74c157] hover:shadow-[0_28px_55px_-32px_rgba(79,158,52,0.55)]"

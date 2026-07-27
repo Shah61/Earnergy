@@ -1,6 +1,7 @@
 /** BeliBeli product ids + affiliate link helpers, shared by all pages. */
 
 export const BELIBELI_PRODUCTS = {
+  earnergyBox: "17510456",
   boxBites: "19069023",
   kofe: "18508099",
   buku: "19133918",
@@ -37,6 +38,15 @@ export function affiliateShareUrl(origin: string, uplineCode: string): string {
    browsing session after they activate on the Join page. */
 
 const STORAGE_KEY = "earnergy.affiliate-code";
+const CHANGE_EVENT = "earnergy:affiliate-change";
+
+function emitAffiliateChange(): void {
+  try {
+    window.dispatchEvent(new Event(CHANGE_EVENT));
+  } catch {
+    // non-browser environment — nothing is listening anyway
+  }
+}
 
 export function storeAffiliateCode(code: string): void {
   try {
@@ -45,6 +55,7 @@ export function storeAffiliateCode(code: string): void {
   } catch {
     // storage unavailable (private mode / blocked) — feature degrades silently
   }
+  emitAffiliateChange();
 }
 
 export function clearAffiliateCode(): void {
@@ -53,6 +64,17 @@ export function clearAffiliateCode(): void {
   } catch {
     // storage unavailable — nothing to clear
   }
+  emitAffiliateChange();
+}
+
+/** Lets the buy links react the moment a code is activated on the same page. */
+export function subscribeAffiliateCode(onChange: () => void): () => void {
+  window.addEventListener(CHANGE_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(CHANGE_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
 }
 
 export function getStoredAffiliateCode(): string | null {

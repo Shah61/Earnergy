@@ -1,3 +1,4 @@
+import { BELIBELI_PRODUCTS } from "@/lib/belibeli";
 import { ROUTES } from "./routes";
 
 export const JOIN_HERO = {
@@ -21,7 +22,8 @@ export type JoinProduct = {
   price: string;
   image: string;
   imageAlt: string;
-  href: string;
+  /** BeliBeli product id — the buy link is built with the visitor's upline code */
+  productId: string;
 };
 
 export const JOIN_PRODUCTS_HEAD = {
@@ -30,10 +32,6 @@ export const JOIN_PRODUCTS_HEAD = {
   statementDim: "Start Earning Today.",
   text: "Every Earnergy product is available on BeliBeli. Grab yours, experience it, and turn what you spend into your first step as a reseller.",
 };
-
-/* ⚠️ EARNERGYBOX: paste the real BeliBeli product link here (see the bundle
-   entry below) — everything else about the card is already in place. */
-const EARNERGYBOX_HREF = "https://belibeli.online/p/REPLACE_ME";
 
 export const JOIN_PRODUCTS: JoinProduct[] = [
   {
@@ -44,7 +42,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     price: "RM 99",
     image: "/boxbundle.png",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
-    href: EARNERGYBOX_HREF,
+    productId: BELIBELI_PRODUCTS.earnergyBox,
   },
   {
     no: "02",
@@ -53,7 +51,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     price: "RM 30",
     image: "/box-bites-pouch.webp",
     imageAlt: "Box Bites healthy cookies pouch",
-    href: "https://belibeli.online/p/19069023",
+    productId: BELIBELI_PRODUCTS.boxBites,
   },
   {
     no: "03",
@@ -62,7 +60,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     price: "RM 30",
     image: "/kofe/kofebox.webp",
     imageAlt: "KOFÉ Spanish Latte box",
-    href: "https://belibeli.online/p/18508099",
+    productId: BELIBELI_PRODUCTS.kofe,
   },
   {
     no: "04",
@@ -71,7 +69,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     price: "RM 30",
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
-    href: "https://belibeli.online/p/19133918",
+    productId: BELIBELI_PRODUCTS.buku,
   },
 ];
 
