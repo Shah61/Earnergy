@@ -22,6 +22,8 @@ export type JoinProduct = {
   price: string;
   image: string;
   imageAlt: string;
+  /** optional chip shown next to the availability badge, e.g. "×2 boxes per order" */
+  badge?: string;
   /** units shipped per order — 2 renders the packshot as a pair */
   units?: number;
   /** BeliBeli product id — the buy link is built with the visitor's upline code */
@@ -49,20 +51,24 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "02",
     name: "Box Bites Healthy Cookies",
-    tagline: "Hoodia extract, no added white sugar — healthy cookies that box your cravings.",
+    tagline:
+      "High fiber, high protein, natural sweeteners from hoodia extract, no added sugar.",
     price: "RM 30",
     image: "/box-bites-pouch.webp",
-    imageAlt: "Box Bites healthy cookies pouch",
+    imageAlt: "Two Box Bites healthy cookies pouches",
+    badge: "×2 packs per order",
+    units: 2,
     productId: BELIBELI_PRODUCTS.boxBites,
   },
   {
     no: "03",
     name: "KOFÉ Spanish Latte",
     tagline:
-      "×2 boxes per order. Probiotics + prebiotics, no white sugar — goodbye sugar, hello energy.",
+      "Prebiotics + probiotics, dairy free, only natural sweeteners from stevia & monk fruit.",
     price: "RM 30",
     image: "/kofe/kofebox.webp",
     imageAlt: "Two KOFÉ Spanish Latte boxes",
+    badge: "×2 boxes per order",
     units: 2,
     productId: BELIBELI_PRODUCTS.kofe,
   },

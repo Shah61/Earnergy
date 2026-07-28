@@ -85,10 +85,17 @@ export function JoinProducts() {
             </div>
 
             <div className="flex flex-1 flex-col p-6 pt-5">
-              <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-[#74c157]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#3d7d27]">
-                <span className="size-1.5 rounded-full bg-[#74c157]" />
-                Available on BeliBeli
-              </span>
+              <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#74c157]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#3d7d27]">
+                  <span className="size-1.5 rounded-full bg-[#74c157]" />
+                  Available on BeliBeli
+                </span>
+                {product.badge ? (
+                  <span className="inline-flex items-center rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
+                    {product.badge}
+                  </span>
+                ) : null}
+              </div>
               <h3 className="mb-2 font-display text-lg font-extrabold uppercase leading-snug tracking-[-0.01em] text-black">
                 {product.name}
               </h3>

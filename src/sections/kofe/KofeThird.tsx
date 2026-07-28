@@ -215,7 +215,7 @@ export default function KofeBoard() {
         <div className="gd-packs">
           <img className="p1" src={PACKSHOT} alt="Kofé Spanish Latte box" draggable={false} />
           <img className="p2" src={PACKSHOT} alt="" aria-hidden="true" draggable={false} />
-          <div className="x2">×2</div>
+          <div className="X2">×2</div>
         </div>
         <div className="price">RM 30<span className="per">for 2 boxes</span></div>
         <div className="scr">goodbye sugar, hello energy</div>
