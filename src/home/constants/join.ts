@@ -22,6 +22,8 @@ export type JoinProduct = {
   price: string;
   image: string;
   imageAlt: string;
+  /** units shipped per order — 2 renders the packshot as a pair */
+  units?: number;
   /** BeliBeli product id — the buy link is built with the visitor's upline code */
   productId: string;
 };
@@ -56,10 +58,12 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "03",
     name: "KOFÉ Spanish Latte",
-    tagline: "Probiotics + prebiotics, no white sugar — goodbye sugar, hello energy.",
+    tagline:
+      "×2 boxes per order. Probiotics + prebiotics, no white sugar — goodbye sugar, hello energy.",
     price: "RM 30",
     image: "/kofe/kofebox.webp",
-    imageAlt: "KOFÉ Spanish Latte box",
+    imageAlt: "Two KOFÉ Spanish Latte boxes",
+    units: 2,
     productId: BELIBELI_PRODUCTS.kofe,
   },
   {

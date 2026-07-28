@@ -54,13 +54,34 @@ export function JoinProducts() {
             </span>
 
             <div className="relative flex h-56 items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6 sm:h-60">
-              <img
-                src={product.image}
-                alt={product.imageAlt}
-                loading="lazy"
-                decoding="async"
-                className="max-h-full w-auto max-w-full object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.14)] transition duration-300 group-hover:scale-[1.05]"
-              />
+              {product.units === 2 ? (
+                /* both packs upright; the second sits back and a little lower */
+                <div className="relative h-full w-full transition duration-300 group-hover:scale-[1.05]">
+                  <img
+                    src={product.image}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 m-auto max-h-[84%] w-auto max-w-[54%] translate-x-[20%] translate-y-[7%] object-contain drop-shadow-[0_10px_16px_rgba(0,0,0,0.13)]"
+                  />
+                  <img
+                    src={product.image}
+                    alt={product.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 m-auto max-h-[84%] w-auto max-w-[54%] -translate-x-[20%] -translate-y-[3%] object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.2)]"
+                  />
+                </div>
+              ) : (
+                <img
+                  src={product.image}
+                  alt={product.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-full w-auto max-w-full object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.14)] transition duration-300 group-hover:scale-[1.05]"
+                />
+              )}
             </div>
 
             <div className="flex flex-1 flex-col p-6 pt-5">
