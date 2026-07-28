@@ -54,7 +54,27 @@ export function JoinProducts() {
             </span>
 
             <div className="relative flex h-56 items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6 sm:h-60">
-              {product.units === 2 ? (
+              {product.units === 2 && product.unitsLayout === "side" ? (
+                /* staggered pair — only the outer edge tucks behind, so the
+                   transparent packshot never muddies the branding */
+                <div className="relative h-full w-full transition duration-300 group-hover:scale-[1.05]">
+                  <img
+                    src={product.image}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 m-auto max-h-[80%] w-auto max-w-[46%] translate-x-[46%] -translate-y-[12%] object-contain drop-shadow-[0_10px_16px_rgba(0,0,0,0.13)]"
+                  />
+                  <img
+                    src={product.image}
+                    alt={product.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 m-auto max-h-[94%] w-auto max-w-[52%] -translate-x-[38%] translate-y-[5%] object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.2)]"
+                  />
+                </div>
+              ) : product.units === 2 ? (
                 /* both packs upright; the second sits back and a little lower */
                 <div className="relative h-full w-full transition duration-300 group-hover:scale-[1.05]">
                   <img

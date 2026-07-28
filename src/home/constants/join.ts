@@ -26,6 +26,8 @@ export type JoinProduct = {
   badge?: string;
   /** units shipped per order — 2 renders the packshot as a pair */
   units?: number;
+  /** how a pair is arranged; "side" suits packshots with transparent edges */
+  unitsLayout?: "stacked" | "side";
   /** BeliBeli product id — the buy link is built with the visitor's upline code */
   productId: string;
 };
@@ -58,6 +60,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     imageAlt: "Two Box Bites healthy cookies pouches",
     badge: "×2 packs per order",
     units: 2,
+    unitsLayout: "side",
     productId: BELIBELI_PRODUCTS.boxBites,
   },
   {
@@ -75,7 +78,8 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "04",
     name: "Buku Berniaga Semudah Berbelanja",
-    tagline: "The playbook that turns everyday spending into modal dan pendapatan.",
+    tagline:
+      "Learn the unique concept that changes the way you see everyday spending. Understand how every purchase can be turned into an opportunity to earn income and build financial assets more wisely.",
     price: "RM 30",
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
