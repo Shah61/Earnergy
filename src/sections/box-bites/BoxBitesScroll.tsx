@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from '@/lib/gsap'
 import { KineticText } from '@/components/ui/kinetic-text'
 import { useAppStore } from '@/stores/useAppStore'
@@ -7,6 +7,8 @@ import {
   BGMID_HEIGHT,
   BGMID_SRC,
   BGMID_WIDTH,
+  FALLBACK_ANIM_MS,
+  FALLBACK_ANIM_SRC,
   VIDEO_HEIGHT,
   VIDEO_PLAYBACK_RATE,
   VIDEO_SRC,
@@ -22,6 +24,22 @@ export function BoxBitesScroll() {
   const [phase, setPhase] = useState<Phase>('playing')
   const [stillReady, setStillReady] = useState(false)
   const [copyVisible, setCopyVisible] = useState(false)
+  /* set only when the browser refuses to autoplay the video */
+  const [useFallbackAnim, setUseFallbackAnim] = useState(false)
+  const [fallbackAnimLoaded, setFallbackAnimLoaded] = useState(false)
+
+  const settleToStill = useCallback(() => {
+    setPhase('frozen')
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  }, [])
+
+  /* the WebP plays once and holds its last frame, so we hand over to the
+     still at its measured length — landing late is invisible, early would cut */
+  useEffect(() => {
+    if (!fallbackAnimLoaded) return
+    const timer = window.setTimeout(settleToStill, FALLBACK_ANIM_MS + 120)
+    return () => window.clearTimeout(timer)
+  }, [fallbackAnimLoaded, settleToStill])
 
   useEffect(() => {
     if (isLoading) return
@@ -40,7 +58,6 @@ export function BoxBitesScroll() {
 
     const video = videoRef.current
     let settled = false
-    let disarmGesture: (() => void) | null = null
 
     const freeze = () => {
       if (settled) return
@@ -51,41 +68,12 @@ export function BoxBitesScroll() {
         video.currentTime = Math.max(0, video.duration - 0.001)
       }
 
-      requestAnimationFrame(() => {
-        setPhase('frozen')
-        requestAnimationFrame(() => ScrollTrigger.refresh())
-      })
+      requestAnimationFrame(settleToStill)
     }
 
     const play = () => {
       video.playbackRate = VIDEO_PLAYBACK_RATE
       return video.play()
-    }
-
-    /* iOS blocks autoplay outright in Low Power Mode (and with "Auto-Play
-       Video Previews" off) however the element is configured — a user gesture
-       is the only thing that lifts it. So we settle on the end state to keep
-       the hero readable, then run the animation the moment they interact. */
-    const GESTURES = ['pointerdown', 'touchstart', 'keydown', 'wheel'] as const
-
-    const armGestureStart = () => {
-      if (disarmGesture) return
-
-      const onGesture = () => {
-        disarmGesture?.()
-        settled = false
-        setPhase('playing')
-        video.currentTime = 0
-        void play().catch(() => freeze())
-      }
-
-      GESTURES.forEach((type) =>
-        window.addEventListener(type, onGesture, { once: true, passive: true }),
-      )
-      disarmGesture = () => {
-        GESTURES.forEach((type) => window.removeEventListener(type, onGesture))
-        disarmGesture = null
-      }
     }
 
     const startPlayback = () => {
@@ -94,14 +82,19 @@ export function BoxBitesScroll() {
       void play().catch(() => {
         window.setTimeout(() => {
           void play().catch(() => {
-            freeze()
-            armGestureStart()
+            // Genuinely blocked — iOS does this in Low Power Mode however the
+            // element is configured. Hand over to the animated WebP, which no
+            // autoplay policy applies to, so the intro still runs on its own.
+            video.pause()
+            setUseFallbackAnim(true)
           })
         }, 150)
       })
     }
 
     setPhase('playing')
+    setUseFallbackAnim(false)
+    setFallbackAnimLoaded(false)
     video.preload = 'auto'
     video.currentTime = 0
 
@@ -116,10 +109,9 @@ export function BoxBitesScroll() {
     return () => {
       video.removeEventListener('canplay', startPlayback)
       video.removeEventListener('ended', freeze)
-      disarmGesture?.()
       video.pause()
     }
-  }, [isLoading, activeProduct])
+  }, [isLoading, activeProduct, settleToStill])
 
   const showStill = phase === 'frozen' && stillReady
 
@@ -157,8 +149,28 @@ export function BoxBitesScroll() {
                 className={`box-video ${
                   phase === 'idle' ? 'invisible opacity-0' : ''
                 }`}
-                style={{ visibility: showStill ? 'hidden' : 'visible' }}
+                style={{
+                  visibility: showStill || useFallbackAnim ? 'hidden' : 'visible',
+                }}
               />
+
+              {useFallbackAnim && (
+                <img
+                  src={FALLBACK_ANIM_SRC}
+                  alt=""
+                  aria-hidden="true"
+                  width={VIDEO_WIDTH}
+                  height={VIDEO_HEIGHT}
+                  draggable={false}
+                  className="box-video"
+                  style={{
+                    visibility: showStill ? 'hidden' : 'visible',
+                    pointerEvents: 'none',
+                  }}
+                  onLoad={() => setFallbackAnimLoaded(true)}
+                  onError={settleToStill}
+                />
+              )}
 
               <img
                 src={BGMID_SRC}
