@@ -39,11 +39,12 @@ export function BoxBitesScroll() {
     if (isLoading || activeProduct !== 'box-bites' || !videoRef.current) return
 
     const video = videoRef.current
-    let ended = false
+    let settled = false
+    let disarmGesture: (() => void) | null = null
 
     const freeze = () => {
-      if (ended) return
-      ended = true
+      if (settled) return
+      settled = true
 
       video.pause()
       if (video.duration) {
@@ -56,13 +57,46 @@ export function BoxBitesScroll() {
       })
     }
 
-    const startPlayback = () => {
+    const play = () => {
       video.playbackRate = VIDEO_PLAYBACK_RATE
-      // Muted, inline autoplay is allowed; if it's genuinely blocked we retry
-      // rather than freezing, so the animation always plays through.
-      void video.play().catch(() => {
+      return video.play()
+    }
+
+    /* iOS blocks autoplay outright in Low Power Mode (and with "Auto-Play
+       Video Previews" off) however the element is configured — a user gesture
+       is the only thing that lifts it. So we settle on the end state to keep
+       the hero readable, then run the animation the moment they interact. */
+    const GESTURES = ['pointerdown', 'touchstart', 'keydown', 'wheel'] as const
+
+    const armGestureStart = () => {
+      if (disarmGesture) return
+
+      const onGesture = () => {
+        disarmGesture?.()
+        settled = false
+        setPhase('playing')
+        video.currentTime = 0
+        void play().catch(() => freeze())
+      }
+
+      GESTURES.forEach((type) =>
+        window.addEventListener(type, onGesture, { once: true, passive: true }),
+      )
+      disarmGesture = () => {
+        GESTURES.forEach((type) => window.removeEventListener(type, onGesture))
+        disarmGesture = null
+      }
+    }
+
+    const startPlayback = () => {
+      // Muted, inline autoplay is normally allowed, so one retry covers a
+      // transient failure before we treat it as genuinely blocked.
+      void play().catch(() => {
         window.setTimeout(() => {
-          void video.play().catch(() => undefined)
+          void play().catch(() => {
+            freeze()
+            armGestureStart()
+          })
         }, 150)
       })
     }
@@ -77,11 +111,12 @@ export function BoxBitesScroll() {
       video.addEventListener('canplay', startPlayback, { once: true })
     }
 
-    video.addEventListener('ended', freeze, { once: true })
+    video.addEventListener('ended', freeze)
 
     return () => {
       video.removeEventListener('canplay', startPlayback)
       video.removeEventListener('ended', freeze)
+      disarmGesture?.()
       video.pause()
     }
   }, [isLoading, activeProduct])
