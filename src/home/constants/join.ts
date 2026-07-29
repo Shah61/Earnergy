@@ -11,7 +11,6 @@ export const JOIN_HERO = {
     "Join Earnergy as a reseller and turn everyday purchases into a real income stream. Earn RM10 retail profit on every unit, then grow your circles level by level with the 5-Level Circle System.",
   sticker: { line1: "All RM50", line2: "Is Now", line3: "Yours!" },
   primaryCta: { label: "See the Circle System", href: "#circle-system" },
-  secondaryCta: { label: "Buy Now", productId: BELIBELI_PRODUCTS.boxBites },
   teaserLabel: "Your Potential Retail Profit",
 };
 
@@ -243,7 +242,7 @@ export const JOIN_CTA = {
     "You don't need a warehouse or heavy capital to build a serious business. With the 5-Level Circle System, consistent selling and sharing can grow your income to master-stockist levels — starting from a single box.",
   prompt: "Ready to turn spending into earning?",
   buttonLabel: "Buy Now",
-  buttonHref: ROUTES.products,
+  buttonProductId: BELIBELI_PRODUCTS.earnergyBox,
   secondaryLabel: "or talk to us first",
   secondaryHref: ROUTES.contact,
   badge: "Smart Products • Smarter Business",

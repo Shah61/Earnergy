@@ -2,6 +2,8 @@ import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { JOIN_CTA } from "@home/constants/join";
+import { belibeliProductUrl } from "@/lib/belibeli";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 
 function CtaArcs({ flip }: { flip?: boolean }) {
   return (
@@ -22,6 +24,8 @@ function CtaArcs({ flip }: { flip?: boolean }) {
 }
 
 export function JoinCta() {
+  const affiliateCode = useAffiliateCode();
+
   return (
     <section className="c-r-scale relative overflow-hidden rounded-[32px] bg-[#74c157] p-8 text-black shadow-sm md:p-16">
       <CtaArcs />
@@ -51,19 +55,21 @@ export function JoinCta() {
         </p>
 
         <div
-          className="c-r-rise mt-2 flex w-full max-w-xl flex-col items-center justify-between gap-3 rounded-full bg-white p-2 shadow-sm sm:flex-row sm:pl-6"
+          className="c-r-rise mt-2 flex w-full max-w-xl flex-col items-center justify-center gap-4"
           style={{ "--d": "0.32s" } as CSSProperties}
         >
           <span className="text-sm font-semibold text-black">
             {JOIN_CTA.prompt}
           </span>
-          <Link
-            to={JOIN_CTA.buttonHref}
-            className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.06em] text-white transition duration-300 hover:bg-[#74c157] hover:text-black sm:w-auto"
+          <a
+            href={belibeliProductUrl(JOIN_CTA.buttonProductId, affiliateCode)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.06em] text-white transition duration-300 hover:bg-white hover:text-black sm:w-auto"
           >
             {JOIN_CTA.buttonLabel}
             <ArrowUpRight className="size-4" />
-          </Link>
+          </a>
         </div>
 
         <Link
