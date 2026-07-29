@@ -1,0 +1,47 @@
+.pulsating-button-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 var(--pulse-color);
+}
+
+.pulsating-button-ring--pulse {
+  animation: pulsating-button-halo var(--duration) ease-in-out infinite;
+}
+
+.pulsating-button-ring--ripple {
+  animation: pulsating-button-ripple var(--duration) cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes pulsating-button-halo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--pulse-color);
+    opacity: 0.35;
+  }
+
+  50% {
+    box-shadow: 0 0 0 var(--distance) var(--pulse-color);
+    opacity: 0.9;
+  }
+}
+
+@keyframes pulsating-button-ripple {
+  0% {
+    box-shadow: 0 0 0 0 var(--pulse-color);
+    opacity: 0.9;
+  }
+
+  100% {
+    box-shadow: 0 0 0 var(--distance) var(--pulse-color);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulsating-button-ring {
+    animation: none;
+    box-shadow: none;
+  }
+}

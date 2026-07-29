@@ -12,7 +12,7 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const JOIN_US_CTA = {
-  label: "Join Us",
+  label: "JOIN US",
   href: ROUTES.join,
 } as const;
 

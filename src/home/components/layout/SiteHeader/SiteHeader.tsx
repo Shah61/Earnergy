@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { JOIN_US_CTA, NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
 
 type SiteHeaderProps = {
@@ -14,6 +15,7 @@ function isNavActive(pathname: string, href: string) {
 
 export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <header className="site-header" id="header">
@@ -47,9 +49,17 @@ export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
         </nav>
 
         <div className="nav-right">
-          <Link to={JOIN_US_CTA.href} className="pill nav-cta">
+          <PulsatingButton
+            type="button"
+            className="nav-cta join-cta"
+            pulseColor="rgba(190, 241, 169, 0.68)"
+            duration="1.8s"
+            distance="9px"
+            variant="pulse"
+            onClick={() => navigate(JOIN_US_CTA.href)}
+          >
             {JOIN_US_CTA.label}
-          </Link>
+          </PulsatingButton>
           <button
             type="button"
             className="burger"
