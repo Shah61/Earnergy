@@ -80,6 +80,35 @@ const css = `
   70%{transform:rotate(8deg) scale(1.06);opacity:1}100%{transform:rotate(0) scale(1);opacity:1}}
 .bbh-header--scrolled .bbh-logo img{height:32px}
 
+/* brand block: logo with the active referral code alongside it */
+.bbh-brand{display:flex;align-items:center;gap:10px;min-width:0;flex:0 1 auto}
+.bbh-refcode{position:relative;overflow:hidden;flex:0 1 auto;min-width:0;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 13px;border-radius:999px;
+  background:rgba(10,28,14,.55);border:1px solid rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  box-shadow:0 6px 18px rgba(8,20,10,.3), inset 0 1px 0 rgba(255,255,255,.14);
+  font-family:"Anton",sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  line-height:1.4;white-space:nowrap;color:rgba(246,242,231,.72);
+  opacity:0;transform:translateY(-6px) scale(.94);
+  transition:opacity .5s ease .5s, transform .5s cubic-bezier(.2,.9,.3,1.3) .5s}
+.bbh-root--in .bbh-refcode{opacity:1;transform:none}
+.bbh-refcode .bbh-reflabel{overflow:hidden;text-overflow:ellipsis}
+.bbh-refcode .bbh-reflabel-sm{display:none}
+.bbh-refcode b{font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--bbh-yellow);
+  text-shadow:0 0 14px rgba(245,197,24,.5)}
+.bbh-refcode .bbh-refdot{flex:0 0 auto;width:6px;height:6px;border-radius:50%;
+  background:var(--bbh-yellow);box-shadow:0 0 8px rgba(245,197,24,.9);
+  animation:bbh-pulse 1.8s ease-in-out infinite}
+/* light sweeps across the pill so it reads as live */
+.bbh-refcode::after{content:"";position:absolute;top:0;bottom:0;left:0;width:42%;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.42) 50%,transparent 100%);
+  transform:translateX(-180%) skewX(-18deg);pointer-events:none;
+  animation:bbh-refshimmer 3.4s ease-in-out infinite}
+@keyframes bbh-refshimmer{0%{transform:translateX(-180%) skewX(-18deg)}
+  55%,100%{transform:translateX(340%) skewX(-18deg)}}
+.bbh-header--scrolled .bbh-refcode{padding:5px 11px}
+
 .bbh-products{display:flex;align-items:center;gap:6px;flex:0 0 auto}
 .bbh-product{border:0;background:transparent;cursor:pointer;padding:8px 12px;border-radius:999px;
   font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
@@ -168,6 +197,17 @@ const css = `
   .bbh-burger{display:block;margin-left:auto}
 }
 
+/* keep the pill from ever crowding the logo or the burger on phones */
+@media (max-width:520px){
+  .bbh-brand{gap:7px}
+  .bbh-refcode{gap:5px;padding:5px 10px;font-size:9px;letter-spacing:.08em}
+  .bbh-refcode b{font-size:11px}
+}
+@media (max-width:400px){
+  .bbh-refcode .bbh-reflabel{display:none}
+  .bbh-refcode .bbh-reflabel-sm{display:inline}
+}
+
 /* while the menu is open: drop the ticker and let the bar float bare over the overlay */
 .bbh-root--open .bbh-header{top:0}
 .bbh-root--open .bbh-bar{background:transparent;border-color:transparent;box-shadow:none;
@@ -188,6 +228,8 @@ const css = `
   .bbh-cta .bbh-dot{animation:none}
   .bbh-root--in .bbh-logo img{animation:none;transform:none;opacity:1}
   .bbh-root--in .bbh-cta{animation:none;transform:none;opacity:1}
+  .bbh-refcode::after,.bbh-refcode .bbh-refdot{animation:none}
+  .bbh-refcode::after{opacity:0}
   .bbh-bar,.bbh-links li,.bbh-menu,.bbh-menu a.bbh-mlink{transition-duration:.01s}
 }
 `
@@ -318,15 +360,25 @@ export function BoxBitesHeader({
         className={`bbh-header${scrolled || !mounted ? ' bbh-header--scrolled' : ''}${hidden ? ' bbh-header--hidden' : ''}`}
       >
         <nav className="bbh-bar" aria-label="Main">
-          {logoLocked ? (
-            <span className="bbh-logo">
-              <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
-            </span>
-          ) : (
-            <Link className="bbh-logo" to="/" aria-label="Earnergy — home">
-              <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
-            </Link>
-          )}
+          <div className="bbh-brand">
+            {logoLocked ? (
+              <span className="bbh-logo">
+                <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
+              </span>
+            ) : (
+              <Link className="bbh-logo" to="/" aria-label="Earnergy — home">
+                <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
+              </Link>
+            )}
+            {uplineCode ? (
+              <span className="bbh-refcode" title={`Referral code: ${uplineCode}`}>
+                <span className="bbh-refdot" aria-hidden="true" />
+                <span className="bbh-reflabel">Referral Code:</span>
+                <span className="bbh-reflabel-sm">Code:</span>
+                <b>{uplineCode}</b>
+              </span>
+            ) : null}
+          </div>
 
           <div className="bbh-products" role="tablist" aria-label="Products">
             <button
