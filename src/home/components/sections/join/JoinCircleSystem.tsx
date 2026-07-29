@@ -4,8 +4,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, User, Users } from "lucide-react";
+import { User, Users } from "lucide-react";
 import { JOIN_LEVELS, JOIN_SYSTEM, type JoinLevel } from "@home/constants/join";
 import { revealDelay } from "@home/utils/reveal";
 
@@ -259,21 +258,14 @@ export function JoinCircleSystem() {
           <LevelRow key={level.id} level={level} index={index} />
         ))}
 
-        {/* Footer band with BUY NOW */}
+        {/* Closing footnote band */}
         <div
-          className="c-r-fade flex flex-col items-center justify-between gap-4 border-t border-neutral-200 bg-[#121212] px-6 py-5 sm:flex-row md:px-7"
+          className="c-r-fade border-t border-neutral-200 bg-[#121212] px-6 py-5 md:px-7"
           style={{ "--d": "0.5s" } as CSSProperties}
         >
-          <p className="text-center text-sm leading-6 text-white/70 sm:text-left">
+          <p className="text-center text-sm leading-6 text-white/70">
             {JOIN_SYSTEM.footnote}
           </p>
-          <Link
-            to={JOIN_SYSTEM.buyBar.buttonHref}
-            className="inline-flex w-full flex-none items-center justify-center gap-2 rounded-full bg-[#74c157] px-7 py-3 text-sm font-extrabold uppercase tracking-[0.06em] text-black transition duration-300 hover:-translate-y-0.5 hover:bg-white sm:w-auto"
-          >
-            {JOIN_SYSTEM.buyBar.buttonLabel}
-            <ArrowRight className="size-4" />
-          </Link>
         </div>
       </div>
 

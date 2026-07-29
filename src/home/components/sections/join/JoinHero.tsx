@@ -1,7 +1,8 @@
 import type { CSSProperties, MouseEvent } from "react";
-import { Link } from "react-router-dom";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { JOIN_HERO, JOIN_LEVELS } from "@home/constants/join";
+import { belibeliProductUrl } from "@/lib/belibeli";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 import { revealDelay } from "@home/utils/reveal";
 
 function scrollToSystem(event: MouseEvent<HTMLAnchorElement>) {
@@ -75,6 +76,8 @@ function PotentialTeaser() {
 }
 
 export function JoinHero() {
+  const affiliateCode = useAffiliateCode();
+
   return (
     <section className="c-r-scale relative overflow-hidden rounded-[32px] border border-neutral-200 bg-white p-8 shadow-[0_6px_22px_rgba(0,0,0,0.04)] md:p-12">
       <div
@@ -168,13 +171,18 @@ export function JoinHero() {
               {JOIN_HERO.primaryCta.label}
               <ArrowDown className="size-4" />
             </a>
-            <Link
-              to={JOIN_HERO.secondaryCta.href}
+            <a
+              href={belibeliProductUrl(
+                JOIN_HERO.secondaryCta.productId,
+                affiliateCode,
+              )}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-6 py-3.5 font-bold text-black transition duration-300 hover:-translate-y-0.5 hover:border-black hover:bg-black hover:text-white"
             >
               {JOIN_HERO.secondaryCta.label}
-              <ArrowRight className="size-4" />
-            </Link>
+              <ArrowUpRight className="size-4" />
+            </a>
           </div>
         </div>
 
