@@ -1,3 +1,4 @@
+import { whatsappUrl } from "@/lib/whatsapp";
 import { ROUTES } from "./routes";
 
 export const CONTACT_HERO = {
@@ -25,7 +26,7 @@ export const CONTACT_INFO = [
     title: "Call Us",
     text: "016-2220264 / 011-16890068",
     icon: "phone" as const,
-    href: "https://wa.me/60162220264",
+    href: whatsappUrl("60162220264"),
   },
   { title: "Working Hours", text: "10:00 AM - 6:00 PM", icon: "clock" as const },
 ];
