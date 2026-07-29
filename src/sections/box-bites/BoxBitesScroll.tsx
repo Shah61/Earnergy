@@ -64,8 +64,8 @@ export function BoxBitesScroll() {
 
     /* iOS blocks autoplay outright in Low Power Mode (and with "Auto-Play
        Video Previews" off) however the element is configured — a user gesture
-       is the only thing that lifts it. So we settle on the end state to keep
-       the hero readable, then run the animation the moment they interact. */
+       is the only thing that lifts it. Keep the opening frame visible while
+       waiting, then run the animation the moment they interact. */
     const GESTURES = ['pointerdown', 'touchstart', 'keydown', 'wheel'] as const
 
     const armGestureStart = () => {
@@ -76,7 +76,7 @@ export function BoxBitesScroll() {
         settled = false
         setPhase('playing')
         video.currentTime = 0
-        void play().catch(() => freeze())
+        void play().catch(() => armGestureStart())
       }
 
       GESTURES.forEach((type) =>
@@ -94,7 +94,8 @@ export function BoxBitesScroll() {
       void play().catch(() => {
         window.setTimeout(() => {
           void play().catch(() => {
-            freeze()
+            video.pause()
+            video.currentTime = 0
             armGestureStart()
           })
         }, 150)
