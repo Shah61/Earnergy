@@ -12,7 +12,9 @@ const CUP = '/kofe/cup.webp'
 const PACKSHOT = '/kofe/kofebox.webp'
 
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/useAppStore'
+import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 type Ing = { src: string; name: string; desc: string }
 const LEFT: Ing[] = [
@@ -94,13 +96,21 @@ const css = `
 .gd-packs img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 26px 32px rgba(20,10,4,.3))}
 .gd-packs .p1{transform:rotate(-7deg) translateX(12%)}
 .gd-packs .p2{transform:rotate(6deg) translateX(-12%) translateY(-3%)}
-.gd-packs .x2{position:absolute;right:8%;top:2%;width:clamp(64px,9vw,96px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  background:var(--yellow);color:var(--esp);font-family:"Anton",sans-serif;font-size:clamp(22px,3vw,34px);
-  box-shadow:0 14px 28px rgba(20,10,4,.28);transform:rotate(12deg);animation:gd-pulse 2.4s ease-in-out infinite}
 .gd-outro .price{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(42px,7vw,76px);color:var(--esp);
   border-bottom:5px solid var(--yellow);display:inline-block;padding:0 .14em .02em}
 .gd-outro .price .per{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(18px,2.4vw,28px);color:var(--tx-kick);margin-left:10px}
 .gd-outro .scr{margin-top:14px;font-family:"Caveat",cursive;font-weight:700;font-size:clamp(24px,4vw,44px);color:var(--gold)}
+
+/* mobile-only buy button — on desktop the header CTA already covers this */
+.gd-outro .gd-buy{display:none;margin-top:22px;align-items:center;gap:10px;
+  font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
+  color:var(--cream-lt);background:var(--esp);border-radius:999px;padding:15px 30px;
+  box-shadow:0 16px 30px rgba(20,10,4,.3);transition:transform .25s ease,background .25s ease,color .25s ease}
+.gd-outro .gd-buy .arr{transition:transform .25s ease}
+.gd-outro .gd-buy:active{background:var(--yellow);color:var(--esp);transform:translateY(1px)}
+@media (max-width:860px){
+  .gd-outro .gd-buy{display:inline-flex}
+}
 
 /* ============ TABLET ============ */
 @media (max-width:1100px){
@@ -131,11 +141,12 @@ const css = `
 }
 
 @media (prefers-reduced-motion:reduce){
-  .gd-center img,.gd-packs .x2{animation:none}
+  .gd-center img{animation:none}
 }
 `
 
 export default function KofeBoard() {
+  const { uplinecode } = useParams<{ uplinecode: string }>()
   const activeProduct = useAppStore((s) => s.activeProduct)
   useEffect(() => {
     if (activeProduct !== 'kofe') return
@@ -215,9 +226,16 @@ export default function KofeBoard() {
         <div className="gd-packs">
           <img className="p1" src={PACKSHOT} alt="Kofé Spanish Latte box" draggable={false} />
           <img className="p2" src={PACKSHOT} alt="" aria-hidden="true" draggable={false} />
-          <div className="X2">×2</div>
         </div>
         <div className="price">RM 30<span className="per">for 2 boxes</span></div>
+        <a
+          className="gd-buy"
+          href={belibeliProductUrl(BELIBELI_PRODUCTS.kofe, uplinecode)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buy Now <span className="arr">↗</span>
+        </a>
         <div className="scr">goodbye sugar, hello energy</div>
       </footer>
     </div>

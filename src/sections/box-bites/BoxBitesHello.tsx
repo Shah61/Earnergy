@@ -29,7 +29,9 @@
  */
 
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { getLenis } from '@/hooks/useLenis'
+import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
 
 const BITE = '/boxbite.webp'
 const OAT = '/oat.webp'
@@ -247,6 +249,16 @@ const css = `
 .bb-story .outro .price b{color:var(--white);font-weight:800}
 .bb-story .outro .badges{margin-top:22px;font-family:"Anton",sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(16,40,20,.7);line-height:2}
 
+/* mobile-only buy button — on desktop the header CTA already covers this */
+.bb-story .outro .obuy{display:none;margin-top:24px;align-items:center;gap:8px;
+  font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
+  color:var(--forest);background:#f5c518;border-radius:999px;padding:15px 30px;
+  box-shadow:0 16px 30px rgba(16,40,18,.35);transition:transform .25s ease,background .25s ease}
+.bb-story .outro .obuy:active{background:var(--white);transform:translateY(1px)}
+@media (max-width:860px){
+  .bb-story .outro .obuy{display:inline-flex}
+}
+
 /* ============ TABLET (iPad portrait & smaller laptops) ============ */
 @media (max-width:1100px){
   .bb-story .cap{width:min(330px,38vw)}
@@ -379,6 +391,8 @@ const css = `
 `
 
 export default function BoxBitesHello() {
+  const { uplinecode } = useParams<{ uplinecode: string }>()
+
   useEffect(() => {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b)
@@ -1173,6 +1187,14 @@ export default function BoxBitesHello() {
           <span>RM <b>15.00</b> sm</span>
           <span>RM <b>17.00</b> ss</span>
         </div>
+        <a
+          className="obuy"
+          href={belibeliProductUrl(BELIBELI_PRODUCTS.boxBites, uplinecode)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buy Now ↗
+        </a>
         <div className="badges">Halal · MeSTI Certified · Made in Malaysia · Buatan Malaysia</div>
       </footer>
     </div>

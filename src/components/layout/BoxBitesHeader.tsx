@@ -153,8 +153,8 @@ const css = `
 .bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(3){transition-delay:.26s}
 .bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(4){transition-delay:.33s}
 .bbh-menu--open .bbh-mnav a.bbh-mlink:nth-child(5){transition-delay:.4s}
-.bbh-menu .bbh-mcta{margin-top:32px;align-self:flex-start;opacity:0;transform:translateY(20px);
-  transition:opacity .4s ease .45s, transform .5s cubic-bezier(.2,.9,.3,1.2) .45s}
+.bbh-menu .bbh-mcta{margin:0 0 26px;align-self:flex-start;opacity:0;transform:translateY(20px);
+  transition:opacity .4s ease .1s, transform .5s cubic-bezier(.2,.9,.3,1.2) .1s}
 .bbh-menu--open .bbh-mcta{opacity:1;transform:none}
 .bbh-menu .bbh-mfoot{font-family:"Anton",sans-serif;font-size:11px;
   letter-spacing:.28em;text-transform:uppercase;color:rgba(16,40,20,.7);
@@ -411,16 +411,6 @@ export function BoxBitesHeader({
           </button>
         </div>
         <nav className="bbh-mnav" aria-label="Menu links">
-          {links.map((l) => (
-            <a key={l.href} className="bbh-mlink" href={l.href} onClick={(e) => nav(e, l.href)}>
-              {l.label}
-            </a>
-          ))}
-          {MENU_LINKS.map((l) => (
-            <Link key={l.href} className="bbh-mlink" to={l.href} onClick={() => setOpen(false)}>
-              {l.label}
-            </Link>
-          ))}
           <a
             className="bbh-cta bbh-mcta"
             href={ctaHref}
@@ -431,6 +421,16 @@ export function BoxBitesHeader({
             <span className="bbh-dot" aria-hidden="true" />
             {ctaLabel}
           </a>
+          {links.map((l) => (
+            <a key={l.href} className="bbh-mlink" href={l.href} onClick={(e) => nav(e, l.href)}>
+              {l.label}
+            </a>
+          ))}
+          {MENU_LINKS.map((l) => (
+            <Link key={l.href} className="bbh-mlink" to={l.href} onClick={() => setOpen(false)}>
+              {l.label}
+            </Link>
+          ))}
         </nav>
         <div className="bbh-mfoot">Smart Products · Smarter Business</div>
       </div>

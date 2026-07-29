@@ -104,7 +104,7 @@ export function InvalidCodeScreen({ code }: { code: string }) {
         </div>
 
         <p className="ic-hint">
-          Got an upline code from your BeliBeli purchase? Activate it on the{' '}
+          Got a code from your BeliBeli purchase? Activate it on the{' '}
           <b>Join Us</b> page first — you&apos;ll get your own working link
           straight away.
         </p>

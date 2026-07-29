@@ -20,6 +20,8 @@ export type JoinProduct = {
   name: string;
   tagline: string;
   price: string;
+  /** shown in red under the price, e.g. "Retail Profit RM10 x 5" */
+  retailProfit: string;
   image: string;
   imageAlt: string;
   /** optional chip shown next to the availability badge, e.g. "×2 boxes per order" */
@@ -46,6 +48,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     tagline:
       "For just RM99 you get more than premium, healthy products — you also get the system, the knowledge and the community to start your business smarter.",
     price: "RM 99",
+    retailProfit: "Retail Profit RM10 x 5",
     image: "/boxbundle.png",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
     productId: BELIBELI_PRODUCTS.earnergyBox,
@@ -56,6 +59,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     tagline:
       "High fiber, high protein, natural sweeteners from hoodia extract, no added sugar.",
     price: "RM 30",
+    retailProfit: "Retail Profit RM2 x 5",
     image: "/box-bites-pouch.webp",
     imageAlt: "Two Box Bites healthy cookies pouches",
     badge: "×2 packs per order",
@@ -69,6 +73,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     tagline:
       "Prebiotics + probiotics, dairy free, only natural sweeteners from stevia & monk fruit.",
     price: "RM 30",
+    retailProfit: "Retail Profit RM2 x 5",
     image: "/kofe/kofebox.webp",
     imageAlt: "Two KOFÉ Spanish Latte boxes",
     badge: "×2 boxes per order",
@@ -81,6 +86,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     tagline:
       "Learn the unique concept that changes the way you see everyday spending. Understand how every purchase can be turned into an opportunity to earn income and build financial assets more wisely.",
     price: "RM 30",
+    retailProfit: "Retail Profit RM3 x 5",
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
     productId: BELIBELI_PRODUCTS.buku,
@@ -111,7 +117,7 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   {
     no: "02",
     title: "Check Your Email",
-    text: "After your purchase, BeliBeli emails you your personal upline code. That code is your affiliate code — keep it close.",
+    text: "After your purchase, BeliBeli emails you your personal code. That code is your affiliate code — keep it close.",
     icon: "mail",
   },
   {
@@ -123,13 +129,13 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
 ];
 
 export const JOIN_AFFILIATE_FORM = {
-  label: "Your upline code",
+  label: "Your code",
   placeholder: "e.g. 5141",
   button: "Activate My Link",
   buttonBusy: "Activating…",
   successTitle: "You're officially an Earnergy affiliate!",
   successText:
-    "Share this link anywhere — every purchase made through it carries your upline code, so the commissions land with you.",
+    "Share this link anywhere — every purchase made through it carries your code, so the commissions land with you.",
   copy: "Copy Link",
   copied: "Copied!",
   errorGeneric: "Something went wrong — please try again.",

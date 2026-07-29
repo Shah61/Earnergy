@@ -51,7 +51,7 @@ export function JoinAffiliate() {
 
     const trimmed = code.trim();
     if (trimmed.length === 0) {
-      setError("Please paste your upline code first.");
+      setError("Please paste your code first.");
       return;
     }
 

@@ -122,8 +122,13 @@ export function JoinProducts() {
               <p className="text-sm leading-6 text-neutral-600">{product.tagline}</p>
 
               <div className="mt-5 flex items-center justify-between gap-3 border-t border-neutral-100 pt-4 sm:mt-auto sm:pt-5">
-                <span className="font-display text-xl font-extrabold text-black">
-                  {product.price}
+                <span className="flex min-w-0 flex-col">
+                  <span className="font-display text-xl font-extrabold text-black">
+                    {product.price}
+                  </span>
+                  <span className="mt-0.5 text-[13px] font-medium text-red-600">
+                    {product.retailProfit}
+                  </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white transition duration-300 group-hover:bg-[#74c157] group-hover:text-black">
                   Buy Now
