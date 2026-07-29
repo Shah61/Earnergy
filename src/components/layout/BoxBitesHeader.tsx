@@ -80,7 +80,7 @@ const css = `
   70%{transform:rotate(8deg) scale(1.06);opacity:1}100%{transform:rotate(0) scale(1);opacity:1}}
 .bbh-header--scrolled .bbh-logo img{height:32px}
 
-/* brand block: logo with the active referral code alongside it */
+/* brand block: logo with the active referral code beside it on mobile */
 .bbh-brand{display:flex;align-items:center;gap:10px;min-width:0;flex:0 1 auto}
 .bbh-refcode{position:relative;overflow:hidden;flex:0 1 auto;min-width:0;
   display:inline-flex;align-items:center;gap:7px;
@@ -94,12 +94,8 @@ const css = `
   transition:opacity .5s ease .5s, transform .5s cubic-bezier(.2,.9,.3,1.3) .5s}
 .bbh-root--in .bbh-refcode{opacity:1;transform:none}
 .bbh-refcode .bbh-reflabel{overflow:hidden;text-overflow:ellipsis}
-.bbh-refcode .bbh-reflabel-sm{display:none}
 .bbh-refcode b{font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--bbh-yellow);
   text-shadow:0 0 14px rgba(245,197,24,.5)}
-.bbh-refcode .bbh-refdot{flex:0 0 auto;width:6px;height:6px;border-radius:50%;
-  background:var(--bbh-yellow);box-shadow:0 0 8px rgba(245,197,24,.9);
-  animation:bbh-pulse 1.8s ease-in-out infinite}
 /* light sweeps across the pill so it reads as live */
 .bbh-refcode::after{content:"";position:absolute;top:0;bottom:0;left:0;width:42%;
   background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.42) 50%,transparent 100%);
@@ -162,6 +158,13 @@ const css = `
 .bbh-burger--open span:nth-child(2){opacity:0;transform:scaleX(.2)}
 .bbh-burger--open span:nth-child(3){top:20px;transform:rotate(-45deg)}
 
+/* desktop keeps the main controls on the logo row while stacking the code below it */
+@media (min-width:861px){
+  .bbh-bar--refcode{align-items:flex-start}
+  .bbh-brand{flex-direction:column;align-items:center;gap:7px}
+  .bbh-refcode{flex:none}
+}
+
 .bbh-menu{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;
   padding:104px 28px 30px;
   background:radial-gradient(120% 110% at 50% 20%, #84d067 0%, #74c157 52%, #579f3d 100%);
@@ -203,10 +206,6 @@ const css = `
   .bbh-refcode{gap:5px;padding:5px 10px;font-size:9px;letter-spacing:.08em}
   .bbh-refcode b{font-size:11px}
 }
-@media (max-width:400px){
-  .bbh-refcode .bbh-reflabel{display:none}
-  .bbh-refcode .bbh-reflabel-sm{display:inline}
-}
 
 /* while the menu is open: drop the ticker and let the bar float bare over the overlay */
 .bbh-root--open .bbh-header{top:0}
@@ -228,7 +227,7 @@ const css = `
   .bbh-cta .bbh-dot{animation:none}
   .bbh-root--in .bbh-logo img{animation:none;transform:none;opacity:1}
   .bbh-root--in .bbh-cta{animation:none;transform:none;opacity:1}
-  .bbh-refcode::after,.bbh-refcode .bbh-refdot{animation:none}
+  .bbh-refcode::after{animation:none}
   .bbh-refcode::after{opacity:0}
   .bbh-bar,.bbh-links li,.bbh-menu,.bbh-menu a.bbh-mlink{transition-duration:.01s}
 }
@@ -359,7 +358,7 @@ export function BoxBitesHeader({
       <header
         className={`bbh-header${scrolled || !mounted ? ' bbh-header--scrolled' : ''}${hidden ? ' bbh-header--hidden' : ''}`}
       >
-        <nav className="bbh-bar" aria-label="Main">
+        <nav className={`bbh-bar${uplineCode ? ' bbh-bar--refcode' : ''}`} aria-label="Main">
           <div className="bbh-brand">
             {logoLocked ? (
               <span className="bbh-logo">
@@ -372,9 +371,7 @@ export function BoxBitesHeader({
             )}
             {uplineCode ? (
               <span className="bbh-refcode" title={`Referral code: ${uplineCode}`}>
-                <span className="bbh-refdot" aria-hidden="true" />
                 <span className="bbh-reflabel">Referral Code:</span>
-                <span className="bbh-reflabel-sm">Code:</span>
                 <b>{uplineCode}</b>
               </span>
             ) : null}
