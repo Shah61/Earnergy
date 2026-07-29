@@ -110,7 +110,7 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   {
     no: "01",
     title: "Buy Any Product",
-    text: "Purchase any product below on BeliBeli — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey.",
+    text: "Purchase any product below — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey. You will be directed to BeliBeli platform.",
     icon: "buy",
   },
   {
