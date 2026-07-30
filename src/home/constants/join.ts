@@ -8,7 +8,7 @@ export const JOIN_HERO = {
   titleL3: "a Business",
   lead: ["Shop", "Do Business", "Share", "Grow Your Income"],
   description:
-    "Join Earnergy as a reseller and turn everyday purchases into a real income stream. Earn RM10 retail profit on every unit, then grow your circles level by level with the 5-Level Circle System.",
+    "Join as an Earnergy Reseller (Affiliate) and turn everyday purchases into a real income stream. Earn RM10 retail profit on every unit, then grow your circles level by level with the 5-Level Circle System.",
   sticker: { line1: "All RM50", line2: "Is Now", line3: "Yours!" },
   primaryCta: { label: "See the Circle System", href: "#circle-system" },
   teaserLabel: "Your Potential Retail Profit",
@@ -37,7 +37,7 @@ export const JOIN_PRODUCTS_HEAD = {
   tag: "Shop The Products",
   statementInk: "Buy on BeliBeli.",
   statementDim: "Start Earning Today.",
-  text: "Every Earnergy product is available on BeliBeli. Grab yours, experience it, and turn what you spend into your first step as a reseller.",
+  text: "Every Earnergy product is available on BeliBeli. Grab yours, experience it, and turn what you spend into your first step as an Earnergy Reseller (Affiliate).",
 };
 
 export const JOIN_PRODUCTS: JoinProduct[] = [
@@ -100,29 +100,29 @@ export type JoinAffiliateStep = {
 };
 
 export const JOIN_AFFILIATE_HEAD = {
-  tag: "Become An Affiliate",
+  tag: "Become An Earnergy Reseller (Affiliate)",
   statementInk: "Three Steps.",
-  statementDim: "Your Own Earning Link.",
-  text: "No sign-ups, no forms, no passwords. Buy once, grab your code from your email, paste it below — and you're an Earnergy affiliate with a link that pays you.",
+  statementDim: "Your Own Page for Earning Link.",
+  text: "No sign-ups, no forms, no passwords. Buy once, grab your code from your email, paste it below — and you're an Earnergy Reseller (Affiliate) with your own page for earning link.",
 };
 
 export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   {
     no: "01",
     title: "Buy Any Product",
-    text: "Purchase any product below — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your affiliate journey. You will be directed to BeliBeli platform.",
+    text: "Purchase any product below — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your Earnergy Reseller (Affiliate) journey. You will be directed to BeliBeli platform.",
     icon: "buy",
   },
   {
     no: "02",
     title: "Check Your Email",
-    text: "After your purchase, BeliBeli emails you your personal code. That code is your affiliate code — keep it close.",
+    text: "After your purchase, BeliBeli emails you your personal code. That code is your Earnergy Reseller (Affiliate) code — keep it close.",
     icon: "mail",
   },
   {
     no: "03",
     title: "Paste Your Code",
-    text: "Drop your code into the field below and you will automatically become an affiliate — with your own shareable earning link.",
+    text: "Drop your code into the field below and you will automatically become an Earnergy Reseller (Affiliate) — with your own page for earning link.",
     icon: "paste",
   },
 ];
@@ -132,7 +132,7 @@ export const JOIN_AFFILIATE_FORM = {
   placeholder: "e.g. 5141",
   button: "Activate My Link",
   buttonBusy: "Activating…",
-  successTitle: "You're officially an Earnergy affiliate!",
+  successTitle: "You're officially an Earnergy Reseller (Affiliate)!",
   successText:
     "Share this link anywhere — every purchase made through it carries your code, so the commissions land with you.",
   copy: "Copy Link",
@@ -176,7 +176,7 @@ export const JOIN_LEVELS: JoinLevel[] = [
   {
     id: "G1",
     name: "You",
-    sub: "EARNERGY Reseller",
+    sub: "Earnergy Reseller (Affiliate)",
     calc: "1 Box",
     potential: 10,
     coins: 1,

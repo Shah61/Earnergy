@@ -86,7 +86,7 @@ export function InvalidCodeScreen({ code }: { code: string }) {
 
         <div className="ic-badge">
           <span className="dot" aria-hidden="true" />
-          Invalid Affiliate Link
+          Invalid Earnergy Reseller (Affiliate) Link
         </div>
 
         <h1>
@@ -94,7 +94,7 @@ export function InvalidCodeScreen({ code }: { code: string }) {
         </h1>
 
         <p className="ic-lead">
-          The affiliate code in this link was never activated on Earnergy, so we
+          The Earnergy Reseller (Affiliate) code in this link was never activated, so we
           can&apos;t open the products page with it. Double-check the link you
           were given — it may have been typed or copied incorrectly.
         </p>
