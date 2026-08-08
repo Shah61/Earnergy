@@ -48,7 +48,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
       "For just RM99 you get more than premium, healthy products — you also get the system, the knowledge and the community to start your business smarter.",
     price: "RM 99",
     retailProfit: "Retail Profit RM10 x 5",
-    image: "/boxbundle.png",
+    image: "/boxbundle2.jpeg",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
     productId: BELIBELI_PRODUCTS.earnergyBox,
   },
