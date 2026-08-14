@@ -1101,7 +1101,6 @@ export default function BoxBitesHello() {
           <div className="cap left"><span className="kicker">03 — Hoodia</span><h2>Keeps hunger in check</h2><p className="type"></p></div>
 
           <div className="taphint" id="bb-taphint">Tap an ingredient</div>
-          <div className="keepscroll" id="bb-keepscroll">Keep scrolling</div>
         </div>
       </section>
 
