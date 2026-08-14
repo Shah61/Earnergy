@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { MobileDrawer, SiteFooter, SiteHeader } from "@home/components/layout";
+import {
+  MobileDrawer,
+  SiteFooter,
+  SiteHeader,
+  StickyJoinBar,
+} from "@home/components/layout";
 import { clearAffiliateCode } from "@/lib/belibeli";
 import {
   AboutSection,
@@ -40,6 +45,7 @@ export function HomePage() {
       <ServicesSection />
       <DeliveryPartnerHero />
       <SiteFooter />
+      <StickyJoinBar />
     </>
   );
 }

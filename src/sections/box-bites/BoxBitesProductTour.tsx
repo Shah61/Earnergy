@@ -153,9 +153,7 @@ export function BoxBitesProductTour() {
               <i />
             </span>
           </nav>
-          <div className="keepscroll" id="keepscroll">
-            Keep scrolling
-          </div>
+         
         </div>
       </section>
 

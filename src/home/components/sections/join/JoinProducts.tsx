@@ -37,7 +37,10 @@ export function JoinProducts() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 md:gap-5">
-        {JOIN_PRODUCTS.map((product, index) => (
+        {JOIN_PRODUCTS.map((product, index) => {
+          const isPoster = product.media === "poster";
+
+          return (
           <a
             key={product.no}
             href={belibeliProductUrl(product.productId, uplineCode)}
@@ -46,14 +49,32 @@ export function JoinProducts() {
             className="c-r-rise group relative flex flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-[0_6px_22px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-[#74c157] hover:shadow-[0_28px_55px_-32px_rgba(79,158,52,0.55)]"
             style={revealDelay(index, 0.12, 0.09)}
           >
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute right-3 top-1 z-[1] font-display text-6xl font-extrabold text-neutral-100 transition duration-300 group-hover:text-[#74c157]/25"
-            >
-              {product.no}
-            </span>
+            {isPoster ? null : (
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1 z-[1] font-display text-6xl font-extrabold text-neutral-100 transition duration-300 group-hover:text-[#74c157]/25"
+              >
+                {product.no}
+              </span>
+            )}
 
-            <div className="relative flex h-56 items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6 sm:h-60">
+            {isPoster ? (
+              /* the artwork is the card top — matching the stage to the file's
+                 own ratio means cover fills the width without cropping a word */
+              <div
+                className="relative w-full overflow-hidden bg-neutral-50"
+                style={{ aspectRatio: product.imageRatio }}
+              >
+                <img
+                  src={product.image}
+                  alt={product.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                />
+              </div>
+            ) : (
+            <div className="relative flex aspect-[4/5] items-center justify-center bg-gradient-to-b from-[#f4f9f0] to-white p-6">
               {product.units === 2 && product.unitsLayout === "side" ? (
                 /* staggered pair — only the outer edge tucks behind, so the
                    transparent packshot never muddies the branding */
@@ -103,9 +124,18 @@ export function JoinProducts() {
                 />
               )}
             </div>
+            )}
 
-            <div className="flex flex-1 flex-col p-6 pt-5">
-              <div className="mb-3 flex flex-wrap items-center gap-1.5">
+            <div className="relative flex flex-1 flex-col p-6 pt-5">
+              {isPoster ? (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-3 top-0 font-display text-6xl font-extrabold text-neutral-100 transition duration-300 group-hover:text-[#74c157]/25"
+                >
+                  {product.no}
+                </span>
+              ) : null}
+              <div className="relative mb-3 flex flex-wrap items-center gap-1.5">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#74c157]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#3d7d27]">
                   <span className="size-1.5 rounded-full bg-[#74c157]" />
                   Available on BeliBeli
@@ -116,7 +146,7 @@ export function JoinProducts() {
                   </span>
                 ) : null}
               </div>
-              <h3 className="mb-2 font-display text-lg font-extrabold uppercase leading-snug tracking-[-0.01em] text-black">
+              <h3 className="relative mb-2 font-display text-lg font-extrabold uppercase leading-snug tracking-[-0.01em] text-black">
                 {product.name}
               </h3>
               <p className="text-sm leading-6 text-neutral-600">{product.tagline}</p>
@@ -137,7 +167,8 @@ export function JoinProducts() {
               </div>
             </div>
           </a>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

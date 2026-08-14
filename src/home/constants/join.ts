@@ -23,6 +23,11 @@ export type JoinProduct = {
   retailProfit: string;
   image: string;
   imageAlt: string;
+  /** "poster" runs the artwork full-bleed — flyers are unreadable boxed in a
+      padded stage; "packshot" floats a cut-out product on the gradient */
+  media?: "packshot" | "poster";
+  /** natural ratio of a poster, so the stage matches it and nothing crops */
+  imageRatio?: string;
   /** optional chip shown next to the availability badge, e.g. "×2 boxes per order" */
   badge?: string;
   /** units shipped per order — 2 renders the packshot as a pair */
@@ -50,6 +55,8 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     retailProfit: "Retail Profit RM10 x 5",
     image: "/boxbundle2.jpeg",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
+    media: "poster",
+    imageRatio: "852 / 1280",
     productId: BELIBELI_PRODUCTS.earnergyBox,
   },
   {
@@ -88,6 +95,8 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     retailProfit: "Retail Profit RM3 x 5",
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
+    media: "poster",
+    imageRatio: "480 / 640",
     productId: BELIBELI_PRODUCTS.buku,
   },
 ];
@@ -96,12 +105,12 @@ export type JoinAffiliateStep = {
   no: string;
   title: string;
   text: string;
-  icon: "buy" | "mail" | "paste";
+  icon: "buy" | "mail" | "track" | "paste";
 };
 
 export const JOIN_AFFILIATE_HEAD = {
   tag: "Become An Earnergy Reseller (Affiliate)",
-  statementInk: "Three Steps.",
+  statementInk: "Four Steps.",
   statementDim: "Your Own Page for Earning Link.",
   text: "No sign-ups, no forms, no passwords. Buy once, grab your code from your email, paste it below — and you're an Earnergy Reseller (Affiliate) with your own page for earning link.",
 };
@@ -121,6 +130,12 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   },
   {
     no: "03",
+    title: "Monitor Your Sales",
+    text: "Monitor your sales through BeliBeli platform.",
+    icon: "track",
+  },
+  {
+    no: "04",
     title: "Paste Your Code",
     text: "Drop your code into the field below and you will automatically become an Earnergy Reseller (Affiliate) — with your own page for earning link.",
     icon: "paste",

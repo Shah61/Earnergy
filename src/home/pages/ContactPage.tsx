@@ -1,5 +1,10 @@
 import { useRef } from "react";
-import { MobileDrawer, SiteFooter, SiteHeader } from "@home/components/layout";
+import {
+  MobileDrawer,
+  SiteFooter,
+  SiteHeader,
+  StickyJoinBar,
+} from "@home/components/layout";
 import {
   ContactCtaSection,
   ContactFormSection,
@@ -33,6 +38,7 @@ export function ContactPage() {
       </section>
 
       <SiteFooter />
+      <StickyJoinBar />
     </>
   );
 }

@@ -7,6 +7,7 @@ import {
   Link2,
   Mail,
   ShoppingBag,
+  TrendingUp,
 } from "lucide-react";
 import {
   JOIN_AFFILIATE_FORM,
@@ -19,6 +20,7 @@ import { revealDelay } from "@home/utils/reveal";
 const STEP_ICONS = {
   buy: ShoppingBag,
   mail: Mail,
+  track: TrendingUp,
   paste: KeyRound,
 } as const;
 
@@ -28,9 +30,9 @@ function StepConnector() {
   return (
     <div
       aria-hidden="true"
-      className="flex items-center justify-center py-1 lg:py-0"
+      className="flex items-center justify-center py-1 xl:py-0"
     >
-      <span className="grid size-9 shrink-0 rotate-90 place-items-center rounded-full border border-[#74c157]/40 bg-[#74c157]/10 text-[#74c157] lg:rotate-0">
+      <span className="grid size-9 shrink-0 rotate-90 place-items-center rounded-full border border-[#74c157]/40 bg-[#74c157]/10 text-[#74c157] xl:rotate-0">
         <ArrowRight className="size-4" />
       </span>
     </div>
@@ -144,7 +146,7 @@ export function JoinAffiliate() {
           }}
         />
 
-        <div className="relative grid gap-2 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-stretch lg:gap-4">
+        <div className="relative grid gap-2 xl:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] xl:items-stretch xl:gap-3">
           {JOIN_AFFILIATE_STEPS.map((step, index) => {
             const Icon = STEP_ICONS[step.icon];
             return [

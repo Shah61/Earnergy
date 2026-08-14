@@ -16,5 +16,13 @@ export const JOIN_US_CTA = {
   href: ROUTES.join,
 } as const;
 
+/* copy for the mobile bottom rail — the sub line carries the promise the
+   header pill has no room for */
+export const STICKY_JOIN_CTA = {
+  label: "JOIN US",
+  sub: "Build Your Business. Grow Your Income.",
+  href: ROUTES.join,
+} as const;
+
 export const SITE_NAME = "Earnergy";
 export const SITE_LOGO = "/photos/logo2.webp";

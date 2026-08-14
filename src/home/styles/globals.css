@@ -1396,6 +1396,106 @@
     font-size: 0.84rem;
     color: var(--color-muted-2);
   }
+
+  /* Mobile sticky join rail */
+  .sticky-join {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 50;
+    padding:
+      15px
+      clamp(12px, 4vw, 20px)
+      max(15px, env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-top: 1px solid rgba(116, 193, 87, 0.35);
+    box-shadow: 0 -10px 30px -22px rgba(0, 0, 0, 0.55);
+    /* backwards, not both: a finished animation would keep winning the
+       cascade and pin the rail open behind the drawer */
+    animation: sticky-join-in 0.5s var(--ease-smooth) backwards;
+  }
+
+  /* the drawer covers the screen — a floating CTA under it just fights it */
+  body.menu-open .sticky-join {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+    transition:
+      opacity 0.2s ease,
+      transform 0.3s var(--ease-smooth);
+  }
+
+  .sticky-join-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    /* stays a thumb-sized pill on tablets instead of a stretched slab */
+    max-width: 440px;
+    margin-inline: auto;
+    padding: 16px 24px;
+    border-radius: 999px;
+    border: 1px solid rgba(80, 160, 54, 0.24);
+    background: linear-gradient(135deg, #9be77e 0%, #7dce5e 48%, var(--color-brand) 100%);
+    color: #173a10;
+    text-align: center;
+    box-shadow:
+      0 14px 28px -14px rgba(63, 140, 40, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -2px 0 rgba(62, 137, 40, 0.16);
+    transition:
+      transform 0.25s var(--ease-smooth),
+      box-shadow 0.25s ease;
+  }
+
+  .sticky-join-btn:active {
+    transform: scale(0.985);
+    box-shadow:
+      0 8px 18px -12px rgba(63, 140, 40, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .sticky-join-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.02rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .sticky-join-arrow {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s var(--ease-smooth);
+  }
+
+  .sticky-join-btn:hover .sticky-join-arrow {
+    transform: translateX(3px);
+  }
+
+  .sticky-join-sub {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    color: rgba(23, 58, 16, 0.72);
+  }
+
+  @keyframes sticky-join-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer utilities {
@@ -1460,6 +1560,17 @@
 
     .burger {
       display: inline-flex;
+    }
+
+    /* the header pill is gone at this width — the bottom rail takes over */
+    .sticky-join {
+      display: block;
+    }
+
+    /* keep the rail from sitting on top of the copyright line */
+    .sticky-join ~ .site-footer,
+    .site-footer:has(~ .sticky-join) {
+      padding-bottom: calc(112px + env(safe-area-inset-bottom));
     }
   }
 

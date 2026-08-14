@@ -1,0 +1,1 @@
+export { StickyJoinBar } from "./StickyJoinBar";
