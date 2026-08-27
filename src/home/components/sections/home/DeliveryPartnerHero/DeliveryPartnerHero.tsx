@@ -78,7 +78,7 @@ export function DeliveryPartnerHero() {
 
             <Link
               to={ROUTES.products}
-              className="animate-fade-up-delay-2 mx-auto mt-8 flex translate-y-6 items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black opacity-0 no-underline transition duration-300 hover:bg-white/90"
+              className="animate-fade-up-delay-2 mx-auto mt-8 inline-flex w-fit translate-y-6 items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black opacity-0 no-underline transition duration-300 hover:bg-white/90"
             >
               Explore Products
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">

@@ -14,6 +14,31 @@ export function AboutSection() {
             <p className="tag r2" id="about-tag" style={reveal(".05s")}>
               <span>About Us</span>
             </p>
+
+            {/* the two product lines, shown rather than stated — this sits
+                directly opposite the "2 LINES" stat */}
+            <div className="about-lines r2" style={reveal(".18s")}>
+              <figure className="about-line">
+                <img
+                  src="/photos/v2/newbb.webp"
+                  alt="Box Bites functional oat snack pouch"
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 900px) 200px, 42vw"
+                />
+                <figcaption>Box Bites</figcaption>
+              </figure>
+              <figure className="about-line">
+                <img
+                  src="/photos/v2/newKofe.webp"
+                  alt="KOFÉ Spanish Latte boxes"
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 900px) 200px, 42vw"
+                />
+                <figcaption>Kofé</figcaption>
+              </figure>
+            </div>
           </div>
           <div className="col-body">
             <p className="statement r2" style={reveal(".12s")}>

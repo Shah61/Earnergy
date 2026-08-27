@@ -38,6 +38,16 @@ const OAT = '/oat.webp'
 const CHOC = '/chocolate.webp'
 const HOODIA = '/hoodia.webp'
 const BB_BG = '/background2.webp'
+/* closing gallery: 4:5 artwork shown whole, never cropped */
+const SHELF = [
+  { src: '/photos/v2/newBB3.webp', alt: 'Easy Bites — quick munch, pre-workout, easy fuel, pre-meal' },
+  { src: '/photos/v2/newBB2.webp', alt: 'Box Bites — a healthy source of energy, high fibre with no added sugar' },
+  { src: '/photos/v2/newBBingre.webp', alt: 'Box Bites ingredients — dark chocolate, rolled oats and Hoodia extract' },
+  { src: '/photos/v2/newBB1.webp', alt: 'Box Bites — healthy fuel, good source of energy, highly filling' },
+]
+const OUTRO_PACK = '/photos/v2/newbb.webp'
+/* runs against the poster belt — opposite direction reads as motion, not drift */
+const SHELF_TICKER = ['High Fiber', 'No Added Sugar', 'Vegan', 'Diet Support', 'Rolled Oats', 'Dark Chocolate', 'Hoodia Extract']
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -238,9 +248,63 @@ const css = `
 .bb-story .benefits.show .bchip:nth-child(4){transition-delay:.35s}
 
 /* ================= footer ================= */
+/* ================= ACT 4: the shelf =================
+   every Box Bites poster carries the identical #78be57 backdrop, so butting
+   them edge to edge with no gap, no radius and no shadow reads as one
+   continuous mural rather than a row of cards. the section takes the same
+   green, which is what lets the artwork bleed into it. */
+.bb-story .shelf{position:relative;background:#78be57;padding:clamp(56px,9vh,104px) 0 0;overflow:hidden}
+.bb-story .shelf-head{max-width:1180px;margin:0 auto clamp(28px,5vh,54px);padding:0 clamp(18px,5vw,48px);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(14px,3vw,40px)}
+.bb-story .shelf .kicker{font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--forest-2)}
+.bb-story .shelf h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(28px,5.4vw,58px);color:var(--white);
+  line-height:1;margin-top:10px;text-shadow:0 3px 20px rgba(22,50,16,.28)}
+.bb-story .shelf-lead{max-width:30ch;text-align:right;text-wrap:pretty;font-size:clamp(13px,1.4vw,16px);line-height:1.6;color:rgba(14,46,22,.82)}
+
+/* full-bleed belt. the track holds the set twice and travels exactly -50%,
+   so the loop point lands on an identical frame and never seams. */
+.bb-story .shelf-marquee{position:relative;width:100%;overflow:hidden;height:clamp(340px,62vh,660px)}
+.bb-story .shelf-belt{display:flex;height:100%;width:max-content;will-change:transform;
+  animation:bb-shelf 46s linear infinite}
+.bb-story .shelf-belt img{height:100%;width:auto;aspect-ratio:4/5;object-fit:cover;display:block;flex:0 0 auto}
+@keyframes bb-shelf{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.bb-story .shelf-marquee:hover .shelf-belt{animation-play-state:paused}
+
+@media (max-width:780px){
+  .bb-story .shelf-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .bb-story .shelf-lead{text-align:left;max-width:none}
+  .bb-story .shelf-marquee{height:clamp(300px,52vh,460px)}
+  .bb-story .shelf-belt{animation-duration:34s}
+}
+
+/* no motion: stop the belt and hand the row over as a normal swipe */
+@media (prefers-reduced-motion:reduce){
+  .bb-story .shelf-belt,
+  .bb-story .shelf-ticker-belt{animation:none}
+  .bb-story .shelf-marquee{overflow-x:auto;scroll-snap-type:x mandatory}
+  .bb-story .shelf-belt img{scroll-snap-align:center}
+}
+
+/* counter-running ticker closes the block and gives it a hard bottom edge */
+.bb-story .shelf-ticker{position:relative;background:var(--forest-2);overflow:hidden;padding:clamp(12px,1.8vh,18px) 0}
+.bb-story .shelf-ticker-belt{display:flex;width:max-content;animation:bb-shelf 30s linear infinite reverse}
+.bb-story .shelf-ticker-set{display:flex;flex:0 0 auto}
+.bb-story .shelf-ticker .tk{display:flex;align-items:center;gap:clamp(14px,2vw,26px);
+  font-family:"Anton",sans-serif;font-size:clamp(11px,1.3vw,14px);letter-spacing:.24em;text-transform:uppercase;
+  color:var(--white);white-space:nowrap;padding-left:clamp(14px,2vw,26px)}
+.bb-story .shelf-ticker .tk::after{content:"✦";color:var(--green);font-size:.85em}
+
+.bb-story .outro .opack{width:min(86vw,360px);max-width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block;
+  margin:0 auto clamp(10px,2vh,22px);
+  /* the file's bottom edge sits ~2 levels off the section green; across the
+     full width that hard step bands, so the last strip is faded out. the
+     fade only covers empty backdrop below the pouch, never the pack. */
+  -webkit-mask-image:linear-gradient(180deg,#000 92%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 92%,transparent 100%)}
+
 .bb-story .outro{position:relative;min-height:88svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   padding:70px clamp(18px,5vw,24px) calc(70px + var(--safe-b));
-  background:var(--bb-page-bg) center/cover no-repeat}
+  background:#78be57}
 .bb-story .outro .script{font-family:"Caveat",cursive;font-size:clamp(40px,9vw,96px);color:var(--white);line-height:.9;text-shadow:0 4px 26px rgba(22,50,16,.32)}
 .bb-story .outro .script .w{color:var(--forest-2);display:block}
 .bb-story .outro .made{margin-top:26px;max-width:46ch;font-size:14px;color:rgba(255,255,255,.94)}
@@ -1175,10 +1239,46 @@ export default function BoxBitesHello() {
         </div>
       </section>
 
-      {/* ===== footer ===== */}
-      
+      {/* ===== ACT 4: the shelf ===== */}
+      <section className="shelf" aria-label="Box Bites range">
+        <div className="shelf-head">
+          <div>
+            <div className="kicker">The range</div>
+            <h2>Everything in one bite</h2>
+          </div>
+          <p className="shelf-lead">
+            One pouch, four reasons to reach for it — fuel, fibre, real ingredients, no added sugar.
+          </p>
+        </div>
+
+        <div className="shelf-marquee">
+          <div className="shelf-belt">
+            {SHELF.map((poster) => (
+              <img key={poster.src} src={poster.src} alt={poster.alt} loading="lazy" decoding="async" />
+            ))}
+            {/* the duplicate set is what the -50% loop lands on */}
+            {SHELF.map((poster) => (
+              <img key={`${poster.src}-loop`} src={poster.src} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+            ))}
+          </div>
+        </div>
+
+        <div className="shelf-ticker" aria-hidden="true">
+          <div className="shelf-ticker-belt">
+            {[0, 1].map((set) => (
+              <span className="shelf-ticker-set" key={set}>
+                {SHELF_TICKER.map((word) => (
+                  <span className="tk" key={word}>{word}</span>
+                ))}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== footer ===== */}
       <footer className="outro">
+        <img className="opack" src={OUTRO_PACK} alt="Box Bites healthy cookies pouch" loading="lazy" decoding="async" />
         <div className="script">Goodbye Sugar,<span className="w">Hello Energy</span></div>
         <p className="made">Made with hearty rolled oats, rich dark chocolate, and a touch of Hoodia.</p>
         <div className="foot">Distributed by Earnergy Circle Solution · 202503225207 · (003764513-X)</div>

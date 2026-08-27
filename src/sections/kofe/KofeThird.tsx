@@ -11,6 +11,17 @@ const IMAGE10 = '/kofe/monkfruit.webp'
 const CUP = '/kofe/cup.webp'
 const PACKSHOT = '/kofe/kofebox.webp'
 
+/* the posters come in two flat backdrops — #4e2826 espresso and #f7f1e4
+   cream — so alternating them turns the join into a deliberate rhythm
+   instead of a seam to hide. */
+const WALL = [
+  { src: '/photos/v2/newKofePoster.webp', alt: 'Kofé Spanish Latte — naturally sweetened, 25g x 5 sachets' },
+  { src: '/photos/v2/newKofe4.webp', alt: 'Kofé sachets — dairy-free, with prebiotics and probiotics' },
+  { src: '/photos/v2/newKofe2.webp', alt: 'Kofé Spanish Latte — goodbye sugar, hello energy' },
+  { src: '/photos/v2/newKofe3.webp', alt: 'Kofé Spanish Latte boxes, 25g x 5 sachets' },
+]
+const WALL_TICKER = ['Arabica Coffee', 'MCT Oil', 'Monk Fruit', 'Coconut Milk', 'Prebiotics', 'Probiotics', 'Stevia', 'Chicory Inulin']
+
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/useAppStore'
@@ -83,6 +94,45 @@ const css = `
   font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-soft);
   opacity:0;transition:opacity .5s ease 1.9s}
 .gd-root.on .gd-more{opacity:1}
+
+/* ================= the wall =================
+   full-bleed espresso stage. the belt holds the set twice and travels
+   exactly -50%, so the loop lands on an identical frame. */
+.gd-wall{position:relative;background:#2a1a0e;padding:clamp(58px,9vh,110px) 0 0;overflow:hidden}
+.gd-wall-head{max-width:1180px;margin:0 auto clamp(30px,5vh,56px);padding:0 clamp(16px,4vw,48px);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(14px,3vw,40px)}
+.gd-wall .k{font-family:"Anton",sans-serif;font-size:clamp(10px,1.3vw,13px);letter-spacing:.4em;text-transform:uppercase;color:var(--gold)}
+.gd-wall h2{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(32px,5.6vw,72px);line-height:.96;
+  letter-spacing:-.02em;color:var(--cream-lt);margin-top:.1em}
+.gd-wall .scr{font-family:"Caveat",cursive;font-weight:700;font-size:clamp(20px,2.6vw,32px);color:var(--gold);margin-top:.1em}
+.gd-wall-lead{max-width:30ch;text-align:right;text-wrap:pretty;font-size:clamp(13px,1.4vw,16px);line-height:1.65;color:rgba(243,233,215,.72)}
+
+.gd-wall-belt-wrap{position:relative;width:100%;overflow:hidden;height:clamp(320px,60vh,640px)}
+.gd-wall-belt{display:flex;height:100%;width:max-content;will-change:transform;animation:gd-wall-slide 48s linear infinite}
+.gd-wall-belt img{height:100%;width:auto;aspect-ratio:4/5;object-fit:cover;display:block;flex:0 0 auto}
+@keyframes gd-wall-slide{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.gd-wall-belt-wrap:hover .gd-wall-belt{animation-play-state:paused}
+
+.gd-wall-ticker{position:relative;background:var(--gold);overflow:hidden;padding:clamp(11px,1.7vh,17px) 0}
+.gd-wall-ticker-belt{display:flex;width:max-content;animation:gd-wall-slide 32s linear infinite reverse}
+.gd-wall-ticker-set{display:flex;flex:0 0 auto}
+.gd-wall-ticker .tk{display:flex;align-items:center;gap:clamp(14px,2vw,26px);
+  font-family:"Anton",sans-serif;font-size:clamp(11px,1.3vw,14px);letter-spacing:.24em;text-transform:uppercase;
+  color:#2a1a0e;white-space:nowrap;padding-left:clamp(14px,2vw,26px)}
+.gd-wall-ticker .tk::after{content:"✦";color:#f9f2e4;font-size:.85em}
+
+@media (max-width:780px){
+  .gd-wall-head{flex-direction:column;align-items:flex-start;gap:8px}
+  .gd-wall-lead{text-align:left;max-width:none}
+  .gd-wall-belt-wrap{height:clamp(300px,50vh,440px)}
+  .gd-wall-belt{animation-duration:36s}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .gd-wall-belt,.gd-wall-ticker-belt{animation:none}
+  .gd-wall-belt-wrap{overflow-x:auto;scroll-snap-type:x mandatory}
+  .gd-wall-belt img{scroll-snap-align:center}
+}
 
 /* ================= 2-box bundle ================= */
 .gd-outro{position:relative;min-height:88svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
@@ -216,6 +266,44 @@ export default function KofeBoard() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <section className="gd-wall" aria-label="Kofé range">
+        <div className="gd-wall-head">
+          <div>
+            <div className="k">The ritual</div>
+            <h2>Five sachets,<br />one smarter cup</h2>
+            <div className="scr">goodbye sugar, hello energy</div>
+          </div>
+          <p className="gd-wall-lead">
+            Ten functional ingredients in a 25g serve — creamy, dairy-free and
+            naturally sweetened, no white sugar anywhere.
+          </p>
+        </div>
+
+        <div className="gd-wall-belt-wrap">
+          <div className="gd-wall-belt">
+            {WALL.map((poster) => (
+              <img key={poster.src} src={poster.src} alt={poster.alt} loading="lazy" decoding="async" />
+            ))}
+            {/* the duplicate set is what the -50% loop lands on */}
+            {WALL.map((poster) => (
+              <img key={`${poster.src}-loop`} src={poster.src} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+            ))}
+          </div>
+        </div>
+
+        <div className="gd-wall-ticker" aria-hidden="true">
+          <div className="gd-wall-ticker-belt">
+            {[0, 1].map((set) => (
+              <span className="gd-wall-ticker-set" key={set}>
+                {WALL_TICKER.map((word) => (
+                  <span className="tk" key={word}>{word}</span>
+                ))}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -91,6 +91,20 @@ export function ServicesSection() {
                   >
                     <span className="svc-no">({service.number})</span>
                     <span className="svc-title">{service.title}</span>
+                    {/* below 1024px the hover preview column is gone, so each
+                        row carries its own thumbnail instead of the artwork
+                        dropping off small screens entirely */}
+                    {service.image ? (
+                      <img
+                        className="svc-thumb"
+                        src={service.image}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                        sizes="112px"
+                      />
+                    ) : null}
                     <span className="svc-arrow" aria-hidden="true">
                       <ServiceArrowIcon />
                     </span>

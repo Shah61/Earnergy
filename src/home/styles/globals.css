@@ -729,6 +729,45 @@
     fill: var(--color-ink);
   }
 
+  /* the packshots are clean art with no headline of their own, so they sit
+     beside the statement without competing with it */
+  .about-lines {
+    margin-top: clamp(24px, 4vh, 44px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(10px, 1.4vw, 20px);
+    max-width: 420px;
+  }
+
+  .about-line {
+    margin: 0;
+  }
+
+  /* dropping the second one staggers the pair so it reads as composed
+     rather than as a plain two-up grid */
+  .about-line:nth-child(2) {
+    margin-top: clamp(16px, 3vw, 34px);
+  }
+
+  .about-line img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .about-line figcaption {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
   .about-row {
     position: relative;
     z-index: 1;
@@ -867,7 +906,7 @@
   .gallery {
     position: relative;
     overflow: hidden;
-    --gallery-aspect: 810 / 1080;
+    --gallery-aspect: 4 / 5;
     --gallery-card-width: clamp(220px, 28vw, 360px);
   }
 
@@ -1002,7 +1041,7 @@
   .g-card img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     display: block;
     transition: transform 0.6s var(--ease-smooth);
@@ -1096,7 +1135,7 @@
     top: 50%;
     left: 0;
     width: min(100%, 300px);
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 5;
     transform: translateY(-50%) rotate(-5deg) scale(0.95);
     opacity: 0;
     pointer-events: none;
@@ -1118,7 +1157,7 @@
   .svc-preview img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
     background: #fff;
   }
@@ -1173,6 +1212,11 @@
     gap: clamp(16px, 2.5vw, 34px);
     padding: clamp(18px, 2.6vh, 28px) 0;
     outline: none;
+  }
+
+  /* the hover preview covers this on wide screens */
+  .svc-thumb {
+    display: none;
   }
 
   .svc-row-inner:focus-visible {
@@ -1537,6 +1581,23 @@
 
     .svc-preview-col {
       display: none;
+    }
+
+    /* the preview column is gone here, so the artwork moves inline: a 4:5
+       thumbnail per row, sized by width so it never crops */
+    .svc-row-inner {
+      grid-template-columns: auto 1fr auto auto;
+      gap: clamp(12px, 3vw, 20px);
+    }
+
+    .svc-thumb {
+      display: block;
+      width: clamp(64px, 17vw, 112px);
+      aspect-ratio: 4 / 5;
+      height: auto;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #f2f2f2;
     }
 
     .footer-main {

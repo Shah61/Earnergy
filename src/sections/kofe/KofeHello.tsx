@@ -1,5 +1,7 @@
 const IMAGE_CUP = '/kofe/cup.webp'     // latte cup photo (also used inside the wordmark)
 const IMAGE_PACK = '/kofe/kofebox.webp'   // Spanish Latte pack front
+const POSTER_SACHET = '/photos/v2/newKofe4.webp'   // sachets, dairy-free + prebiotics
+const POSTER_BRAND = '/photos/v2/newKofePoster.webp' // naturally sweetened, 25g x 5
 
 import { useEffect } from 'react'
 import { getLenis, getScrollY, subscribeToScroll } from '@/hooks/useLenis'
@@ -47,6 +49,16 @@ const css = `
 .ks-handoff .ks-sub{cursor:pointer}
 .ks-trackwrap{position:absolute;inset:0;z-index:10}
 
+/* ---------- full-artwork panels ----------
+   each panel takes the artwork's own backdrop colour, so the poster bleeds
+   into the panel instead of sitting on it as a card — which is also why
+   there is no radius or shadow here: both would redraw the edge we are
+   trying to lose. */
+.ks-panel.poster{padding:5vh 3vw;gap:0;justify-content:center}
+.ks-panel.poster--sachet{background:#f7f1e4}
+.ks-panel.poster--brand{background:#4e2826}
+.ks-poster{height:100%;width:auto;max-width:100%;object-fit:contain}
+
 /* ---------- the gate (masked wordmark, splits open) ---------- */
 .ks-gate{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:var(--cream);will-change:transform;text-align:center;padding:0 5vw}
@@ -84,6 +96,10 @@ const css = `
   .ks-panel{width:88vw;padding:6vh 5vw}
   .ks-word{font-size:34vw}
   .ks-photo{height:min(42vh,380px)}
+  /* a narrow panel cannot fit a tall poster by height, so drive it by width
+     and let the panel's own centring take care of the leftover space */
+  .ks-panel.poster{padding:4vh 4vw}
+  .ks-poster{height:auto;width:100%;max-height:100%}
 }
 `
 
@@ -305,6 +321,10 @@ export default function KofeHello() {
                 <div className="ks-sub">with prebiotics + probiotics</div>
               </div>
 
+              <div className="ks-panel poster poster--sachet">
+                <img className="ks-poster" src={POSTER_SACHET} alt="Kofé Spanish Latte sachets — dairy-free, with prebiotics and probiotics" />
+              </div>
+
               {CLAIMS.map((c, i) => (
                 <div className={`ks-panel ${c.tone}`} key={c.t}>
                   <div className="ks-num">{String(i + 1).padStart(2, '0')} / 06</div>
@@ -312,6 +332,10 @@ export default function KofeHello() {
                   <div className="ks-sub">{c.s}</div>
                 </div>
               ))}
+
+              <div className="ks-panel poster poster--brand">
+                <img className="ks-poster" src={POSTER_BRAND} alt="Kofé Spanish Latte — naturally sweetened, 25g x 5 sachets" />
+              </div>
 
               <div className="ks-panel dark ks-handoff">
                 <div className="ks-kick">next</div>

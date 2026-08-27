@@ -23,17 +23,10 @@ export type JoinProduct = {
   retailProfit: string;
   image: string;
   imageAlt: string;
-  /** "poster" runs the artwork full-bleed — flyers are unreadable boxed in a
-      padded stage; "packshot" floats a cut-out product on the gradient */
-  media?: "packshot" | "poster";
-  /** natural ratio of a poster, so the stage matches it and nothing crops */
-  imageRatio?: string;
+  /** natural ratio of the artwork, so the stage matches it and nothing crops */
+  imageRatio: string;
   /** optional chip shown next to the availability badge, e.g. "×2 boxes per order" */
   badge?: string;
-  /** units shipped per order — 2 renders the packshot as a pair */
-  units?: number;
-  /** how a pair is arranged; "side" suits packshots with transparent edges */
-  unitsLayout?: "stacked" | "side";
   /** BeliBeli product id — the buy link is built with the visitor's upline code */
   productId: string;
 };
@@ -55,7 +48,6 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     retailProfit: "Retail Profit RM10 x 5",
     image: "/earnergy99.jpeg",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
-    media: "poster",
     imageRatio: "764 / 1080",
     productId: BELIBELI_PRODUCTS.earnergyBox,
   },
@@ -66,11 +58,10 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
       "High fiber, high protein, natural sweeteners from hoodia extract, no added sugar.",
     price: "RM 30",
     retailProfit: "Retail Profit RM2 x 5",
-    image: "/box-bites-pouch.webp",
+    image: "/photos/v2/newBB1.webp",
     imageAlt: "Two Box Bites healthy cookies pouches",
     badge: "×2 packs per order",
-    units: 2,
-    unitsLayout: "side",
+    imageRatio: "4 / 5",
     productId: BELIBELI_PRODUCTS.boxBites,
   },
   {
@@ -80,10 +71,10 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
       "Prebiotics + probiotics, dairy free, only natural sweeteners from stevia & monk fruit.",
     price: "RM 30",
     retailProfit: "Retail Profit RM2 x 5",
-    image: "/kofe/kofebox.webp",
+    image: "/photos/v2/newKofe.webp",
     imageAlt: "Two KOFÉ Spanish Latte boxes",
     badge: "×2 boxes per order",
-    units: 2,
+    imageRatio: "4 / 5",
     productId: BELIBELI_PRODUCTS.kofe,
   },
   {
@@ -95,7 +86,6 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     retailProfit: "Retail Profit RM3 x 5",
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
-    media: "poster",
     imageRatio: "480 / 640",
     productId: BELIBELI_PRODUCTS.buku,
   },
