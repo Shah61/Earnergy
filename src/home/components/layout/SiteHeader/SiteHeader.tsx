@@ -1,6 +1,17 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PulsatingButton } from "@/components/ui/pulsating-button";
-import { JOIN_US_CTA, NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
+import { resellerPath } from "@/lib/belibeli";
+import { ResellerCodeBadge } from "@home/components/layout/ResellerCodeBadge";
+import { ShopDropdown } from "@home/components/layout/ShopMenu";
+import {
+  JOIN_US_CTA,
+  NAV_ITEMS,
+  SITE_LOGO,
+  SITE_NAME,
+  isNavLink,
+} from "@home/constants/navigation";
+import { ROUTES } from "@home/constants/routes";
 
 type SiteHeaderProps = {
   onMenuToggle: () => void;
@@ -16,32 +27,50 @@ function isNavActive(pathname: string, href: string) {
 export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  /* the reseller code in play: shown by the logo, carried by every link */
+  const uplineCode = useAffiliateCode();
 
   return (
     <header className="site-header" id="header">
       <div className="wrap nav">
-        <Link className="brand" to="/" aria-label={`${SITE_NAME} home`}>
-          <img
-            src={SITE_LOGO}
-            alt={SITE_NAME}
-            className="brand-logo"
-            width={2482}
-            height={788}
-            decoding="async"
-          />
-        </Link>
+        <div className={`brand-block${uplineCode ? " brand-block--code" : ""}`}>
+          <Link
+            className="brand"
+            to={resellerPath(ROUTES.home, uplineCode)}
+            aria-label={`${SITE_NAME} home`}
+          >
+            <img
+              src={SITE_LOGO}
+              alt={SITE_NAME}
+              className="brand-logo"
+              width={2482}
+              height={788}
+              decoding="async"
+            />
+          </Link>
+          {uplineCode ? <ResellerCodeBadge code={uplineCode} /> : null}
+        </div>
 
         <nav className="nav-links" aria-label="Primary">
           {NAV_ITEMS.map((item) => {
-            const className = isNavActive(pathname, item.href) ? "active" : undefined;
-            const isRoute = item.href.startsWith("/");
+            if (!isNavLink(item)) {
+              return (
+                <ShopDropdown key={item.label} label={item.label} uplineCode={uplineCode} />
+              );
+            }
+
+            const href = resellerPath(item.href, uplineCode);
+            /* "/" still counts as Home after a code is activated on it */
+            const isActive = isNavActive(pathname, href) || isNavActive(pathname, item.href);
+            const className = isActive ? "active" : undefined;
+            const isRoute = href.startsWith("/");
 
             return isRoute ? (
-              <Link key={item.label} to={item.href} className={className}>
+              <Link key={item.label} to={href} className={className}>
                 {item.label}
               </Link>
             ) : (
-              <a key={item.label} href={item.href} className={className}>
+              <a key={item.label} href={href} className={className}>
                 {item.label}
               </a>
             );

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { NAV_ITEMS, SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
+import { NAV_ITEMS, SITE_LOGO, SITE_NAME, isNavLink } from "@home/constants/navigation";
 import type { ProductsTheme } from "@home/hooks/useProductsScrollTheme";
 
 type ProductsHeaderProps = {
@@ -43,7 +43,7 @@ export function ProductsHeader({
         </Link>
 
         <nav className="nav-links" aria-label="Primary">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter(isNavLink).map((item) => {
             const className = isNavActive(pathname, item.href) ? "active" : undefined;
             const isRoute = item.href.startsWith("/");
 

@@ -17,6 +17,8 @@ export const JOIN_HERO = {
 export type JoinProduct = {
   no: string;
   name: string;
+  /** name used in the Shop menu, where the full one doesn't fit */
+  shortName?: string;
   tagline: string;
   price: string;
   /** shown in red under the price, e.g. "Retail Profit RM10 x 5" */
@@ -25,8 +27,12 @@ export type JoinProduct = {
   imageAlt: string;
   /** natural ratio of the artwork, so the stage matches it and nothing crops */
   imageRatio: string;
+  /** small copy of the artwork for the Shop menu */
+  thumb: string;
   /** optional chip shown next to the availability badge, e.g. "×2 boxes per order" */
   badge?: string;
+  /** wide artwork: the card spans two grid columns so the banner isn't squeezed */
+  featured?: boolean;
   /** BeliBeli product id — the buy link is built with the visitor's upline code */
   productId: string;
 };
@@ -42,6 +48,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
   {
     no: "01",
     name: "EARNERGYBOX — Business All In A Box",
+    shortName: "EARNERGYBOX",
     tagline:
       "For just RM99 you get more than premium, healthy products — you also get the system, the knowledge and the community to start your business smarter.",
     price: "RM 99",
@@ -49,10 +56,26 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     image: "/earnergy99.jpeg",
     imageAlt: "EARNERGYBOX bundle — Box Bites, KOFÉ and the business book",
     imageRatio: "764 / 1080",
+    thumb: "/photos/shop/earnergybox.webp",
     productId: BELIBELI_PRODUCTS.earnergyBox,
   },
   {
     no: "02",
+    name: "COMBO Box Bites & KOFÉ",
+    tagline:
+      "2 packs of Box Bites (100g × 2) + 2 boxes of KOFÉ (25g/sachet × 5 × 2). Enjoy healthy Box Bites cookies with a KOFÉ drink — no white sugar — for brighter days with all the sweetness and none of the guilt!",
+    price: "RM 69",
+    retailProfit: "Retail Profit RM4 x 5",
+    image: "/newEarnergy.jpeg",
+    imageAlt: "COMBO RM69 — 2 packs of Box Bites and 2 boxes of KOFÉ Spanish Latte",
+    imageRatio: "1280 / 853",
+    thumb: "/photos/shop/combo.webp",
+    badge: "New",
+    featured: true,
+    productId: BELIBELI_PRODUCTS.combo,
+  },
+  {
+    no: "03",
     name: "Box Bites Healthy Cookies",
     tagline:
       "High fiber, high protein, natural sweeteners from hoodia extract, no added sugar.",
@@ -62,10 +85,11 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     imageAlt: "Two Box Bites healthy cookies pouches",
     badge: "×2 packs per order",
     imageRatio: "4 / 5",
+    thumb: "/photos/shop/box-bites.webp",
     productId: BELIBELI_PRODUCTS.boxBites,
   },
   {
-    no: "03",
+    no: "04",
     name: "KOFÉ Spanish Latte",
     tagline:
       "Prebiotics + probiotics, dairy free, only natural sweeteners from stevia & monk fruit.",
@@ -75,10 +99,11 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     imageAlt: "Two KOFÉ Spanish Latte boxes",
     badge: "×2 boxes per order",
     imageRatio: "4 / 5",
+    thumb: "/photos/shop/kofe.webp",
     productId: BELIBELI_PRODUCTS.kofe,
   },
   {
-    no: "04",
+    no: "05",
     name: "Buku Berniaga Semudah Berbelanja",
     tagline:
       "Learn the unique concept that changes the way you see everyday spending. Understand how every purchase can be turned into an opportunity to earn income and build financial assets more wisely.",
@@ -87,6 +112,7 @@ export const JOIN_PRODUCTS: JoinProduct[] = [
     image: "/Buku.png",
     imageAlt: "Buku Berniaga Semudah Berbelanja physical book",
     imageRatio: "480 / 640",
+    thumb: "/photos/shop/buku.webp",
     productId: BELIBELI_PRODUCTS.buku,
   },
 ];
@@ -109,7 +135,7 @@ export const JOIN_AFFILIATE_STEPS: JoinAffiliateStep[] = [
   {
     no: "01",
     title: "Buy Any Product",
-    text: "Purchase any product below — the EARNERGYBOX bundle, Box Bites, KOFÉ, or the book. Any one of them unlocks your Earnergy Reseller (Affiliate) journey. You will be directed to BeliBeli platform.",
+    text: "Purchase any product below — the EARNERGYBOX bundle, the Box Bites & KOFÉ combo, Box Bites, KOFÉ, or the book. Any one of them unlocks your Earnergy Reseller (Affiliate) journey. You will be directed to BeliBeli platform.",
     icon: "buy",
   },
   {

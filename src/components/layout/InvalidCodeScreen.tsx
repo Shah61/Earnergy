@@ -72,7 +72,7 @@ const css = `
 }
 `
 
-/** Shown when /products/<code> carries a code nobody ever activated. */
+/** Shown when /<code> or /products/<code> carries a code nobody ever activated. */
 export function InvalidCodeScreen({ code }: { code: string }) {
   return (
     <div className="ic-root">
@@ -95,7 +95,7 @@ export function InvalidCodeScreen({ code }: { code: string }) {
 
         <p className="ic-lead">
           The Earnergy Reseller (Affiliate) code in this link was never activated, so we
-          can&apos;t open the products page with it. Double-check the link you
+          can&apos;t open a reseller page with it. Double-check the link you
           were given — it may have been typed or copied incorrectly.
         </p>
 

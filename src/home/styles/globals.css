@@ -1038,6 +1038,13 @@
       filter 0.7s var(--ease-smooth);
   }
 
+  /* mandatory snapping only rests on snap points, and the last card's start
+     sits past the end of the scroll range. Aligning the final card to the
+     end makes the flush position snappable, so it can actually be reached. */
+  .g-card:last-child {
+    scroll-snap-align: end;
+  }
+
   .g-card img {
     width: 100%;
     height: 100%;

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './index.css'
 import '@home/styles/globals.css'
+import '@home/styles/reseller.css'
 import { HomePage } from '@home/pages/HomePage'
 
 /* each page loads its own chunk so the landing page ships only landing code */
@@ -48,6 +49,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/products/:uplinecode" element={<App />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/join" element={<JoinPage />} />
+          {/* reseller share links: the whole site under their code, e.g. /5141 */}
+          <Route path="/:uplinecode" element={<HomePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

@@ -1,0 +1,394 @@
+/* Reseller code across the site: the code badge by the logo, the Shop
+   menu (desktop dropdown + drawer list) and the Home paste-code row.
+   Same layer as globals.css so Tailwind utilities still win. */
+
+@layer components {
+  /* ── logo + referral code ─────────────────────────────────────────── */
+  .brand-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .refcode {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 240px;
+    padding: 5px 11px 5px 9px;
+    border: 1px solid rgba(79, 158, 52, 0.3);
+    border-radius: 999px;
+    background: rgba(116, 193, 87, 0.13);
+    color: var(--color-brand-deep);
+    font-family: var(--font-display);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .refcode-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-brand);
+    animation: refcode-pulse 1.8s ease-in-out infinite;
+  }
+
+  .refcode-label {
+    flex: none;
+  }
+
+  .refcode-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-ink);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  @keyframes refcode-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.55);
+      opacity: 0.55;
+    }
+  }
+
+  /* ── Shop product list (dropdown + drawer) ────────────────────────── */
+  .shop-body {
+    display: grid;
+    gap: 8px;
+    white-space: normal;
+  }
+
+  .shop-eyebrow {
+    margin: 0 0 2px;
+    padding-inline: 8px;
+    color: var(--color-brand-deep);
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .shop-list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .shop-body .shop-item {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 14px;
+    transition: background 0.2s ease;
+  }
+
+  .shop-body .shop-item:hover,
+  .shop-body .shop-item:focus-visible {
+    background: rgba(116, 193, 87, 0.12);
+  }
+
+  .shop-thumb {
+    width: 44px;
+    height: 55px;
+    border-radius: 9px;
+    background: #f2f2f2;
+    object-fit: cover;
+  }
+
+  .shop-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .shop-name {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+
+  .shop-price {
+    color: var(--color-brand-deep);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .shop-arrow {
+    width: 18px;
+    height: 18px;
+    color: var(--color-muted-2);
+    transition:
+      color 0.2s ease,
+      transform 0.25s var(--ease-smooth);
+  }
+
+  .shop-item:hover .shop-arrow,
+  .shop-item:focus-visible .shop-arrow {
+    color: var(--color-brand-deep);
+    transform: translate(2px, -2px);
+  }
+
+  .shop-code {
+    margin: 4px 8px 0;
+    padding-top: 10px;
+    border-top: 1px dashed #d6d6d6;
+    color: var(--color-muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .shop-code b {
+    color: var(--color-ink);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    overflow-wrap: anywhere;
+  }
+
+  /* ── desktop "Shop" dropdown ──────────────────────────────────────── */
+  .nav-shop {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-shop-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color 0.25s ease;
+  }
+
+  .nav-shop-btn:hover,
+  .nav-shop.is-open .nav-shop-btn {
+    color: var(--color-ink);
+  }
+
+  /* same underline as the other nav links */
+  .nav-shop-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-brand);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-smooth);
+  }
+
+  .nav-shop-btn:hover::after,
+  .nav-shop.is-open .nav-shop-btn::after {
+    transform: scaleX(1);
+  }
+
+  .nav-shop-chevron {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.3s var(--ease-smooth);
+  }
+
+  .nav-shop.is-open .nav-shop-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-shop-panel {
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 50%;
+    z-index: 5;
+    width: 320px;
+    padding: 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -8px);
+    transition:
+      opacity 0.22s ease,
+      transform 0.3s var(--ease-smooth),
+      visibility 0s linear 0.3s;
+  }
+
+  .nav-shop.is-open .nav-shop-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition:
+      opacity 0.22s ease,
+      transform 0.3s var(--ease-smooth);
+  }
+
+  /* invisible bridge over the gap, so the pointer can reach the panel */
+  .nav-shop-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -18px;
+    height: 18px;
+  }
+
+  /* the nav-link underline would otherwise run under every product */
+  .nav-links .shop-item::after {
+    content: none;
+  }
+
+  /* ── mobile drawer "Shop" row ─────────────────────────────────────── */
+  .mobile-menu button.mobile-menu-link {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 26px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: clamp(18px, 3.4vh, 26px) 4px;
+    border: 0;
+    border-bottom: 1px solid rgba(18, 18, 18, 0.1);
+    background: none;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    text-align: left;
+    transition:
+      color 0.22s ease,
+      padding 0.28s var(--ease-smooth);
+  }
+
+  .mobile-menu button.mobile-menu-link:hover,
+  .mobile-menu button.mobile-menu-link:focus-visible,
+  .mobile-menu-shop.is-open button.mobile-menu-link {
+    color: var(--color-brand-deep);
+    padding-inline: 10px;
+  }
+
+  .mobile-menu-shop.is-open .mobile-menu-index {
+    color: var(--color-brand);
+  }
+
+  .mobile-menu .mobile-menu-shop-toggle:hover .mobile-menu-arrow,
+  .mobile-menu .mobile-menu-shop-toggle:focus-visible .mobile-menu-arrow {
+    color: var(--color-brand-deep);
+    transform: translateY(2px);
+  }
+
+  .mobile-menu .mobile-menu-shop.is-open .mobile-menu-arrow {
+    color: var(--color-brand-deep);
+    transform: rotate(180deg);
+  }
+
+  .mobile-menu-shop-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.4s var(--ease-smooth),
+      visibility 0s linear 0.4s;
+  }
+
+  .mobile-menu-shop.is-open .mobile-menu-shop-panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 0.4s var(--ease-smooth);
+  }
+
+  .mobile-menu-shop-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* tucked under the "Shop" label, past the row number */
+  .mobile-menu-shop .shop-body {
+    padding: 12px 0 16px 36px;
+    border-bottom: 1px solid rgba(18, 18, 18, 0.1);
+  }
+
+  .mobile-menu-shop .shop-name {
+    font-size: 1rem;
+  }
+
+  /* ── Home: paste-code row ─────────────────────────────────────────── */
+  .reseller-code {
+    padding-top: clamp(40px, 7vh, 88px);
+  }
+}
+
+@layer utilities {
+  @media (min-width: 861px) {
+    /* desktop: the code sits under the logo, like the products page */
+    .brand-block--code {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .brand-block--code .brand-logo {
+      height: clamp(28px, 3.9vh, 34px);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .brand-block--code .brand-logo {
+      height: 34px;
+    }
+  }
+
+  /* phones: "Code: 5141" so the pill never crowds the logo or the menu */
+  @media (max-width: 480px) {
+    .refcode-label-extra {
+      display: none;
+    }
+
+    .refcode {
+      max-width: 150px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .refcode-dot {
+      animation: none;
+    }
+
+    .nav-shop-panel,
+    .mobile-menu-shop-panel {
+      transition: none !important;
+    }
+  }
+}

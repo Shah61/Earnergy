@@ -36,14 +36,16 @@ export function JoinProducts() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 md:gap-5">
+      {/* three across so the wide combo card (two columns) leaves no gaps;
+          dense lets a single card move up into a gap on two-column screens */}
+      <div className="grid grid-flow-dense gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-5">
         {JOIN_PRODUCTS.map((product, index) => (
           <a
             key={product.no}
             href={belibeliProductUrl(product.productId, uplineCode)}
             target="_blank"
             rel="noreferrer"
-            className="c-r-rise group relative flex flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-[0_6px_22px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-[#74c157] hover:shadow-[0_28px_55px_-32px_rgba(79,158,52,0.55)]"
+            className={`c-r-rise group relative flex flex-col overflow-hidden rounded-3xl${product.featured ? " sm:col-span-2" : ""} border border-neutral-200 bg-white shadow-[0_6px_22px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-1.5 hover:border-[#74c157] hover:shadow-[0_28px_55px_-32px_rgba(79,158,52,0.55)]`}
             style={revealDelay(index, 0.12, 0.09)}
           >
             {/* the artwork is the card top — matching the stage to the file's

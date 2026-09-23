@@ -5,11 +5,30 @@ export type NavItem = {
   href: string;
 };
 
-export const NAV_ITEMS: NavItem[] = [
+/** opens the product list (each straight to BeliBeli) instead of a page */
+export type ShopNavItem = {
+  label: string;
+  shop: true;
+};
+
+export type MenuItem = NavItem | ShopNavItem;
+
+export const NAV_ITEMS: MenuItem[] = [
   { label: "Home", href: ROUTES.home },
   { label: "Our Products", href: ROUTES.products },
+  { label: "Shop", shop: true },
   { label: "Contact Us", href: ROUTES.contact },
 ];
+
+export function isNavLink(item: MenuItem): item is NavItem {
+  return "href" in item;
+}
+
+export const SHOP_MENU = {
+  eyebrow: "Buy on BeliBeli",
+  /** shown under the list while a reseller code rides on the links */
+  codeNote: "Reseller code applied:",
+} as const;
 
 export const JOIN_US_CTA = {
   label: "JOIN US",

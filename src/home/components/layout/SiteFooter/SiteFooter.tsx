@@ -10,15 +10,23 @@ import {
 } from "@home/constants/footer";
 import { SITE_LOGO, SITE_NAME } from "@home/constants/navigation";
 import { SocialIcon } from "@home/components/ui/icons";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
+import { resellerPath } from "@/lib/belibeli";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  /* links keep the reseller code in play, same as the header */
+  const uplineCode = useAffiliateCode();
 
   return (
     <footer className="site-footer">
       <div className="wrap footer-main">
         <div className="footer-brand">
-          <Link className="footer-logo" to="/" aria-label={`${SITE_NAME} home`}>
+          <Link
+            className="footer-logo"
+            to={resellerPath("/", uplineCode)}
+            aria-label={`${SITE_NAME} home`}
+          >
             <img
               src={SITE_LOGO}
               alt={SITE_NAME}
@@ -75,7 +83,7 @@ export function SiteFooter() {
             <ul className="footer-links">
               {FOOTER_SITEMAP.map((item) => (
                 <li key={item.label}>
-                  <Link to={item.href}>{item.label}</Link>
+                  <Link to={resellerPath(item.href, uplineCode)}>{item.label}</Link>
                 </li>
               ))}
             </ul>

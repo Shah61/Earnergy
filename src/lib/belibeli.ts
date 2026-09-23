@@ -2,6 +2,7 @@
 
 export const BELIBELI_PRODUCTS = {
   earnergyBox: "17510456",
+  combo: "561547253",
   boxBites: "19069023",
   kofe: "18508099",
   buku: "19133918",
@@ -27,15 +28,34 @@ export function belibeliProductUrl(
   return `https://belibeli.online/p/${productId}?uplinecode=${encodeURIComponent(code)}`;
 }
 
-/** The affiliate's personal share link on this site, e.g. /products/1234. */
+/** The affiliate's personal share link: the whole site, e.g. earnergy.online/1234. */
 export function affiliateShareUrl(origin: string, uplineCode: string): string {
-  return `${origin}/products/${encodeURIComponent(normalizeUplineCode(uplineCode))}`;
+  return `${origin}/${encodeURIComponent(normalizeUplineCode(uplineCode))}`;
 }
 
-/* ── short-lived cache of the visitor's own activated code ──────────────
-   sessionStorage: survives page navigation, cleared when the tab closes.
-   Lets /products redirect to /products/<their code> for the rest of the
-   browsing session after they activate on the Join page. */
+/** Pages that carry the code in their URL, so a copied link still credits it. */
+const CODE_IN_URL_PATHS = new Set(["/", "/products"]);
+
+/**
+ * An internal link that keeps the reseller's code: "/" becomes "/1234" and
+ * "/products" becomes "/products/1234". Other pages pick the code up from
+ * the tab's memory, so they stay as they are.
+ */
+export function resellerPath(href: string, uplineCode: string | null | undefined): string {
+  if (!uplineCode) return href;
+  const hashAt = href.indexOf("#");
+  const path = hashAt === -1 ? href : href.slice(0, hashAt);
+  const hash = hashAt === -1 ? "" : href.slice(hashAt);
+  if (!CODE_IN_URL_PATHS.has(path)) return href;
+  const base = path === "/" ? "" : path;
+  return `${base}/${encodeURIComponent(uplineCode)}${hash}`;
+}
+
+/* ── short-lived cache of the reseller code in play ─────────────────────
+   Either the visitor's own code (activated on Home or Join Us) or the code
+   of the reseller whose link brought them here. sessionStorage: survives
+   page navigation, cleared when the tab closes. Every page reads it, so
+   the code shows in the header and rides along on every buy link. */
 
 const STORAGE_KEY = "earnergy.affiliate-code";
 const CHANGE_EVENT = "earnergy:affiliate-change";

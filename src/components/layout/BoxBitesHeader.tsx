@@ -8,7 +8,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { ActiveProduct } from '@/stores/useAppStore'
-import { BELIBELI_PRODUCTS, belibeliProductUrl } from '@/lib/belibeli'
+import { BELIBELI_PRODUCTS, belibeliProductUrl, resellerPath } from '@/lib/belibeli'
 
 const LOGO = '/photos/logo2.webp'
 
@@ -248,9 +248,8 @@ export function BoxBitesHeader({
   onNavigate?: (href: string) => void
   onProductChange?: (product: ActiveProduct) => void
 }) {
-  /* on an affiliate link (/products/<code>) the logo stops being a way home,
-     so the visitor stays on the page the code was shared for */
-  const logoLocked = Boolean(uplineCode)
+  /* the whole site is the reseller's page, so home keeps their code too */
+  const homeHref = resellerPath('/', uplineCode)
   const cta = BUY_CTA[activeProduct]
   const ctaHref = belibeliProductUrl(cta.product, uplineCode)
   const ctaLabel = cta.label
@@ -360,15 +359,9 @@ export function BoxBitesHeader({
       >
         <nav className={`bbh-bar${uplineCode ? ' bbh-bar--refcode' : ''}`} aria-label="Main">
           <div className="bbh-brand">
-            {logoLocked ? (
-              <span className="bbh-logo">
-                <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
-              </span>
-            ) : (
-              <Link className="bbh-logo" to="/" aria-label="Earnergy — home">
-                <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
-              </Link>
-            )}
+            <Link className="bbh-logo" to={homeHref} aria-label="Earnergy — home">
+              <img src={LOGO} alt="Earnergy — Smart Products, Smarter Business" />
+            </Link>
             {uplineCode ? (
               <span className="bbh-refcode" title={`Referral code: ${uplineCode}`}>
                 <span className="bbh-reflabel">Referral Code:</span>
@@ -476,7 +469,12 @@ export function BoxBitesHeader({
             </a>
           ))}
           {MENU_LINKS.map((l) => (
-            <Link key={l.href} className="bbh-mlink" to={l.href} onClick={() => setOpen(false)}>
+            <Link
+              key={l.href}
+              className="bbh-mlink"
+              to={resellerPath(l.href, uplineCode)}
+              onClick={() => setOpen(false)}
+            >
               {l.label}
             </Link>
           ))}
