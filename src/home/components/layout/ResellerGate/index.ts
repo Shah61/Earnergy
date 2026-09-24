@@ -1,0 +1,1 @@
+export { ResellerGate } from "./ResellerGate";

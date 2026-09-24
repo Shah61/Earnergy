@@ -20,7 +20,7 @@ export function MobileDrawer({ onClose }: MobileDrawerProps) {
 
   const join = () => {
     onClose();
-    navigate(JOIN_US_CTA.href);
+    navigate(resellerPath(JOIN_US_CTA.href, uplineCode));
   };
 
   return (

@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { JOIN_CTA } from "@home/constants/join";
-import { belibeliProductUrl } from "@/lib/belibeli";
+import { belibeliProductUrl, resellerPath } from "@/lib/belibeli";
 import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 
 function CtaArcs({ flip }: { flip?: boolean }) {
@@ -73,7 +73,7 @@ export function JoinCta() {
         </div>
 
         <Link
-          to={JOIN_CTA.secondaryHref}
+          to={resellerPath(JOIN_CTA.secondaryHref, affiliateCode)}
           className="c-r-fade text-sm font-semibold text-black/60 underline underline-offset-4 transition hover:text-black"
           style={{ "--d": "0.4s" } as CSSProperties}
         >

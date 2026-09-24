@@ -85,7 +85,7 @@ export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
             duration="1.8s"
             distance="9px"
             variant="pulse"
-            onClick={() => navigate(JOIN_US_CTA.href)}
+            onClick={() => navigate(resellerPath(JOIN_US_CTA.href, uplineCode))}
           >
             {JOIN_US_CTA.label}
           </PulsatingButton>

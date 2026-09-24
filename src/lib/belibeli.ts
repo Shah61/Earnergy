@@ -34,12 +34,12 @@ export function affiliateShareUrl(origin: string, uplineCode: string): string {
 }
 
 /** Pages that carry the code in their URL, so a copied link still credits it. */
-const CODE_IN_URL_PATHS = new Set(["/", "/products"]);
+const CODE_IN_URL_PATHS = new Set(["/", "/products", "/join", "/contact"]);
 
 /**
- * An internal link that keeps the reseller's code: "/" becomes "/1234" and
- * "/products" becomes "/products/1234". Other pages pick the code up from
- * the tab's memory, so they stay as they are.
+ * An internal link that keeps the reseller's code: "/" becomes "/1234",
+ * "/join" becomes "/join/1234", and so on. Anything else (in-page anchors,
+ * outside links) stays as it is.
  */
 export function resellerPath(href: string, uplineCode: string | null | undefined): string {
   if (!uplineCode) return href;

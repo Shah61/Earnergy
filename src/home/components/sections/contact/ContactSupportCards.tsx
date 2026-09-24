@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { CONTACT_SUPPORT } from "@home/constants/contact";
 import { revealDelay } from "@home/utils/reveal";
+import { useAffiliateCode } from "@/hooks/useAffiliateCode";
+import { resellerPath } from "@/lib/belibeli";
 
 export function ContactSupportCards() {
+  const uplineCode = useAffiliateCode();
+
   return (
     <section className="grid gap-5 md:grid-cols-2">
       {CONTACT_SUPPORT.map(({ title, description, cta, href }, index) => {
@@ -24,7 +28,7 @@ export function ContactSupportCards() {
             </p>
 
             {isRoute ? (
-              <Link to={href} className={buttonClass}>
+              <Link to={resellerPath(href, uplineCode)} className={buttonClass}>
                 {cta}
                 <ArrowUpRight className="size-4" />
               </Link>
