@@ -1,4 +1,4 @@
-import { StrictMode, Suspense, lazy, useEffect } from 'react'
+import { StrictMode, Suspense, lazy, useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './index.css'
@@ -44,21 +44,52 @@ const contactPage = (
   </ResellerGate>
 )
 
-/* every route change starts at the top of the new page */
-function ScrollToTop() {
-  const { pathname } = useLocation()
+/* every route change starts at the top of the new page — or, for a link
+   like "/#reseller", at that section, clear of the sticky header. The page
+   may still be on its way (a lazy chunk, a reseller-code check), so the
+   section is looked for over a few frames */
+function ScrollOnNavigate() {
+  const { pathname, hash, key } = useLocation()
+  const lastPathname = useRef<string | null>(null)
+
   useEffect(() => {
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-  }, [pathname])
+    const samePage = lastPathname.current === pathname
+    lastPathname.current = pathname
+
+    if (!samePage || !hash) {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }
+    if (!hash) return
+
+    const giveUpAt = performance.now() + 3000
+    let frame = 0
+    const seek = () => {
+      const target = document.getElementById(hash.slice(1))
+      if (!target) {
+        if (performance.now() < giveUpAt) frame = requestAnimationFrame(seek)
+        return
+      }
+      const headerHeight = document.getElementById('header')?.offsetHeight ?? 0
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      window.scrollTo({
+        top: target.getBoundingClientRect().top + window.scrollY - headerHeight,
+        // glide within the page; a fresh page just opens there
+        behavior: samePage && !reduceMotion ? 'smooth' : 'auto',
+      })
+    }
+    seek()
+    return () => cancelAnimationFrame(frame)
+  }, [pathname, hash, key])
+
   return null
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <ScrollToTop />
+      <ScrollOnNavigate />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={homePage} />

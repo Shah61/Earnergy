@@ -1,3 +1,4 @@
+import { RESELLER_CODE_SECTION } from "./reseller";
 import { ROUTES } from "./routes";
 
 export type NavItem = {
@@ -5,18 +6,23 @@ export type NavItem = {
   href: string;
 };
 
-/** opens the product list (each straight to BeliBeli) instead of a page */
-export type ShopNavItem = {
+/** "shop": the products, each straight to BeliBeli; "reseller": the
+    reseller links */
+export type MenuPanelKind = "shop" | "reseller";
+
+/** unfolds a panel of links instead of opening a page */
+export type PanelNavItem = {
   label: string;
-  shop: true;
+  panel: MenuPanelKind;
 };
 
-export type MenuItem = NavItem | ShopNavItem;
+export type MenuItem = NavItem | PanelNavItem;
 
 export const NAV_ITEMS: MenuItem[] = [
   { label: "Home", href: ROUTES.home },
   { label: "Our Products", href: ROUTES.products },
-  { label: "Shop", shop: true },
+  { label: "Shop", panel: "shop" },
+  { label: "Reseller", panel: "reseller" },
   { label: "Contact Us", href: ROUTES.contact },
 ];
 
@@ -29,6 +35,28 @@ export const SHOP_MENU = {
   /** shown under the list while a reseller code rides on the links */
   codeNote: "Reseller code applied:",
 } as const;
+
+/* behind "Reseller": get your own share link on Home, then follow what it
+   earns on BeliBeli. The sub line is two-tone, like the paste-code card's
+   tagline. */
+export const RESELLER_MENU = [
+  {
+    label: "Reseller Landing Page",
+    subDim: "Start sharing.",
+    subInk: "Start earning.",
+    icon: "key",
+    /** the paste-code card on Home */
+    href: `${ROUTES.home}#${RESELLER_CODE_SECTION.id}`,
+  },
+  {
+    label: "BeliBeli.Online",
+    subDim: "View commission.",
+    subInk: "View network.",
+    icon: "network",
+    /** resellers log in there to see their commission and network */
+    href: "https://belibeli.online",
+  },
+] as const;
 
 export const JOIN_US_CTA = {
   label: "JOIN US",

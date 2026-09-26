@@ -7,7 +7,11 @@ import { RESELLER_CODE_SECTION } from "@home/constants/reseller";
    own share link */
 export function ResellerCodeSection() {
   return (
-    <section className="reseller-code" aria-labelledby="reseller-code-title">
+    <section
+      id={RESELLER_CODE_SECTION.id}
+      className="reseller-code"
+      aria-labelledby="reseller-code-title"
+    >
       <div className="wrap">
         <div className="r2 relative overflow-clip rounded-[32px] bg-neutral-950 p-6 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)] md:p-10 lg:p-12">
           {/* ambient glows + dot grid */}

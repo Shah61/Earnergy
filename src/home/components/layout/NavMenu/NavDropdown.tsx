@@ -1,15 +1,17 @@
 import { useEffect, useId, useRef, useState, type PointerEvent } from "react";
 import { ChevronDown } from "lucide-react";
-import { ShopProductList } from "./ShopProductList";
+import type { MenuPanelKind } from "@home/constants/navigation";
+import { MenuPanel } from "./MenuPanel";
 
-type ShopDropdownProps = {
+type NavDropdownProps = {
   label: string;
+  panel: MenuPanelKind;
   uplineCode: string | null;
 };
 
-/* desktop "Shop" entry: opens on hover for a mouse, on tap/click/keyboard
-   for everything else */
-export function ShopDropdown({ label, uplineCode }: ShopDropdownProps) {
+/* desktop "Shop" / "Reseller" entry: opens on hover for a mouse, on
+   tap/click/keyboard for everything else */
+export function NavDropdown({ label, panel, uplineCode }: NavDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
@@ -63,7 +65,7 @@ export function ShopDropdown({ label, uplineCode }: ShopDropdownProps) {
   return (
     <div
       ref={rootRef}
-      className={`nav-shop${isOpen ? " is-open" : ""}`}
+      className={`nav-drop${isOpen ? " is-open" : ""}`}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onBlur={(event) => {
@@ -74,17 +76,17 @@ export function ShopDropdown({ label, uplineCode }: ShopDropdownProps) {
     >
       <button
         type="button"
-        className="nav-shop-btn"
+        className="nav-drop-btn"
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
       >
         {label}
-        <ChevronDown aria-hidden="true" className="nav-shop-chevron" />
+        <ChevronDown aria-hidden="true" className="nav-drop-chevron" />
       </button>
 
-      <div className="nav-shop-panel" id={panelId}>
-        <ShopProductList uplineCode={uplineCode} onPick={() => setIsOpen(false)} />
+      <div className="nav-drop-panel" id={panelId}>
+        <MenuPanel panel={panel} uplineCode={uplineCode} onPick={() => setIsOpen(false)} />
       </div>
     </div>
   );

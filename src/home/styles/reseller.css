@@ -1,6 +1,6 @@
-/* Reseller code across the site: the code badge by the logo, the Shop
-   menu (desktop dropdown + drawer list) and the Home paste-code row.
-   Same layer as globals.css so Tailwind utilities still win. */
+/* Reseller code across the site: the code badge by the logo, the Shop and
+   Reseller menus (desktop dropdowns + drawer panels) and the Home
+   paste-code row. Same layer as globals.css so Tailwind utilities still win. */
 
 @layer components {
   /* ── logo + referral code ─────────────────────────────────────────── */
@@ -170,14 +170,105 @@
     overflow-wrap: anywhere;
   }
 
-  /* ── desktop "Shop" dropdown ──────────────────────────────────────── */
-  .nav-shop {
+  /* ── Reseller links (dropdown + drawer) ───────────────────────────── */
+  .reseller-links {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    white-space: normal;
+  }
+
+  .reseller-links .reseller-link {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 14px;
+    transition: background 0.2s ease;
+  }
+
+  .reseller-links .reseller-link:hover,
+  .reseller-links .reseller-link:focus-visible {
+    background: rgba(116, 193, 87, 0.12);
+  }
+
+  /* dark tile with the green key, like the paste-code card itself */
+  .reseller-link-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-pill);
+    color: var(--color-brand);
+  }
+
+  .reseller-link-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .reseller-link-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .reseller-link-name {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+
+  .reseller-link-sub {
+    color: var(--color-muted-2);
+    font-family: var(--font-display);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  /* one phrase per line: too wide for one, and a break mid-phrase reads badly */
+  .reseller-link-sub > span {
+    display: block;
+  }
+
+  .reseller-link-sub-ink {
+    color: var(--color-brand-deep);
+  }
+
+  .reseller-link-arrow {
+    width: 18px;
+    height: 18px;
+    color: var(--color-muted-2);
+    transition:
+      color 0.2s ease,
+      transform 0.25s var(--ease-smooth);
+  }
+
+  .reseller-link:hover .reseller-link-arrow,
+  .reseller-link:focus-visible .reseller-link-arrow {
+    color: var(--color-brand-deep);
+    transform: translateX(3px);
+  }
+
+  /* ── desktop dropdowns: "Shop", "Reseller" ────────────────────────── */
+  .nav-drop {
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  .nav-shop-btn {
+  .nav-drop-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -193,13 +284,13 @@
     transition: color 0.25s ease;
   }
 
-  .nav-shop-btn:hover,
-  .nav-shop.is-open .nav-shop-btn {
+  .nav-drop-btn:hover,
+  .nav-drop.is-open .nav-drop-btn {
     color: var(--color-ink);
   }
 
   /* same underline as the other nav links */
-  .nav-shop-btn::after {
+  .nav-drop-btn::after {
     content: "";
     position: absolute;
     left: 0;
@@ -213,22 +304,22 @@
     transition: transform 0.3s var(--ease-smooth);
   }
 
-  .nav-shop-btn:hover::after,
-  .nav-shop.is-open .nav-shop-btn::after {
+  .nav-drop-btn:hover::after,
+  .nav-drop.is-open .nav-drop-btn::after {
     transform: scaleX(1);
   }
 
-  .nav-shop-chevron {
+  .nav-drop-chevron {
     width: 15px;
     height: 15px;
     transition: transform 0.3s var(--ease-smooth);
   }
 
-  .nav-shop.is-open .nav-shop-chevron {
+  .nav-drop.is-open .nav-drop-chevron {
     transform: rotate(180deg);
   }
 
-  .nav-shop-panel {
+  .nav-drop-panel {
     position: absolute;
     top: calc(100% + 16px);
     left: 50%;
@@ -248,7 +339,7 @@
       visibility 0s linear 0.3s;
   }
 
-  .nav-shop.is-open .nav-shop-panel {
+  .nav-drop.is-open .nav-drop-panel {
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, 0);
@@ -258,7 +349,7 @@
   }
 
   /* invisible bridge over the gap, so the pointer can reach the panel */
-  .nav-shop-panel::before {
+  .nav-drop-panel::before {
     content: "";
     position: absolute;
     left: 0;
@@ -267,12 +358,12 @@
     height: 18px;
   }
 
-  /* the nav-link underline would otherwise run under every product */
-  .nav-links .shop-item::after {
+  /* the nav-link underline would otherwise run under every row */
+  .nav-links .nav-drop-panel a::after {
     content: none;
   }
 
-  /* ── mobile drawer "Shop" row ─────────────────────────────────────── */
+  /* ── mobile drawer rows that unfold: "Shop", "Reseller" ───────────── */
   .mobile-menu button.mobile-menu-link {
     display: grid;
     grid-template-columns: 34px minmax(0, 1fr) 26px;
@@ -294,27 +385,27 @@
 
   .mobile-menu button.mobile-menu-link:hover,
   .mobile-menu button.mobile-menu-link:focus-visible,
-  .mobile-menu-shop.is-open button.mobile-menu-link {
+  .mobile-menu-drop.is-open button.mobile-menu-link {
     color: var(--color-brand-deep);
     padding-inline: 10px;
   }
 
-  .mobile-menu-shop.is-open .mobile-menu-index {
+  .mobile-menu-drop.is-open .mobile-menu-index {
     color: var(--color-brand);
   }
 
-  .mobile-menu .mobile-menu-shop-toggle:hover .mobile-menu-arrow,
-  .mobile-menu .mobile-menu-shop-toggle:focus-visible .mobile-menu-arrow {
+  .mobile-menu .mobile-menu-drop-toggle:hover .mobile-menu-arrow,
+  .mobile-menu .mobile-menu-drop-toggle:focus-visible .mobile-menu-arrow {
     color: var(--color-brand-deep);
     transform: translateY(2px);
   }
 
-  .mobile-menu .mobile-menu-shop.is-open .mobile-menu-arrow {
+  .mobile-menu .mobile-menu-drop.is-open .mobile-menu-arrow {
     color: var(--color-brand-deep);
     transform: rotate(180deg);
   }
 
-  .mobile-menu-shop-panel {
+  .mobile-menu-drop-panel {
     display: grid;
     grid-template-rows: 0fr;
     visibility: hidden;
@@ -323,24 +414,26 @@
       visibility 0s linear 0.4s;
   }
 
-  .mobile-menu-shop.is-open .mobile-menu-shop-panel {
+  .mobile-menu-drop.is-open .mobile-menu-drop-panel {
     grid-template-rows: 1fr;
     visibility: visible;
     transition: grid-template-rows 0.4s var(--ease-smooth);
   }
 
-  .mobile-menu-shop-inner {
+  .mobile-menu-drop-inner {
     min-height: 0;
     overflow: hidden;
   }
 
-  /* tucked under the "Shop" label, past the row number */
-  .mobile-menu-shop .shop-body {
+  /* tucked under the row's label, past the row number */
+  .mobile-menu-drop .shop-body,
+  .mobile-menu-drop .reseller-links {
     padding: 12px 0 16px 36px;
     border-bottom: 1px solid rgba(18, 18, 18, 0.1);
   }
 
-  .mobile-menu-shop .shop-name {
+  .mobile-menu-drop .shop-name,
+  .mobile-menu-drop .reseller-link-name {
     font-size: 1rem;
   }
 
@@ -361,6 +454,18 @@
 
     .brand-block--code .brand-logo {
       height: clamp(28px, 3.9vh, 34px);
+    }
+  }
+
+  /* narrow desktops: five menu entries beside the code pill only fit with
+     tighter spacing and the short "Code:" label */
+  @media (min-width: 861px) and (max-width: 1000px) {
+    .nav-links {
+      gap: 18px;
+    }
+
+    .refcode-label-extra {
+      display: none;
     }
   }
 
@@ -386,8 +491,8 @@
       animation: none;
     }
 
-    .nav-shop-panel,
-    .mobile-menu-shop-panel {
+    .nav-drop-panel,
+    .mobile-menu-drop-panel {
       transition: none !important;
     }
   }

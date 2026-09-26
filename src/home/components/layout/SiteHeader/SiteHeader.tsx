@@ -3,7 +3,7 @@ import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { useAffiliateCode } from "@/hooks/useAffiliateCode";
 import { resellerPath } from "@/lib/belibeli";
 import { ResellerCodeBadge } from "@home/components/layout/ResellerCodeBadge";
-import { ShopDropdown } from "@home/components/layout/ShopMenu";
+import { NavDropdown } from "@home/components/layout/NavMenu";
 import {
   JOIN_US_CTA,
   NAV_ITEMS,
@@ -55,7 +55,12 @@ export function SiteHeader({ onMenuToggle, isMenuOpen }: SiteHeaderProps) {
           {NAV_ITEMS.map((item) => {
             if (!isNavLink(item)) {
               return (
-                <ShopDropdown key={item.label} label={item.label} uplineCode={uplineCode} />
+                <NavDropdown
+                  key={item.label}
+                  label={item.label}
+                  panel={item.panel}
+                  uplineCode={uplineCode}
+                />
               );
             }
 
